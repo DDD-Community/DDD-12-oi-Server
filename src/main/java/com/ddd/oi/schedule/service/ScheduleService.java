@@ -28,7 +28,7 @@ public class ScheduleService {
 
          Schedule savedSchedule = scheduleRepository.save(newSchedule);
 
-         return new CreateScheduleResponse(savedSchedule.getScheduleId());
+         return new CreateScheduleResponse(savedSchedule.getId());
      }
 
      @Transactional

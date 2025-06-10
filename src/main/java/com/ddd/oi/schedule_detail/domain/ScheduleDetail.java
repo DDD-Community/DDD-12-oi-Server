@@ -21,25 +21,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScheduleDetail extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "schedule_detail_id")
-	private Long scheduleDetailId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "schedule_detail_id")
+    private Long scheduleDetailId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "schedule_id", nullable = false)
-	private Schedule schedule;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "schedule_spot_id", nullable = false)
-	private ScheduleSpot scheduleSpot;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_spot_id", nullable = false)
+    private ScheduleSpot scheduleSpot;
 
-	@Column(name = "start_time", nullable = false)
-	private LocalDateTime startTime;
+    @Column(name = "start_time", nullable = false)
+    private LocalDateTime startTime;
 
-	@Column(name = "memo")
-	private String memo;
+    @Column(name = "memo")
+    private String memo;
 
-	@Column(name = "target_date", nullable = false)
-	private String targetDate;
+    @Column(name = "target_date", nullable = false)
+    private String targetDate;
 }

@@ -18,7 +18,6 @@ public enum ErrorCode {
     // 스케줄 관련 에러
     INVALID_DATE_RANGE("종료 날짜는 시작 날짜로부터 최대 3일까지만 설정 가능합니다.",HttpStatus.BAD_REQUEST);
 
-
     private final String message;
     private final HttpStatus httpStatus;
 
