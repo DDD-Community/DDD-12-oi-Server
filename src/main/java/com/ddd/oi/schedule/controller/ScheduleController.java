@@ -21,7 +21,7 @@ public class ScheduleController {
 
     @PostMapping
     public CustomApiResponse<CreateScheduleResponse> createSchedule(
-            @RequestHeader("user-no") Long userId,  @RequestBody CreateScheduleRequest request
+           @RequestHeader("user-no") Long userId, @RequestBody CreateScheduleRequest request
     ) {
         CreateScheduleResponse result = scheduleService.createSchedule(userId, request);
         return CustomApiResponse.success(result, 200, "스케줄 생성 성공");
