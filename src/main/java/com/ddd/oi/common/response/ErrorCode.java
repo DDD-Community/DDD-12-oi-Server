@@ -17,6 +17,7 @@ public enum ErrorCode {
 
     // 스케줄 관련 에러
     INVALID_DATE_RANGE("종료 날짜는 시작 날짜로부터 최대 3일까지만 설정 가능합니다.",HttpStatus.BAD_REQUEST),
+    END_DATE_BEFORE_START_DATE("종료 날짜는 시작 날짜 이후로 설정해야 합니다.", HttpStatus.BAD_REQUEST),
     DUPLICATE_GROUP_NAME("중복된 일행 이름이 포함되어 있습니다.", HttpStatus.BAD_REQUEST);
 
     private final String message;

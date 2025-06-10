@@ -26,43 +26,46 @@ public class ScheduleService {
          User user = userRepository.findById(userId)
                  .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-         Schedule newSchedule = request.toEntity(user);
+             Schedule newSchedule = request.toEntity(user);
 
-         Schedule savedSchedule = scheduleRepository.save(newSchedule);
+             scheduleRepository.save(newSchedule);
 
-         return new CreateScheduleResponse(savedSchedule.getScheduleId());
-     }
+             return CreateScheduleResponse.of(newSchedule.getScheduleId());
+         }
 
-     @Transactional
-    public void deleteSchedule(Long userId, Long scheduleId) {
-         User user = userRepository.findById(userId)
-                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+         @Transactional
+         public void deleteSchedule (Long userId, Long scheduleId){
+             User user = userRepository.findById(userId)
+                     .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-        Schedule schedule = scheduleRepository.findByUser_UserIdAndScheduleId(userId,scheduleId)
-                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+             Schedule schedule = scheduleRepository.findByUser_UserIdAndScheduleId(userId,
+                             scheduleId)
+                     .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-        scheduleRepository.delete(schedule);
+             scheduleRepository.delete(schedule);
 
-     }
+         }
 
-    @Transactional
-    public UpdateScheduleResponse updateSchedule(Long userId, Long scheduleId, UpdateScheduleRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+         @Transactional
+         public UpdateScheduleResponse updateSchedule (Long userId, Long
+         scheduleId, UpdateScheduleRequest request){
+             User user = userRepository.findById(userId)
+                     .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-        Schedule schedule = scheduleRepository.findByUser_UserIdAndScheduleId(userId, scheduleId)
-                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+             Schedule schedule = scheduleRepository.findByUser_UserIdAndScheduleId(userId,
+                             scheduleId)
+                     .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-        schedule.updateSchedule(
-                request.title(),
-                request.startDate(),
-                request.endDate(),
-                request.mobility(),
-                request.groupList()
-        );
+             schedule.updateSchedule(
+                     request.title(),
+                     request.startDate(),
+                     request.endDate(),
+                     request.mobility(),
+                     request.groupList()
+             );
 
-        return UpdateScheduleResponse.of(schedule);
-    }
+             return UpdateScheduleResponse.of(schedule);
+         }
 
 
 }

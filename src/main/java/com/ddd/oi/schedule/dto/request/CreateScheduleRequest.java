@@ -7,6 +7,7 @@ import com.ddd.oi.schedule.domain.Schedule;
 import com.ddd.oi.schedule.domain.Schedule.Mobility;
 import com.ddd.oi.schedule.domain.Schedule.ScheduleTag;
 import com.ddd.oi.user.domain.User;
+import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,11 +22,20 @@ public record CreateScheduleRequest(
         Mobility mobility,
         @NotBlankNullable(message = "태그를 정해주세요.")
         ScheduleTag scheduleTag,
+        @NotEmpty(message = "하나 이상의 일행을 정해주세요.")
         List<String> groupList
 ) {
     public CreateScheduleRequest {
-        if (startDate != null && endDate != null && endDate.isAfter(startDate.plusDays(3))) {
-            throw new OiException(ErrorCode.INVALID_DATE_RANGE);
+        if (startDate != null && endDate != null) {
+            if (endDate.isBefore(startDate)) {
+                throw new OiException(ErrorCode.END_DATE_BEFORE_START_DATE);
+            }
+            if (endDate.isAfter(startDate.plusDays(3))) {
+                throw new OiException(ErrorCode.INVALID_DATE_RANGE);
+            }
+        }
+        if (groupList != null && groupList.size() != groupList.stream().distinct().count()) {
+            throw new OiException(ErrorCode.BAD_REQUEST);
         }
     }
     public Schedule toEntity(User user) {

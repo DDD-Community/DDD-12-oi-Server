@@ -15,9 +15,15 @@ public record UpdateScheduleRequest(
 
 
 ) {
+    //TODO 커스텀 어노테이션을 빼는 방식 고민
     public UpdateScheduleRequest {
-        if (startDate != null && endDate != null && endDate.isAfter(startDate.plusDays(3))) {
-            throw new OiException(ErrorCode.INVALID_DATE_RANGE);
+        if (startDate != null && endDate != null) {
+            if (endDate.isBefore(startDate)) {
+                throw new OiException(ErrorCode.END_DATE_BEFORE_START_DATE);
+            }
+            if (endDate.isAfter(startDate.plusDays(3))) {
+                throw new OiException(ErrorCode.INVALID_DATE_RANGE);
+            }
         }
         if (groupList != null && groupList.size() != groupList.stream().distinct().count()) {
             throw new OiException(ErrorCode.DUPLICATE_GROUP_NAME);
