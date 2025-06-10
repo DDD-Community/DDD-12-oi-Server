@@ -31,4 +31,15 @@ public class ScheduleService {
          return new CreateScheduleResponse(savedSchedule.getScheduleId());
      }
 
+     @Transactional
+    public void deleteSchedule(Long userId, Long scheduleId) {
+         User user = userRepository.findById(userId)
+                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+        Schedule schedule = scheduleRepository.findByUser_UserIdAndScheduleId(userId,scheduleId)
+                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+        scheduleRepository.delete(schedule);
+
+     }
 }

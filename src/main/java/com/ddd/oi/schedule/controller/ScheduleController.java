@@ -6,6 +6,8 @@ import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
 import com.ddd.oi.schedule.service.ScheduleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -25,5 +27,13 @@ public class ScheduleController {
     ) {
         CreateScheduleResponse result = scheduleService.createSchedule(userId, request);
         return CustomApiResponse.success(result, 200, "스케줄 생성 성공");
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public CustomApiResponse<Void> deleteSchedule(
+            @RequestHeader("user-no") Long userId,@PathVariable("scheduleId") Long scheduleId
+    ) {
+        scheduleService.deleteSchedule(userId,scheduleId);
+        return CustomApiResponse.success(null,200,"일정 삭제 성공");
     }
 }
