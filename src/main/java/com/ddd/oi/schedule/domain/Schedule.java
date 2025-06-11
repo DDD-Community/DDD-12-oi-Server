@@ -52,6 +52,10 @@ public class Schedule extends BaseEntity {
 	@Column(name = "third_group")
 	private String thirdGroup;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "schedule_tag", nullable = false)
+	private ScheduleTag scheduleTag;
+
 
 	public enum Mobility {
 		WALK, CAR, PUBLIC_TRANSPORT, BICYCLE

@@ -50,6 +50,7 @@ public record CreateScheduleRequest(
                 .startDate(this.startDate)
                 .endDate(this.endDate)
                 .mobility(this.mobility)
+                .scheduleTag(this.scheduleTag)
                 .firstGroup(firstGroup)
                 .secondGroup(secondGroup)
                 .thirdGroup(thirdGroup)
