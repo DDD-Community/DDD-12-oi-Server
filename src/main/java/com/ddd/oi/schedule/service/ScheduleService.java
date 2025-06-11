@@ -6,10 +6,13 @@ import com.ddd.oi.schedule.domain.Schedule;
 import com.ddd.oi.schedule.dto.request.CreateScheduleRequest;
 import com.ddd.oi.schedule.dto.request.UpdateScheduleRequest;
 import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
+import com.ddd.oi.schedule.dto.response.ScheduleTargetDayResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.repository.UserRepository;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +69,17 @@ public class ScheduleService {
 
              return UpdateScheduleResponse.of(schedule);
          }
+
+         @Transactional(readOnly = true)
+            public List<ScheduleTargetDayResponse> showTargetDaySchedule(Long userId,LocalDate targetDay) {
+                User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+             List<Schedule> schedules = scheduleRepository.findSchedulesByUserIdAndTargetDay(user.getUserId(), targetDay);
+             return schedules.stream()
+                     .map(ScheduleTargetDayResponse::of)
+                     .toList();
+     }
 
 
 }

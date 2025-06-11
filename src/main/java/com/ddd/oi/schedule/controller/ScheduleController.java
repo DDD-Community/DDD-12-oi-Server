@@ -4,17 +4,22 @@ import com.ddd.oi.common.response.CustomApiResponse;
 import com.ddd.oi.schedule.dto.request.CreateScheduleRequest;
 import com.ddd.oi.schedule.dto.request.UpdateScheduleRequest;
 import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
+import com.ddd.oi.schedule.dto.response.ScheduleTargetDayResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.service.ScheduleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,5 +50,13 @@ public class ScheduleController {
     ) {
         UpdateScheduleResponse result = scheduleService.updateSchedule(userId, scheduleId,request);
         return CustomApiResponse.success(result,200,"스케줄 수정 성공");
+    }
+
+    @GetMapping("/{target-day}")
+    public CustomApiResponse<List<ScheduleTargetDayResponse>> showTargetDaySchedule(
+            @RequestHeader("user-no") Long userId, @PathVariable("target-day") LocalDate targetDay
+    ) {
+        List<ScheduleTargetDayResponse> result = scheduleService.showTargetDaySchedule(userId,targetDay);
+        return CustomApiResponse.success(result, 200, "해당 날짜의 일정들 조회 성공");
     }
 }
