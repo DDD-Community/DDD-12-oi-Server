@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import lombok.Builder;
 
 @Builder
-public record ScheduleTargetDayResponse(
+public record ScheduleListResponse(
         Long scheduleId,
         ScheduleTag scheduleTag,
         String title,
@@ -15,8 +15,8 @@ public record ScheduleTargetDayResponse(
         LocalDate endDate,
         Mobility mobility
 ) {
-    public static ScheduleTargetDayResponse of(Schedule schedule) {
-        return ScheduleTargetDayResponse.builder()
+    public static ScheduleListResponse of(Schedule schedule) {
+        return ScheduleListResponse.builder()
                 .scheduleId(schedule.getScheduleId())
                 .scheduleTag(schedule.getScheduleTag())
                 .title(schedule.getScheduleTitle())
