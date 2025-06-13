@@ -4,9 +4,10 @@ import com.ddd.oi.common.response.CustomApiResponse;
 import com.ddd.oi.schedule.dto.request.CreateScheduleRequest;
 import com.ddd.oi.schedule.dto.request.UpdateScheduleRequest;
 import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
-import com.ddd.oi.schedule.dto.response.ScheduleTargetDayResponse;
+import com.ddd.oi.schedule.dto.response.ScheduleListResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.service.ScheduleService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,6 +30,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
+    @Operation(summary = "일정 추가", description = "일정 추가 API")
     public CustomApiResponse<CreateScheduleResponse> createSchedule(
            @RequestHeader("user-no") Long userId, @RequestBody CreateScheduleRequest request
     ) {
@@ -38,6 +39,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{scheduleId}")
+    @Operation(summary = "일정 삭제", description = "일정 삭제 API")
     public CustomApiResponse<Void> deleteSchedule(
             @RequestHeader("user-no") Long userId, @PathVariable("scheduleId") Long scheduleId
     ) {
@@ -45,6 +47,7 @@ public class ScheduleController {
         return CustomApiResponse.success(null,200,"일정 삭제 성공");
     }
     @PutMapping("/{scheduleId}")
+    @Operation(summary = "일정 수정", description = "일정 수정 API")
     public CustomApiResponse<UpdateScheduleResponse> updateSchedule(
             @RequestHeader("user-no") Long userId, @PathVariable("scheduleId") Long scheduleId, @RequestBody UpdateScheduleRequest request
     ) {
@@ -53,10 +56,19 @@ public class ScheduleController {
     }
 
     @GetMapping("/{target-day}")
-    public CustomApiResponse<List<ScheduleTargetDayResponse>> showTargetDaySchedule(
+    @Operation(summary = "특정 날짜 일정 조회", description = "특정 날짜 일정 조회 API")
+    public CustomApiResponse<List<ScheduleListResponse>> showTargetDaySchedule(
             @RequestHeader("user-no") Long userId, @PathVariable("target-day") LocalDate targetDay
     ) {
-        List<ScheduleTargetDayResponse> result = scheduleService.showTargetDaySchedule(userId,targetDay);
+        List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(userId,targetDay);
         return CustomApiResponse.success(result, 200, "해당 날짜의 일정들 조회 성공");
+    }
+    @GetMapping("/{year}/{month}")
+    @Operation(summary = "한달 일정 조회", description = "한달 일정 조회 API")
+    public CustomApiResponse<List<ScheduleListResponse>> showMonthSchedule(
+            @RequestHeader("user-no") Long userId,@PathVariable("year") int year, @PathVariable("month") int month
+    ) {
+        List<ScheduleListResponse> result = scheduleService.showMonthScheduleList(userId, year, month);
+        return CustomApiResponse.success(result, 200, "해당 월의 일정들 조회 성공");
     }
 }

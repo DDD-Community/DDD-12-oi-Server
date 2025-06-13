@@ -1,5 +1,6 @@
 package com.ddd.oi.schedule_detail.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ddd.oi.common.response.CustomApiResponse;
-import com.ddd.oi.schedule.service.ScheduleService;
 import com.ddd.oi.schedule_detail.dto.request.CreateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.request.UpdateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailResponse;
@@ -34,6 +34,7 @@ public class ScheduleDetailController {
 	private final ScheduleDetailService scheduleDetailService;
 
 	@GetMapping
+	@Operation(summary = "세부일정 목록 조회", description = "세부일정 목록 조회 API")
 	public CustomApiResponse<List<ScheduleDetailResponse>> getDetails(
 		@PathVariable Long scheduleId,
 		@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate targetDate) {
@@ -43,6 +44,7 @@ public class ScheduleDetailController {
 	}
 
 	@PostMapping
+	@Operation(summary = "세부일정 생성", description = "세부일정 생성 API")
 	public CustomApiResponse<Void> createDetail(
 		@PathVariable Long scheduleId,
 		@RequestBody CreateDetailRequest request) {
@@ -52,6 +54,7 @@ public class ScheduleDetailController {
 	}
 
 	@PutMapping("/{detailId}")
+	@Operation(summary = "세부일정 수정", description = "세부일정 수정 API")
 	public CustomApiResponse<Void> updateDetail(
 		@PathVariable Long scheduleId,
 		@PathVariable Long detailId,
@@ -61,6 +64,7 @@ public class ScheduleDetailController {
 	}
 
 	@DeleteMapping("/{detailId}")
+	@Operation(summary = "세부일정 삭제", description = "세부일정 삭제 API")
 	public CustomApiResponse<Void> deleteDetail(
 		@PathVariable Long scheduleId,
 		@PathVariable Long detailId) {

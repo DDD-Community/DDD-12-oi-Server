@@ -6,7 +6,7 @@ import com.ddd.oi.schedule.domain.Schedule;
 import com.ddd.oi.schedule.dto.request.CreateScheduleRequest;
 import com.ddd.oi.schedule.dto.request.UpdateScheduleRequest;
 import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
-import com.ddd.oi.schedule.dto.response.ScheduleTargetDayResponse;
+import com.ddd.oi.schedule.dto.response.ScheduleListResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.user.domain.User;
@@ -24,7 +24,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
-     @Transactional
+    @Transactional
     public CreateScheduleResponse createSchedule(Long userId, CreateScheduleRequest request) {
          User user = userRepository.findById(userId)
                  .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
@@ -36,12 +36,12 @@ public class ScheduleService {
              return CreateScheduleResponse.of(newSchedule.getScheduleId());
          }
 
-         @Transactional
-         public void deleteSchedule (Long userId, Long scheduleId){
-             User user = userRepository.findById(userId)
+    @Transactional
+    public void deleteSchedule (Long userId, Long scheduleId){
+           User user = userRepository.findById(userId)
                      .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-             Schedule schedule = scheduleRepository.findByUser_UserIdAndScheduleId(userId,
+           Schedule schedule = scheduleRepository.findByUser_UserIdAndScheduleId(userId,
                              scheduleId)
                      .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
@@ -49,8 +49,8 @@ public class ScheduleService {
 
          }
 
-         @Transactional
-         public UpdateScheduleResponse updateSchedule (Long userId, Long
+    @Transactional
+    public UpdateScheduleResponse updateSchedule (Long userId, Long
          scheduleId, UpdateScheduleRequest request){
              User user = userRepository.findById(userId)
                      .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
@@ -70,16 +70,31 @@ public class ScheduleService {
              return UpdateScheduleResponse.of(schedule);
          }
 
-         @Transactional(readOnly = true)
-            public List<ScheduleTargetDayResponse> showTargetDaySchedule(Long userId,LocalDate targetDay) {
+    @Transactional(readOnly = true)
+    public List<ScheduleListResponse> showTargetDaySchedule(Long userId,LocalDate targetDay) {
                 User user = userRepository.findById(userId)
                         .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
              List<Schedule> schedules = scheduleRepository.findSchedulesByUserIdAndTargetDay(user.getUserId(), targetDay);
              return schedules.stream()
-                     .map(ScheduleTargetDayResponse::of)
+                     .map(ScheduleListResponse::of)
                      .toList();
      }
 
+    @Transactional(readOnly = true)
+    public List<ScheduleListResponse> showMonthScheduleList(Long userId, int year, int month) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        List<Schedule> schedules = scheduleRepository.findSchedulesByUserIdAndMonth(
+                userId, year, month, startOfMonth, endOfMonth);
+
+        return schedules.stream()
+                .map(ScheduleListResponse::of)
+                .toList();
+    }
 
 }
