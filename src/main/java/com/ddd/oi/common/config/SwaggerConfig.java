@@ -40,7 +40,7 @@ public class SwaggerConfig {
 		Server devServer = new Server();
 		localServer.setUrl("http://localhost:8080");
 
-		devServer.setUrl("http://34.64.169.89:8080");
+		devServer.setUrl("http://3.39.107.176:8080");
 
 		return new OpenAPI()
 			.components(new Components()
@@ -51,6 +51,6 @@ public class SwaggerConfig {
 				.title("오이(Oi) API 명세서")
 				.description("오이(Oi) API 명세서입니다.")
 				.version("1.0.0"))
-			.servers(List.of(localServer,devServer));
+			.servers(List.of(devServer,localServer));
 	}
 }
