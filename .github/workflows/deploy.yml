@@ -1,4 +1,4 @@
-name: Deploy to ECR (develop)
+name: Deploy to ECR & EC2 (develop)
 
 on:
   push:
@@ -10,48 +10,45 @@ permissions:
 
 jobs:
   deploy:
-    name: Build, Push, and Deploy Docker Image with Java 22
+    name: Build, Push, and Deploy Spring Boot App
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 22
+      - name: Create application.yml for test/build
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
+
+      - name: Set up Java 22
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '22'
 
-      - name: Configure AWS credentials
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build Spring Boot JAR
+        run: ./gradlew clean build --no-daemon
+
+      - name: Configure AWS credentials with OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build Spring Boot JAR
-        run: ./gradlew clean build --no-daemon
-
-      - name: Create application.yml dynamically (for Docker build)
-        run: |
-          mkdir -p docker-context
-          cp build/libs/*.jar docker-context/app.jar
-          echo "${{ secrets.APPLICATION_YML }}" > docker-context/application.yml
-
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-          | docker login --username AWS \
-            --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-      - name: Build Docker image (from dynamic context)
+      - name: Build & Push Docker image
         run: |
           IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/oi-server
-          docker build -t $IMAGE_URI docker-context
-
-      - name: Push Docker image
-        run: |
-          IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/oi-server
+          docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
 
       - name: SSH to EC2 and deploy container
@@ -65,12 +62,12 @@ jobs:
             echo "Logging into ECR..."
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin $IMAGE
 
-            echo "Pulling latest image..."
-            docker pull $IMAGE
-
-            echo "Stopping existing container (if any)..."
+            echo "Stopping previous container..."
             docker stop oi-server || true
             docker rm oi-server || true
 
-            echo "Running new container..."
+            echo "Pulling latest image..."
+            docker pull $IMAGE
+
+            echo "Running container..."
             docker run -d --name oi-server -p 8080:8080 $IMAGE
