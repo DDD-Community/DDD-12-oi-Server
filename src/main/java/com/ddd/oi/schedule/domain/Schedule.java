@@ -49,6 +49,7 @@ public class Schedule extends BaseEntity {
 	@CollectionTable(name = "schedule_group", joinColumns = @JoinColumn(name = "schedule_id"))
 	@Enumerated(EnumType.STRING)
 	@Column(name = "group_name", nullable = false)
+	@Builder.Default
 	private List<GroupTag> groups = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
