@@ -11,23 +11,19 @@ import lombok.Builder;
 
 @Builder
 public record ScheduleDetailResponse(
-	Long detailId,
-	@JsonFormat(pattern = "HH:mm")
-	LocalTime startTime,
-	String memo,
-	LocalDate targetDate,
-	String spotName,
-	Double latitude,
-	Double longitude) {
+		Long id,
+		@JsonFormat(pattern = "HH:mm") LocalTime startTime,
+		String spotName,
+		Double latitude,
+		Double longitude,
+		String memo) {
 	public static ScheduleDetailResponse from(ScheduleDetail entity) {
 		return new ScheduleDetailResponse(
-			entity.getScheduleDetailId(),
-			entity.getStartTime(),
-			entity.getMemo(),
-			entity.getTargetDate(),
-			entity.getSpotName(),
-			entity.getLatitude(),
-			entity.getLongitude()
-		);
+				entity.getId(),
+				entity.getStartTime(),
+				entity.getSpotName(),
+				entity.getLatitude(),
+				entity.getLongitude(),
+				entity.getMemo());
 	}
 }

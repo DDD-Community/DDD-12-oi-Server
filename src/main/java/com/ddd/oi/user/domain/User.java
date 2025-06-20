@@ -19,8 +19,7 @@ public class User extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
-	private Long userId;
+	private Long id;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "login_type", nullable = false)

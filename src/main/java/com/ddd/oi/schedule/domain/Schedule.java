@@ -1,10 +1,11 @@
 package com.ddd.oi.schedule.domain;
 
 import com.ddd.oi.common.domain.BaseEntity;
+import com.ddd.oi.schedule.domain.enumType.GroupTag;
+import com.ddd.oi.schedule.domain.enumType.Mobility;
+import com.ddd.oi.schedule.domain.enumType.ScheduleTag;
 import com.ddd.oi.user.domain.User;
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "schedule")
@@ -23,8 +26,7 @@ public class Schedule extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "schedule_id")
-	private Long scheduleId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
@@ -43,46 +45,27 @@ public class Schedule extends BaseEntity {
 	@Column(name = "mobility", nullable = false)
 	private Mobility mobility;
 
-	@Column(name = "first_group",nullable = false)
-	private String firstGroup;
-
-	@Column(name = "second_group")
-	private String secondGroup;
-
-	@Column(name = "third_group")
-	private String thirdGroup;
+	@ElementCollection(targetClass = GroupTag.class, fetch = FetchType.EAGER)
+	@CollectionTable(name = "schedule_group", joinColumns = @JoinColumn(name = "schedule_id"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "group_name", nullable = false)
+	private List<GroupTag> groups = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "schedule_tag", nullable = false)
 	private ScheduleTag scheduleTag;
 
-
-	public enum Mobility {
-		WALK, CAR, PUBLIC_TRANSPORT, BICYCLE
+	public void updateSchedule(String title, LocalDate startDate, LocalDate endDate, Mobility mobility,
+			List<GroupTag> groups) {
+		this.scheduleTitle = title;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.mobility = mobility;
+		this.groups = groups;
 	}
 
-	public enum ScheduleTag {
-		TRIP, DAILY,DATE, BUSINESS, OTHER
+	public List<GroupTag> getGroups() {
+		return this.groups;
 	}
-
-    public void updateSchedule(String title, LocalDate startDate, LocalDate endDate, Mobility mobility, List<String> groupList) {
-        this.scheduleTitle = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.mobility = mobility;
-        this.firstGroup = groupList.get(0);
-        this.secondGroup = groupList.size() > 1 ? groupList.get(1) : null;
-        this.thirdGroup = groupList.size() > 2 ? groupList.get(2) : null;
-    }
-
-
-    public List<String> getGroupList() {
-        List<String> result = new ArrayList<>();
-        result.add(firstGroup);
-        if (secondGroup != null) result.add(secondGroup);
-        if (thirdGroup != null) result.add(thirdGroup);
-        return result;
-    }
-
 
 }

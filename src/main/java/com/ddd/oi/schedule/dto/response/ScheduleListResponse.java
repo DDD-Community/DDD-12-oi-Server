@@ -1,9 +1,12 @@
 package com.ddd.oi.schedule.dto.response;
 
 import com.ddd.oi.schedule.domain.Schedule;
-import com.ddd.oi.schedule.domain.Schedule.Mobility;
-import com.ddd.oi.schedule.domain.Schedule.ScheduleTag;
+import com.ddd.oi.schedule.domain.enumType.GroupTag;
+import com.ddd.oi.schedule.domain.enumType.Mobility;
+import com.ddd.oi.schedule.domain.enumType.ScheduleTag;
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.Builder;
 
 @Builder
@@ -13,16 +16,17 @@ public record ScheduleListResponse(
         String title,
         LocalDate startDate,
         LocalDate endDate,
-        Mobility mobility
-) {
+        Mobility mobility,
+        List<GroupTag> groups) {
     public static ScheduleListResponse of(Schedule schedule) {
         return ScheduleListResponse.builder()
-                .scheduleId(schedule.getScheduleId())
+                .scheduleId(schedule.getId())
                 .scheduleTag(schedule.getScheduleTag())
                 .title(schedule.getScheduleTitle())
                 .startDate(schedule.getStartDate())
                 .endDate(schedule.getEndDate())
                 .mobility(schedule.getMobility())
+                .groups(schedule.getGroups())
                 .build();
     }
 }

@@ -28,28 +28,28 @@ public class ScheduleDetailService {
 	@Transactional(readOnly = true)
 	public List<ScheduleDetailResponse> getDetails(Long scheduleId, LocalDate targetDate) {
 		Schedule schedule = scheduleRepository.findById(scheduleId)
-			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-		return scheduleDetailRepository.findBySchedule_ScheduleIdAndTargetDate(scheduleId, targetDate)
-			.stream()
-			.map(ScheduleDetailResponse::from)
-			.toList();
+		return scheduleDetailRepository.findBySchedule_IdAndTargetDate(scheduleId, targetDate)
+				.stream()
+				.map(ScheduleDetailResponse::from)
+				.toList();
 	}
 
 	@Transactional
 	public void createDetail(Long scheduleId, CreateDetailRequest request) {
 		Schedule schedule = scheduleRepository.findById(scheduleId)
-			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
 		ScheduleDetail detail = ScheduleDetail.builder()
-			.schedule(schedule)
-			.startTime(request.startTime())
-			.targetDate(request.targetDate())
-			.memo(request.memo())
-			.spotName(request.spotName())
-			.latitude(request.latitude())
-			.longitude(request.longitude())
-			.build();
+				.schedule(schedule)
+				.startTime(request.startTime())
+				.targetDate(request.targetDate())
+				.memo(request.memo())
+				.spotName(request.spotName())
+				.latitude(request.latitude())
+				.longitude(request.longitude())
+				.build();
 
 		ScheduleDetail saved = scheduleDetailRepository.save(detail);
 	}
@@ -57,24 +57,23 @@ public class ScheduleDetailService {
 	@Transactional
 	public void updateDetail(Long scheduleId, Long detailId, UpdateDetailRequest request) {
 		Schedule schedule = scheduleRepository.findById(scheduleId)
-			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-		ScheduleDetail detail = scheduleDetailRepository.findByScheduleDetailIdAndSchedule_ScheduleId(detailId, scheduleId)
-			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+		ScheduleDetail detail = scheduleDetailRepository.findByIdAndSchedule_Id(detailId, scheduleId)
+				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
 		detail.update(
-			request.startTime(),
-			request.memo(),
-			request.spotName(),
-			request.latitude(),
-			request.longitude()
-		);
+				request.startTime(),
+				request.memo(),
+				request.spotName(),
+				request.latitude(),
+				request.longitude());
 	}
 
 	@Transactional
 	public void deleteDetail(Long scheduleId, Long detailId) {
-		ScheduleDetail detail = scheduleDetailRepository.findByScheduleDetailIdAndSchedule_ScheduleId(detailId, scheduleId)
-			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+		ScheduleDetail detail = scheduleDetailRepository.findByIdAndSchedule_Id(detailId, scheduleId)
+				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
 		scheduleDetailRepository.delete(detail);
 	}
