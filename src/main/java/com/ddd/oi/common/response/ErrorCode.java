@@ -16,9 +16,9 @@ public enum ErrorCode {
     BAD_REQUEST("잘못된 요청입니다", HttpStatus.BAD_REQUEST),
 
     // 스케줄 관련 에러
-    INVALID_DATE_RANGE("종료 날짜는 시작 날짜로부터 최대 3일까지만 설정 가능합니다.",HttpStatus.BAD_REQUEST),
     END_DATE_BEFORE_START_DATE("종료 날짜는 시작 날짜 이후로 설정해야 합니다.", HttpStatus.BAD_REQUEST),
-    DUPLICATE_GROUP_NAME("중복된 일행 이름이 포함되어 있습니다.", HttpStatus.BAD_REQUEST);
+    DUPLICATE_GROUP_NAME("중복된 일행 이름이 포함되어 있습니다.", HttpStatus.BAD_REQUEST),
+    SCHEDULE_LIMIT_EXCEEDED("하루에 최대 3개의 일정만 등록할 수 있습니다.",HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus httpStatus;

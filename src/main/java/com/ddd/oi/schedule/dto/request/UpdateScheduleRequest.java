@@ -27,9 +27,6 @@ public record UpdateScheduleRequest(
             if (endDate.isBefore(startDate)) {
                 throw new OiException(ErrorCode.END_DATE_BEFORE_START_DATE);
             }
-            if (startDate.plusDays(3).isBefore(endDate)) {
-                throw new OiException(ErrorCode.INVALID_DATE_RANGE);
-            }
         }
         if (groups != null && groups.size() != groups.stream().distinct().count()) {
             throw new OiException(ErrorCode.DUPLICATE_GROUP_NAME);

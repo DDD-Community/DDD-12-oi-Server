@@ -92,4 +92,14 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.internalServerError()
 			.body(CustomApiResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR));
 	}
+	@ExceptionHandler(OiException.class)
+	public ResponseEntity<CustomApiResponse<?>> handleOiException(OiException e) {
+		log.error(">>> OiException ", e);
+
+		final ErrorCode errorCode = e.getErrorCode();
+		return ResponseEntity
+				.status(errorCode.getHttpStatus())
+				.body(CustomApiResponse.fail(errorCode));
+	}
+
 }
