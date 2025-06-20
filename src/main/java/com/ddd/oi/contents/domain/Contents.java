@@ -1,6 +1,5 @@
 package com.ddd.oi.contents.domain;
 
-
 import com.ddd.oi.common.domain.BaseEntity;
 
 import jakarta.persistence.*;
@@ -9,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "contents")
 @Getter
@@ -20,8 +20,7 @@ public class Contents extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "contents_id")
-	private Long contentsId;
+	private Long id;
 
 	@Column(name = "title", nullable = false)
 	private String title;
