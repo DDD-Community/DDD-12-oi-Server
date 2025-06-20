@@ -33,9 +33,6 @@ public record CreateScheduleRequest(
 			if (endDate.isBefore(startDate)) {
 				throw new OiException(ErrorCode.END_DATE_BEFORE_START_DATE);
 			}
-			if (endDate.isAfter(startDate.plusDays(3))) {
-				throw new OiException(ErrorCode.INVALID_DATE_RANGE);
-			}
 		}
 		if (groupList != null && groupList.size() != groupList.stream().distinct().count()) {
 			throw new OiException(ErrorCode.BAD_REQUEST);

@@ -35,4 +35,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             @Param("endOfMonth") LocalDate endOfMonth);
 
 
+        @Query("SELECT COUNT(s) FROM Schedule s WHERE s.user.id = :userId AND :date BETWEEN s.startDate AND s.endDate")
+        int countByUserIdAndDate(@Param("userId") Long userId, @Param("date") LocalDate date);
+
 }

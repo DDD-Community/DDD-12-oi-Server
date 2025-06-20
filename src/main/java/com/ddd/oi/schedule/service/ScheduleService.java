@@ -27,14 +27,23 @@ public class ScheduleService {
         @Transactional
         public CreateScheduleResponse createSchedule(Long userId, CreateScheduleRequest request) {
                 User user = userRepository.findById(userId)
-                                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+                        .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
+                LocalDate startDate = request.startDate();
+                LocalDate endDate = request.endDate();
+
+                boolean hasExceeded = startDate.datesUntil(endDate.plusDays(1))
+                        .anyMatch(date -> scheduleRepository.countByUserIdAndDate(userId, date) >= 3);
+
+                if (hasExceeded) {
+                        throw new OiException(ErrorCode.SCHEDULE_LIMIT_EXCEEDED);
+                }
                 Schedule newSchedule = request.toEntity(user);
-
                 scheduleRepository.save(newSchedule);
 
                 return CreateScheduleResponse.of(newSchedule.getId());
         }
+
 
         @Transactional
         public void deleteSchedule(Long userId, Long scheduleId) {
