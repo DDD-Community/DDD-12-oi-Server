@@ -29,6 +29,7 @@ public class User extends BaseEntity {
 	private String provider;
 
 	@Column(name = "is_dormant", nullable = false)
+	@Builder.Default
 	private Boolean isDormant = false;
 
 	@Column(name = "nickname")
