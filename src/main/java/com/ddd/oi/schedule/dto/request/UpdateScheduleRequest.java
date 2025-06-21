@@ -1,9 +1,11 @@
 package com.ddd.oi.schedule.dto.request;
 
+import com.ddd.oi.common.annotation.NotBlankNullable;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.schedule.domain.enumType.GroupTag;
 import com.ddd.oi.schedule.domain.enumType.Mobility;
+import com.ddd.oi.schedule.domain.enumType.ScheduleTag;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -19,6 +21,8 @@ public record UpdateScheduleRequest(
 
         @Schema(description = "이동 수단", example = "CAR", allowableValues = {
                 "WALK", "CAR", "PUBLIC_TRANSPORT", "BICYCLE" }) Mobility mobility,
+        @NotBlankNullable(message = "태그를 정해주세요.")
+        ScheduleTag scheduleTag,
 
         @Schema(description = "일행 태그 리스트", example = "[\"SOLO\", \"SIBLINGS\"]", allowableValues = { "SOLO", "COUPLE",
                 "FRIEND", "PARENTS", "SIBLINGS", "CHILDREN", "PET", "OTHER" }) List<String> groups){

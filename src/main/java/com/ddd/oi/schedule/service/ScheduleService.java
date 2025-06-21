@@ -46,7 +46,7 @@ public class ScheduleService {
 
 
         @Transactional
-        public void deleteSchedule(Long userId, Long scheduleId) {
+        public Boolean deleteSchedule(Long userId, Long scheduleId) {
                 User user = userRepository.findById(userId)
                                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
@@ -55,6 +55,7 @@ public class ScheduleService {
                                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
                 scheduleRepository.delete(schedule);
+                return true;
         }
 
         @Transactional
@@ -71,6 +72,7 @@ public class ScheduleService {
                                 request.startDate(),
                                 request.endDate(),
                                 request.mobility(),
+                                request.scheduleTag(),
                                 request.toGroupsEnum());
 
                 return UpdateScheduleResponse.of(schedule);

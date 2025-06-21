@@ -40,11 +40,11 @@ public class ScheduleController {
 
     @DeleteMapping("/{scheduleId}")
     @Operation(summary = "일정 삭제", description = "일정 삭제 API")
-    public CustomApiResponse<Void> deleteSchedule(
+    public CustomApiResponse<Boolean> deleteSchedule(
             @RequestHeader("user-no") Long userId, @PathVariable("scheduleId") Long scheduleId
     ) {
-        scheduleService.deleteSchedule(userId,scheduleId);
-        return CustomApiResponse.success(null,200,"일정 삭제 성공");
+        Boolean result = scheduleService.deleteSchedule(userId,scheduleId);
+        return CustomApiResponse.success(result,200,"일정 삭제 성공");
     }
     @PutMapping("/{scheduleId}")
     @Operation(summary = "일정 수정", description = "일정 수정 API")
