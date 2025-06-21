@@ -56,11 +56,12 @@ public class Schedule extends BaseEntity {
 	@Column(name = "schedule_tag", nullable = false)
 	private ScheduleTag scheduleTag;
 
-	public void updateSchedule(String title, LocalDate startDate, LocalDate endDate, Mobility mobility,
+	public void updateSchedule(String title, LocalDate startDate, LocalDate endDate, Mobility mobility,ScheduleTag scheduleTag,
 			List<GroupTag> groups) {
 		this.scheduleTitle = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.scheduleTag = scheduleTag;
 		this.mobility = mobility;
 		this.groups = groups;
 	}
