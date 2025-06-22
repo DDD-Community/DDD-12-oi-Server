@@ -1,16 +1,32 @@
 package com.ddd.oi.schedule.dto.response;
 
-import lombok.Getter;
+import com.ddd.oi.schedule.domain.Schedule;
+import com.ddd.oi.schedule.domain.enumType.Mobility;
+import com.ddd.oi.schedule.domain.enumType.ScheduleTag;
+import java.time.LocalDate;
+import java.util.List;
+import lombok.Builder;
 
-@Getter
-public class CreateScheduleResponse {
-    private Long id;
+@Builder
+public record CreateScheduleResponse(
+        Long id,
+        String title,
+        LocalDate startDate,
+        LocalDate endDate,
+        Mobility mobility,
+        List<String> groups,
+        ScheduleTag scheduleTag
+) {
 
-    private CreateScheduleResponse(Long id) {
-        this.id = id;
-    }
-
-    public static CreateScheduleResponse of(Long id) {
-        return new CreateScheduleResponse(id);
+    public static CreateScheduleResponse of(Schedule schedule) {
+        return CreateScheduleResponse.builder()
+                .id(schedule.getId())
+                .title(schedule.getScheduleTitle())
+                .startDate(schedule.getStartDate())
+                .endDate(schedule.getEndDate())
+                .mobility(schedule.getMobility())
+                .groups(schedule.getGroups().stream().map(Enum::name).toList())
+                .scheduleTag(schedule.getScheduleTag())
+                .build();
     }
 }

@@ -41,7 +41,7 @@ public class ScheduleService {
                 Schedule newSchedule = request.toEntity(user);
                 scheduleRepository.save(newSchedule);
 
-                return CreateScheduleResponse.of(newSchedule.getId());
+                return CreateScheduleResponse.of(newSchedule);
         }
 
 
