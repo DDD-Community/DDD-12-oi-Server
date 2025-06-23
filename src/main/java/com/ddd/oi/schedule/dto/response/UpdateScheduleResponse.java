@@ -11,7 +11,7 @@ import lombok.Builder;
 
 @Builder
 public record UpdateScheduleResponse(
-        Long id,
+        Long scheduleId,
         String title,
         LocalDate startDate,
         LocalDate endDate,
@@ -20,7 +20,7 @@ public record UpdateScheduleResponse(
         ScheduleTag scheduleTag) {
     public static UpdateScheduleResponse of(Schedule schedule) {
         return UpdateScheduleResponse.builder()
-                .id(schedule.getId())
+                .scheduleId(schedule.getId())
                 .title(schedule.getScheduleTitle())
                 .startDate(schedule.getStartDate())
                 .endDate(schedule.getEndDate())
