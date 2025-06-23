@@ -9,7 +9,7 @@ import lombok.Builder;
 
 @Builder
 public record CreateScheduleResponse(
-        Long id,
+        Long scheduleId,
         String title,
         LocalDate startDate,
         LocalDate endDate,
@@ -20,7 +20,7 @@ public record CreateScheduleResponse(
 
     public static CreateScheduleResponse of(Schedule schedule) {
         return CreateScheduleResponse.builder()
-                .id(schedule.getId())
+                .scheduleId(schedule.getId())
                 .title(schedule.getScheduleTitle())
                 .startDate(schedule.getStartDate())
                 .endDate(schedule.getEndDate())
