@@ -26,7 +26,7 @@ public record CreateScheduleRequest(
 	@NotBlankNullable(message = "태그를 정해주세요.")
 	ScheduleTag scheduleTag,
 	@NotEmpty(message = "하나 이상의 일행을 정해주세요.")
-	List<GroupTag> groupList
+	List<GroupTag> groups
 ) {
 	public CreateScheduleRequest {
 		if (startDate != null && endDate != null) {
@@ -34,7 +34,7 @@ public record CreateScheduleRequest(
 				throw new OiException(ErrorCode.END_DATE_BEFORE_START_DATE);
 			}
 		}
-		if (groupList != null && groupList.size() != groupList.stream().distinct().count()) {
+		if (groups != null && groups.size() != groups.stream().distinct().count()) {
 			throw new OiException(ErrorCode.BAD_REQUEST);
 		}
 	}
@@ -48,7 +48,7 @@ public record CreateScheduleRequest(
 			.endDate(this.endDate)
 			.mobility(this.mobility)
 			.scheduleTag(this.scheduleTag)
-			.groups(this.groupList)
+			.groups(this.groups)
 			.build();
 	}
 }
