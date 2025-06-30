@@ -51,15 +51,15 @@ public class ScheduleControllerTest {
                 List.of(GroupTag.FRIEND)
         );
 
-        CreateScheduleResponse response = new CreateScheduleResponse(
-                1L,
-                "test_schedule",
-                LocalDate.of(2025, 6, 1),
-                LocalDate.of(2025, 6, 2),
-                Mobility.CAR,
-                List.of("FRIEND"),
-                ScheduleTag.BUSINESS
-        );
+        CreateScheduleResponse response = CreateScheduleResponse.builder()
+                .scheduleId(1L)
+                .title("test_schedule")
+                .startDate(LocalDate.of(2025, 6, 1))
+                .endDate(LocalDate.of(2025, 6, 2))
+                .mobility(Mobility.CAR)
+                .groups(List.of("FRIEND"))
+                .scheduleTag(ScheduleTag.BUSINESS)
+                .build();
 
         when(scheduleService.createSchedule(any(), any())).thenReturn(response);
 
@@ -87,15 +87,15 @@ public class ScheduleControllerTest {
                 List.of(GroupTag.FRIEND.name())
         );
 
-        UpdateScheduleResponse response = new UpdateScheduleResponse(
-                1L,
-                "test_schedule",
-                LocalDate.of(2025, 6, 1),
-                LocalDate.of(2025, 6, 2),
-                Mobility.CAR,
-                List.of("FRIEND"),
-                ScheduleTag.BUSINESS
-        );
+        UpdateScheduleResponse response = UpdateScheduleResponse.builder()
+                .scheduleId(1L)
+                .title("test_schedule")
+                .startDate(LocalDate.of(2025, 6, 1))
+                .endDate(LocalDate.of(2025, 6, 2))
+                .mobility(Mobility.CAR)
+                .groups(List.of("FRIEND"))
+                .scheduleTag(ScheduleTag.BUSINESS)
+                .build();
 
         when(scheduleService.updateSchedule(any(), any(), any())).thenReturn(response);
         // When & Then
