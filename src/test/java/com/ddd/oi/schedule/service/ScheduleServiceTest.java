@@ -14,7 +14,9 @@ import com.ddd.oi.schedule.domain.enumType.GroupTag;
 import com.ddd.oi.schedule.domain.enumType.Mobility;
 import com.ddd.oi.schedule.domain.enumType.ScheduleTag;
 import com.ddd.oi.schedule.dto.request.CreateScheduleRequest;
+import com.ddd.oi.schedule.dto.request.UpdateScheduleRequest;
 import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
+import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.repository.UserRepository;
@@ -126,5 +128,96 @@ public class ScheduleServiceTest {
         assertThrows(OiException.class, () ->
                 scheduleService.createSchedule(user.getId(), request));
     }
+    @Test
+    @DisplayName("유저는 스케줄 수정에 성공한다.")
+    void 스케줄_수정_성공() {
+        //Given
+        Schedule schedule = Schedule.builder()
+                .id(1L)
+                .scheduleTitle("test_schedule")
+                .startDate(LocalDate.of(2025,5,5))
+                .endDate(LocalDate.of(2025,5,10))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DAILY)
+                .groups(List.of(GroupTag.COUPLE))
+                .user(user)
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(scheduleRepository.findByUser_IdAndId(user.getId(), schedule.getId()))
+                .thenReturn(Optional.of(schedule));
+
+        UpdateScheduleRequest request = new UpdateScheduleRequest(
+                "updated_schedule",
+                LocalDate.of(2025, 5, 6),
+                LocalDate.of(2025, 5, 12),
+                Mobility.WALK,
+                ScheduleTag.BUSINESS,
+                List.of(GroupTag.FRIEND.name(), GroupTag.CHILDREN.name())
+        );
+        //When
+        UpdateScheduleResponse response = scheduleService.updateSchedule(user.getId(), schedule.getId(), request);
+
+        //Then
+        assertThat(response).isNotNull();
+        assertThat(response.scheduleId()).isEqualTo(schedule.getId());
+        assertThat(schedule.getScheduleTitle()).isEqualTo("updated_schedule");
+        assertThat(schedule.getStartDate()).isEqualTo(LocalDate.of(2025, 5, 6));
+        assertThat(schedule.getEndDate()).isEqualTo(LocalDate.of(2025, 5, 12));
+        assertThat(schedule.getMobility()).isEqualTo(Mobility.WALK);
+        assertThat(schedule.getScheduleTag()).isEqualTo(ScheduleTag.BUSINESS);
+        assertThat(schedule.getGroups()).isEqualTo(List.of(GroupTag.FRIEND,GroupTag.CHILDREN));
+    }
+    @Test
+    @DisplayName("유저가 없을시 스케줄 수정에 실패한다.")
+    void 유저_없을시_스케줄_수정_예외() {
+        //Given
+        Schedule schedule = Schedule.builder()
+                .id(1L)
+                .scheduleTitle("test_schedule")
+                .startDate(LocalDate.of(2025,5,5))
+                .endDate(LocalDate.of(2025,5,10))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DAILY)
+                .groups(List.of(GroupTag.COUPLE))
+                .user(user)
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+
+        UpdateScheduleRequest request = new UpdateScheduleRequest(
+                "updated_schedule",
+                LocalDate.of(2025, 5, 6),
+                LocalDate.of(2025, 5, 12),
+                Mobility.WALK,
+                ScheduleTag.BUSINESS,
+                List.of(GroupTag.FRIEND.name(), GroupTag.CHILDREN.name())
+        );
+        //When & Then
+        assertThrows(OiException.class, () ->
+                scheduleService.updateSchedule(user.getId(), schedule.getId(),request));
+    }
+    @Test
+    @DisplayName("스케줄이 없을 시 스케줄 수정에 실패한다.")
+    void 스케줄_없을시_수정실패() {
+        //Given
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(scheduleRepository.findByUser_IdAndId(user.getId(),1L))
+                .thenReturn(Optional.empty());
+
+        UpdateScheduleRequest request = new UpdateScheduleRequest(
+                "updated_schedule",
+                LocalDate.of(2025, 5, 6),
+                LocalDate.of(2025, 5, 12),
+                Mobility.WALK,
+                ScheduleTag.BUSINESS,
+                List.of(GroupTag.FRIEND.name(), GroupTag.CHILDREN.name())
+        );
+
+        //When & Then
+        assertThrows(OiException.class, () ->
+                scheduleService.updateSchedule(user.getId(),1L,request));
+    }
+
 }
 
