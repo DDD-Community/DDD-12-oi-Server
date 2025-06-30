@@ -1,4 +1,4 @@
-package com.ddd.oi.schedule;
+package com.ddd.oi.schedule.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,7 +16,6 @@ import com.ddd.oi.schedule.domain.enumType.ScheduleTag;
 import com.ddd.oi.schedule.dto.request.CreateScheduleRequest;
 import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
 import com.ddd.oi.schedule.repository.ScheduleRepository;
-import com.ddd.oi.schedule.service.ScheduleService;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -108,11 +107,24 @@ public class ScheduleServiceTest {
         assertThrows(OiException.class, () ->
                 scheduleService.createSchedule(user.getId(), request));
     }
-    @Test
-    @DisplayName("유저는 스케줄 수정에 성공한다.")
-    void 스케줄_수정_성공() {
-        //Given
 
+    @Test
+    @DisplayName("유저가 존재하지 않으면 예외가 발생한다.")
+    void 유저_존재하지_않음_예외() {
+        // Given
+        CreateScheduleRequest request = new CreateScheduleRequest(
+                "test_schedule",
+                LocalDate.of(2025, 5, 5),
+                LocalDate.of(2025, 5, 7),
+                Mobility.CAR,
+                ScheduleTag.BUSINESS,
+                List.of(GroupTag.COUPLE)
+        );
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(OiException.class, () ->
+                scheduleService.createSchedule(user.getId(), request));
     }
 }
 
