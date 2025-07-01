@@ -1,7 +1,7 @@
 package com.ddd.oi.schedule.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -16,10 +16,12 @@ import com.ddd.oi.schedule.domain.enumType.ScheduleTag;
 import com.ddd.oi.schedule.dto.request.CreateScheduleRequest;
 import com.ddd.oi.schedule.dto.request.UpdateScheduleRequest;
 import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
+import com.ddd.oi.schedule.dto.response.ScheduleListResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.repository.UserRepository;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -247,16 +249,6 @@ public class ScheduleServiceTest {
     @DisplayName("유저가 없을 시 스케줄 삭제에 실패한다.")
     void 유저_없을시_스케줄_삭제_실패() {
         //Given
-        Schedule schedule = Schedule.builder()
-                .id(1L)
-                .scheduleTitle("test_schedule")
-                .user(user)
-                .startDate(LocalDate.of(2025,5,5))
-                .endDate(LocalDate.of(2025,5,20))
-                .mobility(Mobility.CAR)
-                .scheduleTag(ScheduleTag.DAILY)
-                .groups(List.of(GroupTag.COUPLE,GroupTag.FRIEND))
-                .build();
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
         //When&Then
         assertThrows(OiException.class, () ->
@@ -284,5 +276,83 @@ public class ScheduleServiceTest {
         assertThrows(OiException.class, () ->
                 scheduleService.deleteSchedule(user.getId(),schedule.getId()));
     }
+    @Test
+    @DisplayName("한달 스케줄 조회에 성공한다.")
+    void 한달_스케줄조회_성공() {
+        //Given
+        int year = 2025;
+        int month = 5;
+
+        Schedule schedule1 = Schedule.builder()
+                .id(1L)
+                .scheduleTitle("test_schedule1")
+                .user(user)
+                .startDate(LocalDate.of(2025, 5, 5))
+                .endDate(LocalDate.of(2025, 5, 20))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DAILY)
+                .groups(List.of(GroupTag.COUPLE, GroupTag.FRIEND))
+                .build();
+
+        Schedule schedule2 = Schedule.builder()
+                .id(2L)
+                .scheduleTitle("test_schedule2")
+                .user(user)
+                .startDate(LocalDate.of(2025, 5, 3))
+                .endDate(LocalDate.of(2025, 5, 7))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DATE)
+                .groups(List.of(GroupTag.FRIEND, GroupTag.PET))
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(scheduleRepository.findSchedulesByUserIdAndMonth(
+                eq(user.getId()), eq(year), eq(month), eq(LocalDate.of(year, month, 1))
+                , eq(LocalDate.of(year, month, 1)
+                        .withDayOfMonth(LocalDate.of(year, month, 1).lengthOfMonth()))))
+                .thenReturn(List.of(schedule1, schedule2));
+        //When
+        List<ScheduleListResponse> result = scheduleService.showMonthScheduleList(user.getId(),
+                year, month);
+        //Then
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).title()).isEqualTo("test_schedule1");
+        assertThat(result.get(1).title()).isEqualTo("test_schedule2");
+
+        verify(userRepository).findById(user.getId());
+        verify(scheduleRepository).findSchedulesByUserIdAndMonth(
+                eq(user.getId()), eq(year), eq(month),
+                eq(LocalDate.of(year, month, 1)),
+                eq(LocalDate.of(year, month, 1)
+                        .withDayOfMonth(LocalDate.of(year, month, 1).lengthOfMonth()))
+        );
+    }
+    @Test
+    @DisplayName("유저 없을시 한달 스케줄 조회에 실패한다.")
+    void 유저_없음_한달_스케줄조회_실패() {
+        // Given
+        int year = 2025;
+        int month = 5;
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+
+        // When&Then
+        assertThrows(OiException.class, () ->
+                scheduleService.showMonthScheduleList(user.getId(), year, month));
+    }
+    @Test
+    @DisplayName("잘못된 월이 주어졌을 때 예외가 발생한다.")
+    void 잘못된_월_요청_예외() {
+        // Given
+        int year = 2025;
+        int month = 13;
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        // When & Then
+        assertThrows(DateTimeException.class, () ->
+                scheduleService.showMonthScheduleList(user.getId(), year, month));
+    }
+
 }
 
