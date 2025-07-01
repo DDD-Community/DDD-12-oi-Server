@@ -164,5 +164,43 @@ public class ScheduleControllerTest {
                 .andExpect(jsonPath("$.data[0].scheduleId").value(1L))
                 .andExpect(jsonPath("$.data[1].scheduleId").value(2L));
     }
+    @Test
+    @DisplayName("스케줄 특정날짜 조회에 성공한다.")
+    void 스케줄_특정날짜_조회성공() throws Exception {
+        // Given
+        LocalDate targetDay = LocalDate.of(2025,5,6);
+        ScheduleListResponse response1 = ScheduleListResponse.builder()
+                .scheduleId(1L)
+                .title("test_schedule1")
+                .startDate(LocalDate.of(2025, 5, 1))
+                .endDate(LocalDate.of(2025, 5, 5))
+                .scheduleTag(ScheduleTag.BUSINESS)
+                .mobility(Mobility.CAR)
+                .groups(List.of(GroupTag.COUPLE))
+                .build();
+
+        ScheduleListResponse response2 = ScheduleListResponse.builder()
+                .scheduleId(2L)
+                .title("test_schedule2")
+                .startDate(LocalDate.of(2025, 5, 4))
+                .endDate(LocalDate.of(2025, 5, 12))
+                .scheduleTag(ScheduleTag.DATE)
+                .mobility(Mobility.CAR)
+                .groups(List.of(GroupTag.CHILDREN,GroupTag.FRIEND))
+                .build();
+        when(scheduleService.showTargetDaySchedule(1L, targetDay))
+                .thenReturn(List.of(response1,response2));
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/schedules/{target-day}",targetDay)
+                        .header("user-no", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value(200))
+                .andExpect(jsonPath("$.message").value("해당 날짜의 일정들 조회 성공"))
+                .andExpect(jsonPath("$.data[0].scheduleId").value(1L))
+                .andExpect(jsonPath("$.data[1].scheduleId").value(2L));
+
+
+    }
 
 }

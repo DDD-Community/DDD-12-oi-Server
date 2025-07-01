@@ -353,6 +353,71 @@ public class ScheduleServiceTest {
         assertThrows(DateTimeException.class, () ->
                 scheduleService.showMonthScheduleList(user.getId(), year, month));
     }
+    @Test
+    @DisplayName("특정 날짜의 스케줄 조회에 성공한다.")
+    void 특정날짜_스케줄조회_성공() {
+        // Given
+        LocalDate targetDay = LocalDate.of(2025,5,6);
+
+        Schedule schedule1 = Schedule.builder()
+                .id(1L)
+                .scheduleTitle("test_schedule1")
+                .user(user)
+                .startDate(LocalDate.of(2025, 5, 5))
+                .endDate(LocalDate.of(2025, 5, 20))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DAILY)
+                .groups(List.of(GroupTag.COUPLE, GroupTag.FRIEND))
+                .build();
+
+        Schedule schedule2 = Schedule.builder()
+                .id(2L)
+                .scheduleTitle("test_schedule2")
+                .user(user)
+                .startDate(LocalDate.of(2025, 5, 3))
+                .endDate(LocalDate.of(2025, 5, 7))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DATE)
+                .groups(List.of(GroupTag.FRIEND, GroupTag.PET))
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(scheduleRepository.findSchedulesByUserIdAndTargetDay(user.getId(),targetDay))
+                .thenReturn(List.of(schedule1,schedule2));
+        // When
+        List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(user.getId(),targetDay);
+        // Then
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).title()).isEqualTo("test_schedule1");
+        assertThat(result.get(1).title()).isEqualTo("test_schedule2");
+
+        verify(userRepository).findById(user.getId());
+        verify(scheduleRepository).findSchedulesByUserIdAndTargetDay(user.getId(),targetDay);
+    }
+    @Test
+    @DisplayName("타겟날짜가 존재하지 않을 시 실패한다.")
+    void 타겟날짜_존재하지_않음_실패() {
+        // When & Then
+        assertThrows(DateTimeException.class, () -> {
+            // Given
+            LocalDate.of(2025, 12, 40);
+        });
+    }
+    @Test
+    @DisplayName("타겟날짜에 일정 없을 시 빈 리스트 반환한다.")
+    void 타겟날짜_일정없음() {
+        // Given
+        LocalDate targetDay = LocalDate.of(2025,5,5);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(scheduleRepository.findSchedulesByUserIdAndTargetDay(user.getId(),targetDay))
+                .thenReturn(List.of());
+
+        // When
+        List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(user.getId(),targetDay);
+
+        // Then
+        assertThat(result).isEmpty();
+    }
 
 }
 
