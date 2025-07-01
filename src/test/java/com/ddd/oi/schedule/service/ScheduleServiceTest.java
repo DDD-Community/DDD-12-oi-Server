@@ -218,6 +218,71 @@ public class ScheduleServiceTest {
         assertThrows(OiException.class, () ->
                 scheduleService.updateSchedule(user.getId(),1L,request));
     }
+    @Test
+    @DisplayName("스케줄 삭제에 성공한다.")
+    void 스케줄_삭제_성공() {
+         //Given
+        Schedule schedule = Schedule.builder()
+                .id(1L)
+                .scheduleTitle("test_schedule")
+                .user(user)
+                .startDate(LocalDate.of(2025,5,5))
+                .endDate(LocalDate.of(2025,5,20))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DAILY)
+                .groups(List.of(GroupTag.COUPLE,GroupTag.FRIEND))
+                .build();
 
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(scheduleRepository.findByUser_IdAndId(user.getId(), schedule.getId()))
+                .thenReturn(Optional.of(schedule));
+        //When
+        boolean result = scheduleService.deleteSchedule(user.getId(), schedule.getId());
+        //Then
+        verify(scheduleRepository).delete(schedule);
+        assertThat(result).isTrue();
+    }
+    @Test
+    @DisplayName("유저가 없을 시 스케줄 삭제에 실패한다.")
+    void 유저_없을시_스케줄_삭제_실패() {
+        //Given
+        Schedule schedule = Schedule.builder()
+                .id(1L)
+                .scheduleTitle("test_schedule")
+                .user(user)
+                .startDate(LocalDate.of(2025,5,5))
+                .endDate(LocalDate.of(2025,5,20))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DAILY)
+                .groups(List.of(GroupTag.COUPLE,GroupTag.FRIEND))
+                .build();
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+        //When&Then
+        assertThrows(OiException.class, () ->
+                scheduleService.deleteSchedule(user.getId(), 1L));
+    }
+    @Test
+    @DisplayName("스케줄 없을 시 스케줄 삭제에 실패한다.")
+    void 스케줄_없을시_스케줄_삭제_실패() {
+        //Given
+        Schedule schedule = Schedule.builder()
+                .id(1L)
+                .scheduleTitle("test_schedule")
+                .user(user)
+                .startDate(LocalDate.of(2025,5,5))
+                .endDate(LocalDate.of(2025,5,20))
+                .mobility(Mobility.CAR)
+                .scheduleTag(ScheduleTag.DAILY)
+                .groups(List.of(GroupTag.COUPLE,GroupTag.FRIEND))
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(scheduleRepository.findByUser_IdAndId(user.getId(),schedule.getId()))
+                .thenReturn(Optional.empty());
+        //When&Then
+        assertThrows(OiException.class, () ->
+                scheduleService.deleteSchedule(user.getId(),schedule.getId()));
+    }
 }
 

@@ -9,6 +9,7 @@ import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.service.ScheduleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -108,5 +110,18 @@ public class ScheduleControllerTest {
                 .andExpect(jsonPath("$.message").value("스케줄 수정 성공"))
                 .andExpect(jsonPath("$.data.scheduleId").value(1L));
 
+    }
+    @Test
+    @DisplayName("스케줄 삭제요청에 성공한다.")
+    void 스케줄_삭제요청_성공() throws Exception{
+        // Given
+        when(scheduleService.deleteSchedule(any(), any())).thenReturn(true);
+
+        // When & Then
+        mockMvc.perform(delete("/api/v1/schedules/{scheduleId}", 1L)
+                        .header("user-no", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value(200))
+                .andExpect(jsonPath("$.message").value("일정 삭제 성공"));
     }
 }
