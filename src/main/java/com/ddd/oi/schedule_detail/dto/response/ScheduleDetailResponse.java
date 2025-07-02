@@ -11,7 +11,10 @@ import lombok.Builder;
 @Builder
 public record ScheduleDetailResponse(
 	Long id,
-	@JsonFormat(pattern = "HH:mm") LocalTime startTime,
+	@JsonFormat(pattern = "HH:mm")
+	LocalTime startTime,
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	LocalDate targetDate,
 	String spotName,
 	Double latitude,

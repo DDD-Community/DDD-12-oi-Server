@@ -1,10 +1,13 @@
 package com.ddd.oi.schedule_detail.dto.response;
 
 import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public record ScheduleDetailGroupedResponse(
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	LocalDate targetDate,
 	List<ScheduleDetailResponse> details
 ) {

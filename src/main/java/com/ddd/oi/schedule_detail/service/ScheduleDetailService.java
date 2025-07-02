@@ -40,6 +40,7 @@ public class ScheduleDetailService {
 			.toList();
 	}
 
+
 	@Transactional
 	public void createDetail(Long scheduleId, CreateDetailRequest request) {
 		Schedule schedule = validateScheduleById(scheduleId);
