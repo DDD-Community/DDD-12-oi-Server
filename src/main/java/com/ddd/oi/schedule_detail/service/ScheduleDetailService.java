@@ -8,7 +8,6 @@ import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 import com.ddd.oi.schedule_detail.dto.request.CreateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.request.UpdateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailGroupedResponse;
-import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.repository.ScheduleDetailRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +27,7 @@ public class ScheduleDetailService {
 
 	@Transactional(readOnly = true)
 	public List<ScheduleDetailGroupedResponse> getGroupedDetails(Long scheduleId) {
-		validateScheduleById(scheduleId);
+		findExistingSchedule(scheduleId);
 
 		return scheduleDetailRepository.findByScheduleId(scheduleId)
 			.stream()
@@ -43,7 +41,7 @@ public class ScheduleDetailService {
 
 	@Transactional
 	public void createDetail(Long scheduleId, CreateDetailRequest request) {
-		Schedule schedule = validateScheduleById(scheduleId);
+		Schedule schedule = findExistingSchedule(scheduleId);
 
 		if (request.targetDate().isBefore(schedule.getStartDate()) || request.targetDate()
 			.isAfter(schedule.getEndDate())) {
@@ -55,8 +53,8 @@ public class ScheduleDetailService {
 
 	@Transactional
 	public void updateDetail(Long scheduleId, Long detailId, UpdateDetailRequest request) {
-		validateScheduleById(scheduleId);
-		ScheduleDetail detail = validateScheduleDetailByIdAndScheduleId(detailId, scheduleId);
+		findExistingSchedule(scheduleId);
+		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
 		detail.update(
 			request.startTime(),
@@ -68,18 +66,18 @@ public class ScheduleDetailService {
 
 	@Transactional
 	public void deleteDetail(Long scheduleId, Long detailId) {
-		validateScheduleById(scheduleId);
-		ScheduleDetail detail = validateScheduleDetailByIdAndScheduleId(detailId, scheduleId);
+		findExistingSchedule(scheduleId);
+		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
 		scheduleDetailRepository.delete(detail);
 	}
 
-	private Schedule validateScheduleById(Long scheduleId) {
+	private Schedule findExistingSchedule(Long scheduleId) {
 		return scheduleRepository.findById(scheduleId)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 	}
 
-	private ScheduleDetail validateScheduleDetailByIdAndScheduleId(Long detailId, Long scheduleId) {
+	private ScheduleDetail findExistingScheduleDetail(Long detailId, Long scheduleId) {
 		return scheduleDetailRepository.findByIdAndSchedule_Id(detailId, scheduleId)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 	}
