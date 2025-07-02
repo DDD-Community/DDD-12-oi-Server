@@ -7,6 +7,7 @@ import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 import com.ddd.oi.schedule_detail.dto.request.CreateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.request.UpdateDetailRequest;
+import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailGroupedResponse;
 import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.repository.ScheduleDetailRepository;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +28,15 @@ public class ScheduleDetailService {
 	private final ScheduleRepository scheduleRepository;
 
 	@Transactional(readOnly = true)
-	public List<ScheduleDetailResponse> getDetails(Long scheduleId, LocalDate targetDate) {
+	public List<ScheduleDetailGroupedResponse> getGroupedDetails(Long scheduleId) {
 		validateScheduleById(scheduleId);
 
-		return scheduleDetailRepository.findBySchedule_IdAndTargetDate(scheduleId, targetDate)
+		return scheduleDetailRepository.findByScheduleId(scheduleId)
 			.stream()
-			.map(ScheduleDetailResponse::from)
+			.collect(Collectors.groupingBy(ScheduleDetail::getTargetDate))
+			.entrySet()
+			.stream()
+			.map(entry -> ScheduleDetailGroupedResponse.from(entry.getKey(), entry.getValue()))
 			.toList();
 	}
 
@@ -39,7 +44,8 @@ public class ScheduleDetailService {
 	public void createDetail(Long scheduleId, CreateDetailRequest request) {
 		Schedule schedule = validateScheduleById(scheduleId);
 
-		if (request.targetDate().isBefore(schedule.getStartDate()) || request.targetDate().isAfter(schedule.getEndDate())) {
+		if (request.targetDate().isBefore(schedule.getStartDate()) || request.targetDate()
+			.isAfter(schedule.getEndDate())) {
 			throw new OiException(ErrorCode.INVALID_TARGET_DATE);
 		}
 		ScheduleDetail detail = request.toEntity();
