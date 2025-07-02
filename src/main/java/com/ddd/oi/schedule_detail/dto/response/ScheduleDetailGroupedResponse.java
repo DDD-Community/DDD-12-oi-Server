@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.Builder;
+
+@Builder
 public record ScheduleDetailGroupedResponse(
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	LocalDate targetDate,

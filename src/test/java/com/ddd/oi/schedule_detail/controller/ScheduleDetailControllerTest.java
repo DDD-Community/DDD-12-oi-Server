@@ -32,14 +32,52 @@ class ScheduleDetailControllerTest {
 	void 스케줄_세부일정_조회_성공() throws Exception {
 		// Given
 		when(scheduleDetailService.getGroupedDetails(1L)).thenReturn(List.of(
-			new ScheduleDetailGroupedResponse(LocalDate.of(2025, 7, 1), List.of(
-				new ScheduleDetailResponse(1L, LocalTime.of(10, 0), LocalDate.of(2025, 7, 1), "spot1", 10.0, 20.0, "memo1"),
-				new ScheduleDetailResponse(2L, LocalTime.of(11, 0), LocalDate.of(2025, 7, 1), "spot2", 15.0, 25.0, "memo2")
-			)),
-			new ScheduleDetailGroupedResponse(LocalDate.of(2025, 7, 2), List.of(
-				new ScheduleDetailResponse(3L, LocalTime.of(12, 0), LocalDate.of(2025, 7, 2), "spot3", 20.0, 30.0, "memo3"),
-				new ScheduleDetailResponse(4L, LocalTime.of(13, 0), LocalDate.of(2025, 7, 2), "spot4", 25.0, 35.0, "memo4")
-			))
+			ScheduleDetailGroupedResponse.builder()
+				.targetDate(LocalDate.of(2025, 7, 1))
+				.details(List.of(
+					ScheduleDetailResponse.builder()
+						.id(1L)
+						.startTime(LocalTime.of(10, 0))
+						.targetDate(LocalDate.of(2025, 7, 1))
+						.spotName("spot1")
+						.latitude(10.0)
+						.longitude(20.0)
+						.memo("memo1")
+						.build(),
+					ScheduleDetailResponse.builder()
+						.id(2L)
+						.startTime(LocalTime.of(11, 0))
+						.targetDate(LocalDate.of(2025, 7, 1))
+						.spotName("spot2")
+						.latitude(15.0)
+						.longitude(25.0)
+						.memo("memo2")
+						.build()
+				))
+				.build(),
+			ScheduleDetailGroupedResponse.builder()
+				.targetDate(LocalDate.of(2025, 7, 2))
+				.details(List.of(
+					ScheduleDetailResponse.builder()
+						.id(3L)
+						.startTime(LocalTime.of(12, 0))
+						.targetDate(LocalDate.of(2025, 7, 2))
+						.spotName("spot3")
+						.latitude(20.0)
+						.longitude(30.0)
+						.memo("memo3")
+						.build(),
+					ScheduleDetailResponse.builder()
+						.id(4L)
+						.startTime(LocalTime.of(13, 0))
+						.targetDate(LocalDate.of(2025, 7, 2))
+						.spotName("spot4")
+						.latitude(25.0)
+						.longitude(35.0)
+						.memo("memo4")
+						.build()
+				))
+				.build()
 		));
 
 		// When & Then
