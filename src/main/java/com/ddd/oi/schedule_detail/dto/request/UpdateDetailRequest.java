@@ -1,6 +1,9 @@
 package com.ddd.oi.schedule_detail.dto.request;
 
 import com.ddd.oi.common.annotation.NotBlankNullable;
+import com.ddd.oi.common.exception.OiException;
+import com.ddd.oi.common.response.ErrorCode;
+import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,4 +28,27 @@ public record UpdateDetailRequest(
 
 	@NotBlankNullable(message = "경도를 입력해주세요.")
 	Double longitude) {
+	public UpdateDetailRequest {
+		if (latitude < -90 || latitude > 90) {
+			throw new OiException(ErrorCode.INVALID_LATITUDE);
+		}
+		if (longitude < -180 || longitude > 180) {
+			throw new OiException(ErrorCode.INVALID_LONGITUDE);
+		}
+		if (targetDate != null) {
+			if (targetDate.isBefore(LocalDate.now())) {
+				throw new OiException(ErrorCode.INVALID_TARGET_DATE);
+			}
+		}
+	}
+	public ScheduleDetail toEntity(){
+		return ScheduleDetail.builder()
+			.startTime(startTime)
+			.targetDate(targetDate)
+			.memo(memo)
+			.spotName(spotName)
+			.latitude(latitude)
+			.longitude(longitude)
+			.build();
+	}
 }

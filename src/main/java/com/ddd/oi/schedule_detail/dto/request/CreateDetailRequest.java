@@ -7,6 +7,8 @@ import java.time.LocalTime;
 import com.ddd.oi.common.annotation.NotBlankNullable;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
+import com.ddd.oi.schedule.domain.Schedule;
+import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,5 +42,15 @@ public record CreateDetailRequest(
 				throw new OiException(ErrorCode.INVALID_TARGET_DATE);
 			}
 		}
+	}
+	public ScheduleDetail toEntity(){
+		return ScheduleDetail.builder()
+				.startTime(startTime)
+				.targetDate(targetDate)
+				.memo(memo)
+				.spotName(spotName)
+				.latitude(latitude)
+				.longitude(longitude)
+				.build();
 	}
 }
