@@ -7,7 +7,7 @@ import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 import com.ddd.oi.schedule_detail.dto.request.CreateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.request.UpdateDetailRequest;
-import com.ddd.oi.schedule_detail.dto.response.*;
+import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailGroupedResponse;
 import com.ddd.oi.schedule_detail.repository.ScheduleDetailRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,55 +26,59 @@ public class ScheduleDetailService {
 	private final ScheduleRepository scheduleRepository;
 
 	@Transactional(readOnly = true)
-	public List<ScheduleDetailResponse> getDetails(Long scheduleId, LocalDate targetDate) {
-		Schedule schedule = scheduleRepository.findById(scheduleId)
-				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+	public List<ScheduleDetailGroupedResponse> getGroupedDetails(Long scheduleId) {
+		findExistingSchedule(scheduleId);
 
-		return scheduleDetailRepository.findBySchedule_IdAndTargetDate(scheduleId, targetDate)
-				.stream()
-				.map(ScheduleDetailResponse::from)
-				.toList();
+		return scheduleDetailRepository.findByScheduleId(scheduleId)
+			.stream()
+			.collect(Collectors.groupingBy(ScheduleDetail::getTargetDate))
+			.entrySet()
+			.stream()
+			.map(entry -> ScheduleDetailGroupedResponse.from(entry.getKey(), entry.getValue()))
+			.toList();
 	}
+
 
 	@Transactional
 	public void createDetail(Long scheduleId, CreateDetailRequest request) {
-		Schedule schedule = scheduleRepository.findById(scheduleId)
-				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+		Schedule schedule = findExistingSchedule(scheduleId);
 
-		ScheduleDetail detail = ScheduleDetail.builder()
-				.schedule(schedule)
-				.startTime(request.startTime())
-				.targetDate(request.targetDate())
-				.memo(request.memo())
-				.spotName(request.spotName())
-				.latitude(request.latitude())
-				.longitude(request.longitude())
-				.build();
-
-		ScheduleDetail saved = scheduleDetailRepository.save(detail);
+		if (request.targetDate().isBefore(schedule.getStartDate()) || request.targetDate()
+			.isAfter(schedule.getEndDate())) {
+			throw new OiException(ErrorCode.INVALID_TARGET_DATE);
+		}
+		ScheduleDetail detail = request.toEntity();
+		scheduleDetailRepository.save(detail);
 	}
 
 	@Transactional
 	public void updateDetail(Long scheduleId, Long detailId, UpdateDetailRequest request) {
-		Schedule schedule = scheduleRepository.findById(scheduleId)
-				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
-
-		ScheduleDetail detail = scheduleDetailRepository.findByIdAndSchedule_Id(detailId, scheduleId)
-				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+		findExistingSchedule(scheduleId);
+		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
 		detail.update(
-				request.startTime(),
-				request.memo(),
-				request.spotName(),
-				request.latitude(),
-				request.longitude());
+			request.startTime(),
+			request.memo(),
+			request.spotName(),
+			request.latitude(),
+			request.longitude());
 	}
 
 	@Transactional
 	public void deleteDetail(Long scheduleId, Long detailId) {
-		ScheduleDetail detail = scheduleDetailRepository.findByIdAndSchedule_Id(detailId, scheduleId)
-				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+		findExistingSchedule(scheduleId);
+		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
 		scheduleDetailRepository.delete(detail);
+	}
+
+	private Schedule findExistingSchedule(Long scheduleId) {
+		return scheduleRepository.findById(scheduleId)
+			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+	}
+
+	private ScheduleDetail findExistingScheduleDetail(Long detailId, Long scheduleId) {
+		return scheduleDetailRepository.findByIdAndSchedule_Id(detailId, scheduleId)
+			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 	}
 }

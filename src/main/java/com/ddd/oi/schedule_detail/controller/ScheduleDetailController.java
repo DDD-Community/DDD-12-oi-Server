@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ddd.oi.common.response.CustomApiResponse;
 import com.ddd.oi.schedule_detail.dto.request.CreateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.request.UpdateDetailRequest;
+import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailGroupedResponse;
 import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.service.ScheduleDetailService;
 
@@ -35,12 +36,9 @@ public class ScheduleDetailController {
 
 	@GetMapping
 	@Operation(summary = "세부일정 목록 조회", description = "세부일정 목록 조회 API")
-	public CustomApiResponse<List<ScheduleDetailResponse>> getDetails(
-		@PathVariable Long scheduleId,
-		@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate targetDate) {
-
-		List<ScheduleDetailResponse> result = scheduleDetailService.getDetails(scheduleId, targetDate);
-		return CustomApiResponse.success(result,200,"세부 일정 목록 조회 성공");
+	public CustomApiResponse<List<ScheduleDetailGroupedResponse>> getDetails(@PathVariable Long scheduleId) {
+		List<ScheduleDetailGroupedResponse> result = scheduleDetailService.getGroupedDetails(scheduleId);
+		return CustomApiResponse.success(result, 200, "세부 일정 목록 조회 성공");
 	}
 
 	@PostMapping

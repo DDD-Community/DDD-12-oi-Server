@@ -1,6 +1,8 @@
 package com.ddd.oi.schedule_detail.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -12,7 +14,7 @@ import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 
 @Repository
 public interface ScheduleDetailRepository extends JpaRepository<ScheduleDetail, Long> {
-	List<ScheduleDetail> findBySchedule_IdAndTargetDate(Long scheduleId, LocalDate targetDate);
-
+	@Query("SELECT sd FROM ScheduleDetail sd WHERE sd.schedule.id = :scheduleId ORDER BY sd.targetDate, sd.startTime")
+	List<ScheduleDetail> findByScheduleId(@Param("scheduleId") Long scheduleId);
 	Optional<ScheduleDetail> findByIdAndSchedule_Id(Long scheduleDetailId, Long scheduleId);
 }
