@@ -41,14 +41,4 @@ public record UpdateDetailRequest(
 			}
 		}
 	}
-	public ScheduleDetail toEntity(){
-		return ScheduleDetail.builder()
-			.startTime(startTime)
-			.targetDate(targetDate)
-			.memo(memo)
-			.spotName(spotName)
-			.latitude(latitude)
-			.longitude(longitude)
-			.build();
-	}
 }
