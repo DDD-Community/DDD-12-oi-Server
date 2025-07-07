@@ -22,11 +22,8 @@ public class User extends BaseEntity {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "login_type", nullable = false)
-	private LoginType loginType;
-
-	@Column(name = "provider", nullable = false)
-	private String provider;
+	@Column(name = "provider_info", nullable = false)
+	private ProviderInfo providerInfo;
 
 	@Column(name = "is_dormant", nullable = false)
 	@Builder.Default
@@ -41,7 +38,16 @@ public class User extends BaseEntity {
 	@Column(name = "email")
 	private String email;
 
-	public enum LoginType {
-		KAKAO, GOOGLE, NAVER, APPLE
+	@Enumerated(EnumType.STRING)
+	private RoleType role;
+
+	public void updateNickname(String nickname) {
+		this.nickname = nickname;
 	}
+
+	public void updateProfileUrl(String profileUrl) {
+		this.profileUrl = profileUrl;
+	}
+
 }
+

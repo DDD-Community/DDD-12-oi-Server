@@ -17,25 +17,16 @@ public class SwaggerConfig {
 
 	@Bean
 	public OpenAPI openAPI() {
-		// 액세스 토큰 방식
-		SecurityScheme accessTokenAuth = new SecurityScheme()
+		SecurityScheme refreshToken = new SecurityScheme()
 			.type(SecurityScheme.Type.HTTP)
 			.scheme("bearer")
 			.bearerFormat("JWT")
 			.in(SecurityScheme.In.HEADER)
 			.name("Authorization");
 
-		// 리프레시 토큰 방식
-		SecurityScheme refreshTokenAuth = new SecurityScheme()
-			.type(SecurityScheme.Type.APIKEY)
-			.in(SecurityScheme.In.COOKIE)
-			.name("refreshToken");
-
 		SecurityRequirement securityRequirement = new SecurityRequirement()
-			.addList("accessTokenAuth")
-			.addList("refreshTokenAuth");
+			.addList("refreshToken");
 
-		// 서버 URL에 /api 추가
 		Server localServer = new Server();
 		Server devServer = new Server();
 		localServer.setUrl("http://localhost:8080");
@@ -44,8 +35,7 @@ public class SwaggerConfig {
 
 		return new OpenAPI()
 			.components(new Components()
-				.addSecuritySchemes("accessTokenAuth", accessTokenAuth)
-				.addSecuritySchemes("refreshTokenAuth", refreshTokenAuth))
+				.addSecuritySchemes("refreshToken",refreshToken))
 			.security(List.of(securityRequirement))
 			.info(new Info()
 				.title("오이(Oi) API 명세서")
