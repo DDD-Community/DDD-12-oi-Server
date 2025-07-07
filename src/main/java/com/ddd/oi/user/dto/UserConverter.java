@@ -3,12 +3,12 @@ package com.ddd.oi.user.dto;
 import com.ddd.oi.user.domain.User;
 
 public class UserConverter {
-    public static UserResponseDTO.JoinResultDTO toJoinResultDTO(User user,String accessToken,String refreshToken) {
-        return new UserResponseDTO.JoinResultDTO(
+    public static UserResponseDTO toJoinResultDTO(User user, String accessToken, String refreshToken) {
+        return new UserResponseDTO(
                 user.getId(),
                 user.getNickname(),
                 user.getEmail(),
-                user.getProfileUrl(),
+                user.getProfileImageUrl(),
                 user.getProviderInfo(),
                 user.getRole(),
                 accessToken,
@@ -16,4 +16,3 @@ public class UserConverter {
         );
     }
 }
-
