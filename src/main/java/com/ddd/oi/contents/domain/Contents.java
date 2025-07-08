@@ -1,6 +1,7 @@
 package com.ddd.oi.contents.domain;
 
 import com.ddd.oi.common.domain.BaseEntity;
+import com.ddd.oi.contents.domain.enumType.ContentsTag;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -46,8 +47,4 @@ public class Contents extends BaseEntity {
 
 	@Column(name = "short_description")
 	private String shortDescription;
-
-	public enum ContentsTag {
-		FOOD, TOURIST_ATTRACTION, ACCOMMODATION, ACTIVITY, SHOPPING, CULTURE
-	}
 }
