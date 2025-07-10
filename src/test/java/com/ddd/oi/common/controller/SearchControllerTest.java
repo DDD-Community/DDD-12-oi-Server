@@ -36,7 +36,8 @@ class SearchControllerTest {
         @DisplayName("장소 검색 성공")
         void 장소_검색_성공() throws Exception {
                 SearchResponse mockResponse = new SearchResponse();
-                mockResponse.setItems(List.of(new PlaceItem("카페", null, null, null, null, null, null, null, null)));
+                mockResponse.setItems(List
+                                .of(new PlaceItem("카페", null, null, null, null, null, null, null, null, null, null)));
                 mockResponse.setCategory("카페");
                 mockResponse.setHasMore(false);
                 mockResponse.setDisplay(1);
