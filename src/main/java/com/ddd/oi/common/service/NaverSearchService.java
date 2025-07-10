@@ -81,7 +81,7 @@ public class NaverSearchService {
                     }
                 }
             }
-            List<String> suggestions = suggestionSet.stream().limit(10).collect(Collectors.toList());
+            List<String> suggestions = suggestionSet.stream().limit(5).collect(Collectors.toList());
             return new AutoCompleteResponse(suggestions, category);
         } catch (Exception e) {
             log.error("Error getting autocomplete for query: {}", query, e);

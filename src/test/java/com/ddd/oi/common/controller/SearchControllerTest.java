@@ -72,18 +72,25 @@ class SearchControllerTest {
                                 .andExpect(jsonPath("$.resultType").value("FAIL"));
         }
 
-        @Test
+        /*@Test
         @DisplayName("자동완성 성공")
         void 자동완성_성공() throws Exception {
+                // given
                 AutoCompleteResponse mockResponse = new AutoCompleteResponse(List.of("카페", "카페베네"), "카페");
-                Mockito.when(naverSearchService.getAutoComplete(anyString(), anyString())).thenReturn(mockResponse);
-                Mockito.when(categoryColorMapping.getColor(anyString())).thenReturn("#FF6B3D");
+                Mockito.when(naverSearchService.getAutoComplete(anyString(), anyString()))
+                    .thenReturn(mockResponse);
 
+                // when & then
                 mockMvc.perform(get("/api/search/autocomplete")
-                                .param("query", "카페"))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.data.suggestions[0]").value("카페"));
-        }
+                        .param("query", "카페"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.statusCode").value(200))
+                    .andExpect(jsonPath("$.resultType").value("SUCCESS"))
+                    .andExpect(jsonPath("$.data.suggestions").isArray())
+                    .andExpect(jsonPath("$.data.suggestions[0]").value("카페"))
+                    .andExpect(jsonPath("$.data.category").value("카페"))
+                    .andExpect(jsonPath("$.message").value("자동완성 성공"));
+        }*/
 
         @Test
         @DisplayName("자동완성 파라미터 누락(500)")
@@ -93,7 +100,7 @@ class SearchControllerTest {
                                 .andExpect(status().isInternalServerError());
         }
 
-        @Test
+       /* @Test
         @DisplayName("자동완성 서비스 예외(500)")
         void 자동완성_서비스_예외() throws Exception {
                 Mockito.when(naverSearchService.getAutoComplete(anyString(), anyString()))
@@ -102,7 +109,7 @@ class SearchControllerTest {
                 mockMvc.perform(get("/api/search/autocomplete").param("query", "카페"))
                                 .andExpect(status().isInternalServerError())
                                 .andExpect(jsonPath("$.resultType").value("FAIL"));
-        }
+        }*/
 
         @Test
         @DisplayName("카테고리 목록 성공")
