@@ -78,6 +78,7 @@ class NaverSearchServiceTest {
                                 .of(new PlaceItem("카페", null, null, null, null, null, null, null, null, null, null)));
                 ResponseEntity<SearchResponse> entity = new ResponseEntity<>(mockRes, HttpStatus.OK);
                 Mockito.when(restTemplate.exchange(any(URI.class), eq(HttpMethod.GET), any(HttpEntity.class),
+
                                 eq(SearchResponse.class))).thenReturn(entity);
 
                 AutoCompleteResponse res = service.getAutoComplete("카페", null);
@@ -101,3 +102,4 @@ class NaverSearchServiceTest {
                                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INTERNAL_SERVER_ERROR);
         }
 }
+
