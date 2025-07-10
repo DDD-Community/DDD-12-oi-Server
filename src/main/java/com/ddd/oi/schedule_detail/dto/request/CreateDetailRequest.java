@@ -15,21 +15,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 public record CreateDetailRequest(
-	@NotBlankNullable(message = "시작 시간을 정해주세요.")
-	@JsonFormat(pattern = "HH:mm") LocalTime startTime,
+		@JsonFormat(pattern = "HH:mm") LocalTime startTime,
 
-	@NotBlankNullable(message = "날짜를 정해주세요.")
-	LocalDate targetDate,
-	String memo,
+		@NotBlankNullable(message = "날짜를 정해주세요.") LocalDate targetDate,
+		String memo,
 
-	@NotBlankNullable(message = "장소명을 입력해주세요.")
-	String spotName,
+		@NotBlankNullable(message = "장소명을 입력해주세요.") String spotName,
 
-	@NotBlankNullable(message = "위도를 입력해주세요.")
-	Double latitude,
+		@NotBlankNullable(message = "위도를 입력해주세요.") Double latitude,
 
-	@NotBlankNullable(message = "경도를 입력해주세요.")
-	Double longitude) {
+		@NotBlankNullable(message = "경도를 입력해주세요.") Double longitude) {
 	public CreateDetailRequest {
 		if (latitude < -90 || latitude > 90) {
 			throw new OiException(ErrorCode.INVALID_LATITUDE);
@@ -43,7 +38,8 @@ public record CreateDetailRequest(
 			}
 		}
 	}
-	public ScheduleDetail toEntity(){
+
+	public ScheduleDetail toEntity() {
 		return ScheduleDetail.builder()
 				.startTime(startTime)
 				.targetDate(targetDate)
