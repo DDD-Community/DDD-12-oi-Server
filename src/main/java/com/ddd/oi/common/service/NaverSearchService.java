@@ -2,6 +2,7 @@ package com.ddd.oi.common.service;
 
 import com.ddd.oi.common.config.CategoryMapping;
 import com.ddd.oi.common.config.NaverSearchConfig;
+import com.ddd.oi.common.config.CategoryColorMapping;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.schedule_detail.dto.*;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class NaverSearchService {
     private final NaverSearchConfig naverConfig;
     private final CategoryMapping categoryMapping;
+    private final CategoryColorMapping categoryColorMapping;
     private final RestTemplate restTemplate;
 
     public SearchResponse searchPlaces(SearchRequest request) {
@@ -33,12 +35,17 @@ public class NaverSearchService {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<SearchResponse> response = restTemplate.exchange(
-                uri, HttpMethod.GET, entity, SearchResponse.class);
+                    uri, HttpMethod.GET, entity, SearchResponse.class);
             SearchResponse searchResponse = response.getBody();
             if (searchResponse != null) {
+                for (PlaceItem item : searchResponse.getItems()) {
+                    String mainCategory = mapToMainCategory(item.getCategory());
+                    item.setMainCategory(mainCategory);
+                    item.setCategoryColor(categoryColorMapping.getColor(mainCategory));
+                }
                 searchResponse.setCategory(request.getCategory());
                 searchResponse.setHasMore(
-                    searchResponse.getStart() + searchResponse.getDisplay() < searchResponse.getTotal());
+                        searchResponse.getStart() + searchResponse.getDisplay() < searchResponse.getTotal());
             }
             return searchResponse != null ? searchResponse : new SearchResponse();
         } catch (Exception e) {
@@ -95,13 +102,13 @@ public class NaverSearchService {
 
     private URI buildSearchUri(String query, SearchRequest request) {
         return UriComponentsBuilder.fromHttpUrl(naverConfig.getBaseUrl())
-            .queryParam("query", query)
-            .queryParam("display", Math.min(request.getDisplay(), naverConfig.getMaxDisplay()))
-            .queryParam("start", request.getStart())
-            .queryParam("sort", request.getSort())
-            .build()
-            .encode()
-            .toUri();
+                .queryParam("query", query)
+                .queryParam("display", Math.min(request.getDisplay(), naverConfig.getMaxDisplay()))
+                .queryParam("start", request.getStart())
+                .queryParam("sort", request.getSort())
+                .build()
+                .encode()
+                .toUri();
     }
 
     private HttpHeaders createNaverHeaders() {
@@ -110,5 +117,18 @@ public class NaverSearchService {
         headers.set("X-Naver-Client-Secret", naverConfig.getClientSecret());
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
+    }
+
+    private String mapToMainCategory(String naverCategory) {
+        if (naverCategory == null)
+            return "기타";
+        for (String main : categoryMapping.getMappings().keySet()) {
+            for (String keyword : categoryMapping.getNaverCategories(main)) {
+                if (naverCategory.contains(keyword)) {
+                    return main;
+                }
+            }
+        }
+        return "기타";
     }
 }

@@ -1,6 +1,7 @@
 package com.ddd.oi.schedule_detail.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
 
@@ -8,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlaceItem {
     private String title;
     private String link;
@@ -18,6 +20,8 @@ public class PlaceItem {
     private String roadAddress;
     private String mapx;
     private String mapy;
+    private String mainCategory;
+    private String categoryColor;
 
     @JsonSetter("title")
     public void setTitle(String title) {

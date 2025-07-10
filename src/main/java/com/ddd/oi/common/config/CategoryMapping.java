@@ -28,4 +28,8 @@ public class CategoryMapping {
     public List<String> getNaverCategories(String userCategory) {
         return mappings.getOrDefault(userCategory, Arrays.asList("기타"));
     }
+
+    public Map<String, List<String>> getMappings() {
+        return mappings;
+    }
 }
