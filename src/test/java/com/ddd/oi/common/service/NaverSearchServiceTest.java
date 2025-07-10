@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +35,7 @@ class NaverSearchServiceTest {
                 mockRes.setItems(List
                                 .of(new PlaceItem("카페", null, null, null, null, null, null, null, null, null, null)));
                 ResponseEntity<SearchResponse> entity = new ResponseEntity<>(mockRes, HttpStatus.OK);
-                Mockito.when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
+                Mockito.when(restTemplate.exchange(any(URI.class), eq(HttpMethod.GET), any(HttpEntity.class),
                                 eq(SearchResponse.class))).thenReturn(entity);
 
                 // when
@@ -76,7 +77,7 @@ class NaverSearchServiceTest {
                 mockRes.setItems(List
                                 .of(new PlaceItem("카페", null, null, null, null, null, null, null, null, null, null)));
                 ResponseEntity<SearchResponse> entity = new ResponseEntity<>(mockRes, HttpStatus.OK);
-                Mockito.when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
+                Mockito.when(restTemplate.exchange(any(URI.class), eq(HttpMethod.GET), any(HttpEntity.class),
                                 eq(SearchResponse.class))).thenReturn(entity);
 
                 AutoCompleteResponse res = service.getAutoComplete("카페", null);
