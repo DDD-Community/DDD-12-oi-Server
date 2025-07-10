@@ -23,7 +23,11 @@ public enum ErrorCode {
     // 스케줄 상세 관련 세어
     INVALID_LATITUDE("유효하지 않은 위도입니다. -90에서 90 사이의 값을 입력해주세요.", HttpStatus.BAD_REQUEST),
     INVALID_LONGITUDE("유효하지 않은 경도입니다. -180에서 180 사이의 값을 입력해주세요.", HttpStatus.BAD_REQUEST),
-    INVALID_TARGET_DATE("시작 시간은 현재 시간 이후로 설정해야 합니다.", HttpStatus.BAD_REQUEST);
+    INVALID_TARGET_DATE("시작 시간은 현재 시간 이후로 설정해야 합니다.", HttpStatus.BAD_REQUEST),
+
+    // 이미지 관련 에러
+    IMAGE_NOT_FOUND("이미지를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    IMAGE_LOADING_ERROR("이미지 로딩에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
 
     private final String message;
