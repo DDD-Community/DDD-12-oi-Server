@@ -28,7 +28,7 @@ public class ScheduleDetail extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "start_time", nullable = true)
+	@Column(name = "start_time", nullable = false)
 	@Schema(type = "string", format = "time", pattern = "HH:mm", example = "14:30")
 	@JsonFormat(pattern = "HH:mm")
 	private LocalTime startTime;
