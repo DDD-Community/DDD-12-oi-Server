@@ -13,16 +13,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record UpdateDetailRequest(
-		@JsonFormat(pattern = "HH:mm") LocalTime startTime,
+	@Schema(type = "string", format = "time", pattern = "HH:mm", example = "14:30")
+	@JsonFormat(pattern = "HH:mm")
+	LocalTime startTime,
+	@NotBlankNullable(message = "날짜를 정해주세요.") LocalDate targetDate,
+	String memo,
 
-		@NotBlankNullable(message = "날짜를 정해주세요.") LocalDate targetDate,
-		String memo,
+	@NotBlankNullable(message = "장소명을 입력해주세요.") String spotName,
 
-		@NotBlankNullable(message = "장소명을 입력해주세요.") String spotName,
+	@NotBlankNullable(message = "위도를 입력해주세요.") Double latitude,
 
-		@NotBlankNullable(message = "위도를 입력해주세요.") Double latitude,
-
-		@NotBlankNullable(message = "경도를 입력해주세요.") Double longitude) {
+	@NotBlankNullable(message = "경도를 입력해주세요.") Double longitude) {
 	public UpdateDetailRequest {
 		if (latitude < -90 || latitude > 90) {
 			throw new OiException(ErrorCode.INVALID_LATITUDE);

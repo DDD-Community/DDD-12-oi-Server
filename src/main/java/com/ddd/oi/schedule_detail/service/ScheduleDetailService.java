@@ -43,25 +43,33 @@ public class ScheduleDetailService {
 	public void createDetail(Long scheduleId, CreateDetailRequest request) {
 		Schedule schedule = findExistingSchedule(scheduleId);
 
-		if (request.targetDate().isBefore(schedule.getStartDate()) || request.targetDate()
-			.isAfter(schedule.getEndDate())) {
+		if (request.targetDate().isBefore(schedule.getStartDate()) ||
+			request.targetDate().isAfter(schedule.getEndDate())) {
 			throw new OiException(ErrorCode.INVALID_TARGET_DATE);
 		}
-		ScheduleDetail detail = request.toEntity();
+
+		ScheduleDetail detail = request.toEntity(schedule);  // schedule 전달
 		scheduleDetailRepository.save(detail);
 	}
 
 	@Transactional
 	public void updateDetail(Long scheduleId, Long detailId, UpdateDetailRequest request) {
-		findExistingSchedule(scheduleId);
+		Schedule schedule = findExistingSchedule(scheduleId);
 		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
+		if (request.targetDate() != null &&
+			(request.targetDate().isBefore(schedule.getStartDate()) ||
+				request.targetDate().isAfter(schedule.getEndDate()))) {
+			throw new OiException(ErrorCode.INVALID_TARGET_DATE);
+		}
+
 		detail.update(
-			request.startTime(),
+			request.startTime() != null ? request.startTime() : detail.getStartTime(),
 			request.memo(),
 			request.spotName(),
 			request.latitude(),
-			request.longitude());
+			request.longitude()
+		);
 	}
 
 	@Transactional
