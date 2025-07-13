@@ -9,12 +9,11 @@ import java.time.LocalTime;
 import lombok.Builder;
 
 @Builder
-public record CreateScheduleDetailResponse(
-        Long schduleDetailId,
-        @Schema(type = "string", format = "time", pattern = "HH:mm", example = "11:30", description = "시작 시간 (HH:mm)")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+public record UpdateScheduleDetailResponse(
+        Long scheduleDetailId,
+        @Schema(type = "string", format = "time", pattern = "HH:mm", example = "14:30")
+        @JsonFormat(pattern = "HH:mm")
         LocalTime startTime,
-
         @NotBlankNullable(message = "날짜를 정해주세요.")
         LocalDate targetDate,
         String memo,
@@ -28,9 +27,9 @@ public record CreateScheduleDetailResponse(
         @NotBlankNullable(message = "경도를 입력해주세요.")
         Double longitude
 ) {
-    public static CreateScheduleDetailResponse of(ScheduleDetail scheduleDetail) {
-        return CreateScheduleDetailResponse.builder()
-                .schduleDetailId(scheduleDetail.getId())
+    public static UpdateScheduleDetailResponse of(ScheduleDetail scheduleDetail) {
+        return UpdateScheduleDetailResponse.builder()
+                .scheduleDetailId(scheduleDetail.getId())
                 .startTime(scheduleDetail.getStartTime())
                 .targetDate(scheduleDetail.getTargetDate())
                 .memo(scheduleDetail.getMemo())

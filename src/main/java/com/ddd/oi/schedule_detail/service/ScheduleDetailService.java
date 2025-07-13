@@ -9,6 +9,7 @@ import com.ddd.oi.schedule_detail.dto.request.CreateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.request.UpdateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.response.CreateScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailGroupedResponse;
+import com.ddd.oi.schedule_detail.dto.response.UpdateScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.repository.ScheduleDetailRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -55,7 +56,7 @@ public class ScheduleDetailService {
 	}
 
 	@Transactional
-	public void updateDetail(Long scheduleId, Long detailId, UpdateDetailRequest request) {
+	public UpdateScheduleDetailResponse updateDetail(Long scheduleId, Long detailId, UpdateDetailRequest request) {
 		Schedule schedule = findExistingSchedule(scheduleId);
 		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
@@ -72,6 +73,7 @@ public class ScheduleDetailService {
 			request.latitude(),
 			request.longitude()
 		);
+		return UpdateScheduleDetailResponse.of(detail);
 	}
 
 	@Transactional
