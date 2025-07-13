@@ -10,7 +10,7 @@ import lombok.Builder;
 
 @Builder
 public record CreateScheduleDetailResponse(
-        Long schduleDetailId,
+        Long scheduleDetailId,
         @Schema(type = "string", format = "time", pattern = "HH:mm", example = "11:30", description = "시작 시간 (HH:mm)")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
         LocalTime startTime,
@@ -31,7 +31,7 @@ public record CreateScheduleDetailResponse(
 ) {
     public static CreateScheduleDetailResponse of(ScheduleDetail scheduleDetail) {
         return CreateScheduleDetailResponse.builder()
-                .schduleDetailId(scheduleDetail.getId())
+                .scheduleDetailId(scheduleDetail.getId())
                 .startTime(scheduleDetail.getStartTime())
                 .targetDate(scheduleDetail.getTargetDate())
                 .memo(scheduleDetail.getMemo())
