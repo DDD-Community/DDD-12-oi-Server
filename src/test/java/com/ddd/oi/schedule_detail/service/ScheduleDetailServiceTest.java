@@ -52,7 +52,6 @@ class ScheduleDetailServiceTest {
     @DisplayName("세부 일정 생성에 성공한다")
     void 세부_일정_생성_성공() {
         CreateDetailRequest request = new CreateDetailRequest(
-            LocalTime.of(10, 0),
             LocalDate.of(2026, 5, 3),
             "메모입니다",
             "강남역",
@@ -68,7 +67,6 @@ class ScheduleDetailServiceTest {
     @DisplayName("세부 일정 생성 시 날짜가 범위를 벗어나면 예외가 발생한다")
     void 날짜_범위_벗어나면_예외_발생() {
         CreateDetailRequest request = new CreateDetailRequest(
-            LocalTime.of(10, 0),
             LocalDate.of(2026, 5, 20),
             "메모입니다",
             "강남역",
