@@ -3,8 +3,10 @@ package com.ddd.oi.schedule_detail.controller;
 import com.ddd.oi.common.response.CustomApiResponse;
 import com.ddd.oi.schedule_detail.dto.request.CreateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.request.UpdateDetailRequest;
+import com.ddd.oi.schedule_detail.dto.response.CreateScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailGroupedResponse;
 import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailResponse;
+import com.ddd.oi.schedule_detail.dto.response.UpdateScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.service.ScheduleDetailService;
 
 import org.junit.jupiter.api.DisplayName;
@@ -95,60 +97,78 @@ class ScheduleDetailControllerTest {
 	@DisplayName("세부일정 생성 요청 성공")
 	void 스케줄_상세_생성_요청_성공() throws Exception {
 		// Given
-		CreateDetailRequest request = new CreateDetailRequest(
-			LocalTime.now().plusHours(1), // Ensure startTime is after the current time
-			LocalDate.of(2026, 7, 1),
-			"memo",
-			"spot",
-			10.0,
-			20.0
-		);
-		doNothing().when(scheduleDetailService).createDetail(1L, request);
+		CreateScheduleDetailResponse mockResponse = CreateScheduleDetailResponse.builder()
+				.schduleDetailId(1L)
+				.targetDate(LocalDate.of(2026, 11, 1))
+				.memo("memo")
+				.spotName("spot")
+				.latitude(10.0)
+				.longitude(20.0)
+				.build();
+
+		when(scheduleDetailService.createDetail(eq(1L), any()))
+				.thenReturn(mockResponse);
 
 		// When & Then
 		mockMvc.perform(post("/api/v1/schedules/1/details")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content("""
-            {
-                "startTime": "10:00",
-                "targetDate": "2026-07-01",
-                "memo": "memo",
-                "spotName": "spot",
-                "latitude": 10.0,
-                "longitude": 20.0
-            }
-        """))
-			.andExpect(status().isOk());
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+				{
+				
+					"targetDate": "2026-11-01",
+					"memo": "memo",
+					"spotName": "spot",
+					"latitude": 10.0,
+					"longitude": 20.0
+				}
+			"""))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.schduleDetailId").value(1))
+				.andExpect(jsonPath("$.data.targetDate").value("2026-11-01"))
+				.andExpect(jsonPath("$.data.memo").value("memo"))
+				.andExpect(jsonPath("$.data.spotName").value("spot"))
+				.andExpect(jsonPath("$.data.latitude").value(10.0))
+				.andExpect(jsonPath("$.data.longitude").value(20.0));
 	}
 
 	@Test
 	@DisplayName("세부일정 수정 요청 성공")
 	void 스케줄_상세_수정_요청_성공() throws Exception {
 		// Given
-		UpdateDetailRequest request = new UpdateDetailRequest(
-			LocalTime.now().plusHours(1),
-			LocalDate.of(2026, 11, 1),
-			"memo",
-			"spot",
-			10.0,
-			20.0
-		);
-		doNothing().when(scheduleDetailService).updateDetail(1L, 1L, request);
+		UpdateScheduleDetailResponse mockResponse = UpdateScheduleDetailResponse.builder()
+				.scheduleDetailId(1L)
+				.startTime(LocalTime.of(14, 30))
+				.targetDate(LocalDate.of(2026, 11, 1))
+				.memo("수정 메모")
+				.spotName("수정 장소")
+				.latitude(35.123)
+				.longitude(128.456)
+				.build();
+
+		when(scheduleDetailService.updateDetail(eq(1L), eq(1L), any()))
+				.thenReturn(mockResponse);
 
 		// When & Then
 		mockMvc.perform(put("/api/v1/schedules/1/details/1")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content("""
-            {
-                "startTime": "10:00",
-                "targetDate": "2026-11-01",
-                "memo": "memo",
-                "spotName": "spot",
-                "latitude": 10.0,
-                "longitude": 20.0
-            }
-        """))
-			.andExpect(status().isOk());
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+				{
+					"startTime": "14:30",
+					"targetDate": "2026-11-01",
+					"memo": "수정 메모",
+					"spotName": "수정 장소",
+					"latitude": 35.123,
+					"longitude": 128.456
+				}
+			"""))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.scheduleDetailId").value(1))
+				.andExpect(jsonPath("$.data.startTime").value("14:30"))
+				.andExpect(jsonPath("$.data.targetDate").value("2026-11-01"))
+				.andExpect(jsonPath("$.data.memo").value("수정 메모"))
+				.andExpect(jsonPath("$.data.spotName").value("수정 장소"))
+				.andExpect(jsonPath("$.data.latitude").value(35.123))
+				.andExpect(jsonPath("$.data.longitude").value(128.456));
 	}
 
 	@Test
