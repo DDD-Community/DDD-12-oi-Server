@@ -98,7 +98,7 @@ class ScheduleDetailControllerTest {
 	void 스케줄_상세_생성_요청_성공() throws Exception {
 		// Given
 		CreateScheduleDetailResponse mockResponse = CreateScheduleDetailResponse.builder()
-				.schduleDetailId(1L)
+				.scheduleDetailId(1L)
 				.targetDate(LocalDate.of(2026, 11, 1))
 				.memo("memo")
 				.spotName("spot")
