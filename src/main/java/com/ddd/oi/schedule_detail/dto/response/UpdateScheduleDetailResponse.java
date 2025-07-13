@@ -15,6 +15,7 @@ public record UpdateScheduleDetailResponse(
         @JsonFormat(pattern = "HH:mm")
         LocalTime startTime,
         @NotBlankNullable(message = "날짜를 정해주세요.")
+        @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate targetDate,
         String memo,
 
