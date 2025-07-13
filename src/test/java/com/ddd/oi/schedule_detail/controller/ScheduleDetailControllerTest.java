@@ -123,7 +123,7 @@ class ScheduleDetailControllerTest {
 				}
 			"""))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.data.schduleDetailId").value(1))
+				.andExpect(jsonPath("$.data.scheduleDetailId").value(1))
 				.andExpect(jsonPath("$.data.targetDate").value("2026-11-01"))
 				.andExpect(jsonPath("$.data.memo").value("memo"))
 				.andExpect(jsonPath("$.data.spotName").value("spot"))
