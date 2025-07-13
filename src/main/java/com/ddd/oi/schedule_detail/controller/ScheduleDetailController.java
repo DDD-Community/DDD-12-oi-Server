@@ -36,7 +36,8 @@ public class ScheduleDetailController {
 
 	@GetMapping
 	@Operation(summary = "세부일정 목록 조회", description = "세부일정 목록 조회 API")
-	public CustomApiResponse<List<ScheduleDetailGroupedResponse>> getDetails(@PathVariable Long scheduleId) {
+	public CustomApiResponse<List<ScheduleDetailGroupedResponse>> getDetails(
+			@PathVariable("scheduleId") Long scheduleId) {
 		List<ScheduleDetailGroupedResponse> result = scheduleDetailService.getGroupedDetails(scheduleId);
 		return CustomApiResponse.success(result, 200, "세부 일정 목록 조회 성공");
 	}
@@ -44,7 +45,7 @@ public class ScheduleDetailController {
 	@PostMapping
 	@Operation(summary = "세부일정 생성", description = "세부일정 생성 API")
 	public CustomApiResponse<Void> createDetail(
-		@PathVariable Long scheduleId,
+		@PathVariable("scheduleId") Long scheduleId,
 		@RequestBody CreateDetailRequest request) {
 
 		scheduleDetailService.createDetail(scheduleId, request);
@@ -54,8 +55,8 @@ public class ScheduleDetailController {
 	@PutMapping("/{detailId}")
 	@Operation(summary = "세부일정 수정", description = "세부일정 수정 API")
 	public CustomApiResponse<Void> updateDetail(
-		@PathVariable Long scheduleId,
-		@PathVariable Long detailId,
+		@PathVariable("scheduleId") Long scheduleId,
+		@PathVariable("detailId") Long detailId,
 		@RequestBody UpdateDetailRequest request) {
 		scheduleDetailService.updateDetail(scheduleId, detailId, request);
 		return CustomApiResponse.success(null,200,"세부 일정 수정 성공");
@@ -64,8 +65,8 @@ public class ScheduleDetailController {
 	@DeleteMapping("/{detailId}")
 	@Operation(summary = "세부일정 삭제", description = "세부일정 삭제 API")
 	public CustomApiResponse<Void> deleteDetail(
-		@PathVariable Long scheduleId,
-		@PathVariable Long detailId) {
+		@PathVariable("scheduleId") Long scheduleId,
+		@PathVariable("detailId") Long detailId) {
 		scheduleDetailService.deleteDetail(scheduleId, detailId);
 		return CustomApiResponse.success(null,200,"세부 일정 삭제 성공");
 	}

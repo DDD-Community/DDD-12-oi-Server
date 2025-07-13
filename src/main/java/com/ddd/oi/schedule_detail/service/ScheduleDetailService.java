@@ -7,6 +7,7 @@ import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 import com.ddd.oi.schedule_detail.dto.request.CreateDetailRequest;
 import com.ddd.oi.schedule_detail.dto.request.UpdateDetailRequest;
+import com.ddd.oi.schedule_detail.dto.response.CreateScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.dto.response.ScheduleDetailGroupedResponse;
 import com.ddd.oi.schedule_detail.repository.ScheduleDetailRepository;
 
@@ -40,7 +41,7 @@ public class ScheduleDetailService {
 
 
 	@Transactional
-	public void createDetail(Long scheduleId, CreateDetailRequest request) {
+	public CreateScheduleDetailResponse createDetail(Long scheduleId, CreateDetailRequest request) {
 		Schedule schedule = findExistingSchedule(scheduleId);
 
 		if (request.targetDate().isBefore(schedule.getStartDate()) ||
@@ -50,6 +51,7 @@ public class ScheduleDetailService {
 
 		ScheduleDetail detail = request.toEntity(schedule);  // schedule 전달
 		scheduleDetailRepository.save(detail);
+		return CreateScheduleDetailResponse.of(detail);
 	}
 
 	@Transactional
