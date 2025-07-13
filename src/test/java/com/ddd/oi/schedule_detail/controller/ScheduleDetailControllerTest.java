@@ -139,8 +139,8 @@ class ScheduleDetailControllerTest {
 				.scheduleDetailId(1L)
 				.startTime(LocalTime.of(14, 30))
 				.targetDate(LocalDate.of(2026, 11, 1))
-				.memo("업데이트된 메모")
-				.spotName("업데이트된 장소")
+				.memo("수정 메모")
+				.spotName("수정 장소")
 				.latitude(35.123)
 				.longitude(128.456)
 				.build();
