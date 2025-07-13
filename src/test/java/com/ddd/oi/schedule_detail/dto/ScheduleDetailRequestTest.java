@@ -20,13 +20,13 @@ class ScheduleDetailRequestTest {
 	@DisplayName("CreateDetailRequest - 위도가 범위를 벗어나면 예외 발생")
 	void 위도값_범위_초과시_예외발생() {
 		OiException ex = assertThrows(OiException.class, () ->
-			new CreateDetailRequest(
-				LocalDate.of(2026, 5, 3),
-				"메모",
-				"장소",
-				100.0,
-				127.0
-			)
+				new CreateDetailRequest(
+						LocalDate.of(2026, 5, 3),
+						"메모",
+						"장소",
+						100.0,
+						127.0
+				)
 		);
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_LATITUDE);
 	}
@@ -35,13 +35,13 @@ class ScheduleDetailRequestTest {
 	@DisplayName("CreateDetailRequest - 경도가 범위를 벗어나면 예외 발생")
 	void 경도값_범위_초과시_예외발생() {
 		OiException ex = assertThrows(OiException.class, () ->
-			new CreateDetailRequest(
-				LocalDate.of(2026, 5, 3),
-				"메모",
-				"장소",
-				37.5,
-				200.0
-			)
+				new CreateDetailRequest(
+						LocalDate.of(2026, 5, 3),
+						"메모",
+						"장소",
+						37.5,
+						200.0
+				)
 		);
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_LONGITUDE);
 	}
@@ -50,13 +50,13 @@ class ScheduleDetailRequestTest {
 	void 현재보다_과거인_경우_예외_발생() {
 
 		OiException ex = assertThrows(OiException.class, () ->
-			new CreateDetailRequest(
-				LocalDate.of(2024, 5, 3),
-				"메모",
-				"장소",
-				37.5,
-				127.0
-			)
+				new CreateDetailRequest(
+						LocalDate.of(2024, 5, 3),
+						"메모",
+						"장소",
+						37.5,
+						127.0
+				)
 		);
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_TARGET_DATE);
 	}
@@ -65,14 +65,14 @@ class ScheduleDetailRequestTest {
 	@DisplayName("UpdateDetailRequest - 위도가 범위를 벗어나면 예외 발생")
 	void 위도값_초과시_예외() {
 		OiException ex = assertThrows(OiException.class, () ->
-			new UpdateDetailRequest(
-				LocalTime.NOON,
-				LocalDate.of(2026, 5, 5),
-				"메모",
-				"장소",
-				-100.0,
-				126.0
-			)
+				new UpdateDetailRequest(
+						LocalTime.NOON,
+						LocalDate.of(2026, 5, 5),
+						"메모",
+						"장소",
+						-100.0,
+						126.0
+				)
 		);
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_LATITUDE);
 	}
@@ -81,14 +81,14 @@ class ScheduleDetailRequestTest {
 	@DisplayName("UpdateDetailRequest - 경도가 범위를 벗어나면 예외 발생")
 	void 경도_예외() {
 		OiException ex = assertThrows(OiException.class, () ->
-			new UpdateDetailRequest(
-				LocalTime.NOON,
-				LocalDate.of(2026, 5, 5),
-				"메모",
-				"장소",
-				36.0,
-				-200.0
-			)
+				new UpdateDetailRequest(
+						LocalTime.NOON,
+						LocalDate.of(2026, 5, 5),
+						"메모",
+						"장소",
+						36.0,
+						-200.0
+				)
 		);
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_LONGITUDE);
 	}

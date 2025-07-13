@@ -11,18 +11,18 @@ import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 
 public record CreateDetailRequest(
 
-	@NotBlankNullable(message = "날짜를 정해주세요.")
-	LocalDate targetDate,
-	String memo,
+		@NotBlankNullable(message = "날짜를 정해주세요.")
+		LocalDate targetDate,
+		String memo,
 
-	@NotBlankNullable(message = "장소명을 입력해주세요.")
-	String spotName,
+		@NotBlankNullable(message = "장소명을 입력해주세요.")
+		String spotName,
 
-	@NotBlankNullable(message = "위도를 입력해주세요.")
-	Double latitude,
+		@NotBlankNullable(message = "위도를 입력해주세요.")
+		Double latitude,
 
-	@NotBlankNullable(message = "경도를 입력해주세요.")
-	Double longitude
+		@NotBlankNullable(message = "경도를 입력해주세요.")
+		Double longitude
 ) {
 	public CreateDetailRequest {
 		if (latitude < -90 || latitude > 90) {
@@ -40,13 +40,13 @@ public record CreateDetailRequest(
 
 	public ScheduleDetail toEntity(Schedule schedule) {
 		return ScheduleDetail.builder()
-			.startTime(null)
-			.targetDate(targetDate)
-			.memo(memo)
-			.spotName(spotName)
-			.latitude(latitude)
-			.longitude(longitude)
-			.schedule(schedule)
-			.build();
+				.startTime(null)
+				.targetDate(targetDate)
+				.memo(memo)
+				.spotName(spotName)
+				.latitude(latitude)
+				.longitude(longitude)
+				.schedule(schedule)
+				.build();
 	}
 }

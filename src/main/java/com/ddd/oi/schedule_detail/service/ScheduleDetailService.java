@@ -32,12 +32,12 @@ public class ScheduleDetailService {
 		findExistingSchedule(scheduleId);
 
 		return scheduleDetailRepository.findByScheduleId(scheduleId)
-			.stream()
-			.collect(Collectors.groupingBy(ScheduleDetail::getTargetDate))
-			.entrySet()
-			.stream()
-			.map(entry -> ScheduleDetailGroupedResponse.from(entry.getKey(), entry.getValue()))
-			.toList();
+				.stream()
+				.collect(Collectors.groupingBy(ScheduleDetail::getTargetDate))
+				.entrySet()
+				.stream()
+				.map(entry -> ScheduleDetailGroupedResponse.from(entry.getKey(), entry.getValue()))
+				.toList();
 	}
 
 
@@ -46,7 +46,7 @@ public class ScheduleDetailService {
 		Schedule schedule = findExistingSchedule(scheduleId);
 
 		if (request.targetDate().isBefore(schedule.getStartDate()) ||
-			request.targetDate().isAfter(schedule.getEndDate())) {
+				request.targetDate().isAfter(schedule.getEndDate())) {
 			throw new OiException(ErrorCode.INVALID_TARGET_DATE);
 		}
 
@@ -61,17 +61,17 @@ public class ScheduleDetailService {
 		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
 		if (request.targetDate() != null &&
-			(request.targetDate().isBefore(schedule.getStartDate()) ||
-				request.targetDate().isAfter(schedule.getEndDate()))) {
+				(request.targetDate().isBefore(schedule.getStartDate()) ||
+						request.targetDate().isAfter(schedule.getEndDate()))) {
 			throw new OiException(ErrorCode.INVALID_TARGET_DATE);
 		}
 
 		detail.update(
-			request.startTime() != null ? request.startTime() : detail.getStartTime(),
-			request.memo(),
-			request.spotName(),
-			request.latitude(),
-			request.longitude()
+				request.startTime() != null ? request.startTime() : detail.getStartTime(),
+				request.memo(),
+				request.spotName(),
+				request.latitude(),
+				request.longitude()
 		);
 		return UpdateScheduleDetailResponse.of(detail);
 	}
@@ -86,11 +86,11 @@ public class ScheduleDetailService {
 
 	private Schedule findExistingSchedule(Long scheduleId) {
 		return scheduleRepository.findById(scheduleId)
-			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 	}
 
 	private ScheduleDetail findExistingScheduleDetail(Long detailId, Long scheduleId) {
 		return scheduleDetailRepository.findByIdAndSchedule_Id(detailId, scheduleId)
-			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+				.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 	}
 }
