@@ -32,8 +32,8 @@ public class User extends BaseEntity {
 	@Column(name = "nickname")
 	private String nickname;
 
-	@Column(name = "profile_url")
-	private String profileUrl;
+	@Column(name = "profile_image_url")
+	private String profileImageUrl;
 
 	@Column(name = "email")
 	private String email;
@@ -45,8 +45,8 @@ public class User extends BaseEntity {
 		this.nickname = nickname;
 	}
 
-	public void updateProfileUrl(String profileUrl) {
-		this.profileUrl = profileUrl;
+	public void updateProfileUrl(String profileImageUrl) {
+		this.profileImageUrl = profileImageUrl;
 	}
 
 }

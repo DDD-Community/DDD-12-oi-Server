@@ -13,7 +13,6 @@ import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +22,6 @@ public class AuthService {
     private final KakaoUtil kakaoUtil;
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
     private final RedisUtil redisUtil;
 
     private final Long ACCESS_TOKEN_VALIDITY = 1000L * 60 * 60;
@@ -69,9 +67,8 @@ public class AuthService {
                 AuthConverter.toUser(
                         profile.getKakao_account().getEmail(),
                         profile.getKakao_account().getProfile().getNickname(),
-                        profile.getProperties().getProfile_image(),
-                        ProviderInfo.KAKAO,
-                        passwordEncoder
+                        profile.getKakao_account().getProfile().getProfileImageUrl(),
+                        ProviderInfo.KAKAO //TODO 카카오 이외에 다른 소셜로그인 시 변경
                 )
         );
     }
