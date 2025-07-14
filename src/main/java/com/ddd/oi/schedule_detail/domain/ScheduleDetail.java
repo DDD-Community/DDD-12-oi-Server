@@ -19,9 +19,9 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "schedule_detail")
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@Builder
 public class ScheduleDetail extends BaseEntity {
 
 	@Id

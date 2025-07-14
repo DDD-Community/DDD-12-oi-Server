@@ -2,6 +2,8 @@ package com.ddd.oi.schedule_detail.service;
 
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
+import com.ddd.oi.common.config.CategoryMapping;
+import com.ddd.oi.common.config.CategoryColorMapping;
 import com.ddd.oi.schedule.domain.Schedule;
 import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
@@ -26,6 +28,10 @@ public class ScheduleDetailService {
 
 	private final ScheduleDetailRepository scheduleDetailRepository;
 	private final ScheduleRepository scheduleRepository;
+	private final CategoryMapping categoryMapping;
+	private final CategoryColorMapping categoryColorMapping;
+
+	private static final int MAX_CREATE_COUNT = 5;
 
 	@Transactional(readOnly = true)
 	public List<ScheduleDetailGroupedResponse> getGroupedDetails(Long scheduleId) {
@@ -40,19 +46,20 @@ public class ScheduleDetailService {
 				.toList();
 	}
 
-
 	@Transactional
-	public CreateScheduleDetailResponse createDetail(Long scheduleId, CreateDetailRequest request) {
-		Schedule schedule = findExistingSchedule(scheduleId);
-
-		if (request.targetDate().isBefore(schedule.getStartDate()) ||
-				request.targetDate().isAfter(schedule.getEndDate())) {
-			throw new OiException(ErrorCode.INVALID_TARGET_DATE);
+	public List<CreateScheduleDetailResponse> createDetails(Long scheduleId, List<CreateDetailRequest> requests) {
+		if (requests.size() > MAX_CREATE_COUNT) {
+			throw new OiException(ErrorCode.SCHEDULE_DETAIL_CREATE_LIMIT_EXCEEDED);
 		}
-
-		ScheduleDetail detail = request.toEntity(schedule);  // schedule 전달
-		scheduleDetailRepository.save(detail);
-		return CreateScheduleDetailResponse.of(detail);
+		Schedule schedule = findExistingSchedule(scheduleId);
+		List<CreateScheduleDetailResponse> responses = new java.util.ArrayList<>();
+		for (CreateDetailRequest request : requests) {
+			String mainCategory = categoryMapping.mapToMainCategory(request.category());
+			ScheduleDetail detail = request.toEntity(schedule, mainCategory);
+			scheduleDetailRepository.save(detail);
+			responses.add(CreateScheduleDetailResponse.of(detail));
+		}
+		return responses;
 	}
 
 	@Transactional
@@ -71,8 +78,7 @@ public class ScheduleDetailService {
 				request.memo(),
 				request.spotName(),
 				request.latitude(),
-				request.longitude()
-		);
+				request.longitude());
 		return UpdateScheduleDetailResponse.of(detail);
 	}
 

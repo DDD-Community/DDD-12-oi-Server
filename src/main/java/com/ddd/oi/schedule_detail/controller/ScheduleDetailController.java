@@ -23,7 +23,6 @@ import com.ddd.oi.schedule_detail.service.ScheduleDetailService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
 @RequestMapping("/api/v1/schedules/{scheduleId}/details")
 @RequiredArgsConstructor
@@ -42,12 +41,11 @@ public class ScheduleDetailController {
 
 	@PostMapping
 	@Operation(summary = "세부일정 생성", description = "세부일정 생성 API")
-	public CustomApiResponse<CreateScheduleDetailResponse> createDetail(
+	public CustomApiResponse<List<CreateScheduleDetailResponse>> createDetails(
 			@PathVariable("scheduleId") Long scheduleId,
-			@RequestBody CreateDetailRequest request) {
-
-		CreateScheduleDetailResponse result = scheduleDetailService.createDetail(scheduleId, request);
-		return CustomApiResponse.success(result,200,"세부 일정 생성 성공");
+			@RequestBody List<CreateDetailRequest> requests) {
+		List<CreateScheduleDetailResponse> result = scheduleDetailService.createDetails(scheduleId, requests);
+		return CustomApiResponse.success(result, 200, "세부 일정 생성 성공");
 	}
 
 	@PutMapping("/{detailId}")
@@ -57,7 +55,7 @@ public class ScheduleDetailController {
 			@PathVariable("detailId") Long detailId,
 			@RequestBody UpdateDetailRequest request) {
 		UpdateScheduleDetailResponse result = scheduleDetailService.updateDetail(scheduleId, detailId, request);
-		return CustomApiResponse.success(result,200,"세부 일정 수정 성공");
+		return CustomApiResponse.success(result, 200, "세부 일정 수정 성공");
 	}
 
 	@DeleteMapping("/{detailId}")
@@ -66,7 +64,6 @@ public class ScheduleDetailController {
 			@PathVariable("scheduleId") Long scheduleId,
 			@PathVariable("detailId") Long detailId) {
 		scheduleDetailService.deleteDetail(scheduleId, detailId);
-		return CustomApiResponse.success(null,200,"세부 일정 삭제 성공");
+		return CustomApiResponse.success(null, 200, "세부 일정 삭제 성공");
 	}
 }
-
