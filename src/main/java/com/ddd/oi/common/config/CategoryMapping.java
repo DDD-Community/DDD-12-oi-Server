@@ -12,6 +12,7 @@ import java.util.*;
 @Data
 public class CategoryMapping {
     private Map<String, List<String>> mappings = new HashMap<>();
+    private final Map<String, String> reverseMap = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -23,6 +24,12 @@ public class CategoryMapping {
             mappings.put("편의시설", Arrays.asList("편의점", "마트", "병원", "약국", "주유소", "은행", "ATM"));
             mappings.put("기타", Arrays.asList("기타"));
         }
+        // 역방향 매핑 생성
+        for (Map.Entry<String, List<String>> entry : mappings.entrySet()) {
+            for (String sub : entry.getValue()) {
+                reverseMap.put(sub, entry.getKey());
+            }
+        }
     }
 
     public List<String> getNaverCategories(String userCategory) {
@@ -31,5 +38,20 @@ public class CategoryMapping {
 
     public Map<String, List<String>> getMappings() {
         return mappings;
+    }
+
+    public String mapToMainCategory(String rawCategories) {
+        if (rawCategories == null || rawCategories.isBlank())
+            return "기타";
+        for (String cat : rawCategories.split(",")) {
+            String[] subCats = cat.split(">");
+            for (int i = subCats.length - 1; i >= 0; i--) {
+                String trimmed = subCats[i].trim();
+                String main = reverseMap.get(trimmed);
+                if (main != null)
+                    return main;
+            }
+        }
+        return "기타";
     }
 }
