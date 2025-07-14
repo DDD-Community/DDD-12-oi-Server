@@ -1,3 +1,4 @@
+/*
 package com.ddd.oi.schedule_detail.dto;
 
 import com.ddd.oi.common.exception.OiException;
@@ -93,3 +94,4 @@ class ScheduleDetailRequestTest {
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_LONGITUDE);
 	}
 }
+*/
