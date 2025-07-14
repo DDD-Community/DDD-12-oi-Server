@@ -1,6 +1,10 @@
 package com.ddd.oi.contents.domain;
 
 import com.ddd.oi.common.domain.BaseEntity;
+import com.ddd.oi.contents.domain.enumType.ContentsTag;
+import com.ddd.oi.contents_image.domain.ContentsImage;
+import com.ddd.oi.contents_spot.domain.ContentsSpot;
+import com.ddd.oi.contents.dto.ContentsUpdateRequest;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,6 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "contents")
@@ -47,7 +54,22 @@ public class Contents extends BaseEntity {
 	@Column(name = "short_description")
 	private String shortDescription;
 
-	public enum ContentsTag {
-		FOOD, TOURIST_ATTRACTION, ACCOMMODATION, ACTIVITY, SHOPPING, CULTURE
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<ContentsImage> images = new ArrayList<>();
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
+	private List<ContentsSpot> spots = new ArrayList<>();
+
+	public void update(ContentsUpdateRequest request) {
+		this.title = request.title();
+		this.displayDescription = request.displayDescription();
+		this.cost = request.cost();
+		this.recommendedSchedule = request.recommendedSchedule();
+		this.duration = request.duration();
+		this.contentsTag = request.contentsTag();
+		this.shortTitle = request.shortTitle();
+		this.shortDescription = request.shortDescription();
 	}
 }

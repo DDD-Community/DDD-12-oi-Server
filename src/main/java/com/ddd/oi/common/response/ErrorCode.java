@@ -37,7 +37,17 @@ public enum ErrorCode {
     // Redis 관련
     REDIS_DATA_NOT_FOUND("해당 키에 대한 값이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     REDIS_SERVER_ERROR("Redis 서버에서 데이터를 처리하는 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    REDIS_DELETE_FAILED("삭제 요청 실패: 키가 존재하지 않거나 삭제되지 않았습니다.", HttpStatus.NOT_FOUND);
+    REDIS_DELETE_FAILED("삭제 요청 실패: 키가 존재하지 않거나 삭제되지 않았습니다.", HttpStatus.NOT_FOUND),
+
+    // 스케줄 상세 관련 세어
+    INVALID_LATITUDE("유효하지 않은 위도입니다. -90에서 90 사이의 값을 입력해주세요.", HttpStatus.BAD_REQUEST),
+    INVALID_LONGITUDE("유효하지 않은 경도입니다. -180에서 180 사이의 값을 입력해주세요.", HttpStatus.BAD_REQUEST),
+    INVALID_TARGET_DATE("시작 시간은 현재 시간 이후로 설정해야 합니다.", HttpStatus.BAD_REQUEST),
+
+    // 이미지 관련 에러
+    IMAGE_NOT_FOUND("이미지를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    IMAGE_LOADING_ERROR("이미지 로딩에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+
 
     private final String message;
     private final HttpStatus httpStatus;

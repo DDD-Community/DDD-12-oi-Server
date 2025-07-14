@@ -28,9 +28,9 @@ public class ScheduleDetail extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "start_time", nullable = false)
+	@Column(name = "start_time")
 	@Schema(type = "string", format = "time", pattern = "HH:mm", example = "14:30")
-	@JsonFormat(pattern = "HH:mm")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
 	private LocalTime startTime;
 
 	@Column(name = "target_date", nullable = false)
@@ -51,7 +51,9 @@ public class ScheduleDetail extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "schedule_id", nullable = false)
 	private Schedule schedule;
-
+	public void setSchedule(Schedule schedule) {
+		this.schedule = schedule;
+	}
 	public void update(LocalTime startTime, String memo, String spotName, Double latitude, Double longitude) {
 		this.startTime = startTime;
 		this.memo = memo;

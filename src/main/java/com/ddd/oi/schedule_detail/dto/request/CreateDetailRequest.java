@@ -1,23 +1,52 @@
 package com.ddd.oi.schedule_detail.dto.request;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ddd.oi.common.annotation.NotBlankNullable;
+import com.ddd.oi.common.exception.OiException;
+import com.ddd.oi.common.response.ErrorCode;
+import com.ddd.oi.schedule.domain.Schedule;
+import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 
 public record CreateDetailRequest(
-		@NotNull @JsonFormat(pattern = "HH:mm") @Schema(type = "string", format = "time", pattern = "HH:mm", example = "14:30", description = "시작 시간") LocalTime startTime,
 
-		@Schema(description = "메모", example = "아침 식사 후 출발") String memo,
+		@NotBlankNullable(message = "날짜를 정해주세요.")
+		LocalDate targetDate,
+		String memo,
 
-		@NotNull @Schema(description = "날짜", example = "2025-07-01") LocalDate targetDate,
+		@NotBlankNullable(message = "장소명을 입력해주세요.")
+		String spotName,
 
-		@NotNull @Schema(description = "장소명", example = "서울역") String spotName,
+		@NotBlankNullable(message = "위도를 입력해주세요.")
+		Double latitude,
 
-		@NotNull @Schema(description = "위도", example = "37.554722") Double latitude,
+		@NotBlankNullable(message = "경도를 입력해주세요.")
+		Double longitude
+) {
+	public CreateDetailRequest {
+		if (latitude < -90 || latitude > 90) {
+			throw new OiException(ErrorCode.INVALID_LATITUDE);
+		}
+		if (longitude < -180 || longitude > 180) {
+			throw new OiException(ErrorCode.INVALID_LONGITUDE);
+		}
+		if (targetDate != null) {
+			if (targetDate.isBefore(LocalDate.now())) {
+				throw new OiException(ErrorCode.INVALID_TARGET_DATE);
+			}
+		}
+	}
 
-		@NotNull @Schema(description = "경도", example = "126.970833") Double longitude) {
+	public ScheduleDetail toEntity(Schedule schedule) {
+		return ScheduleDetail.builder()
+				.startTime(null)
+				.targetDate(targetDate)
+				.memo(memo)
+				.spotName(spotName)
+				.latitude(latitude)
+				.longitude(longitude)
+				.schedule(schedule)
+				.build();
+	}
 }
