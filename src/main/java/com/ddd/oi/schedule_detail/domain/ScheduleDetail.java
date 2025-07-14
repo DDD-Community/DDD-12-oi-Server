@@ -48,12 +48,17 @@ public class ScheduleDetail extends BaseEntity {
 	@Column(name = "longitude", nullable = false)
 	private Double longitude;
 
+	@Column(name = "category", nullable = false)
+	private String category;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "schedule_id", nullable = false)
 	private Schedule schedule;
+
 	public void setSchedule(Schedule schedule) {
 		this.schedule = schedule;
 	}
+
 	public void update(LocalTime startTime, String memo, String spotName, Double latitude, Double longitude) {
 		this.startTime = startTime;
 		this.memo = memo;
