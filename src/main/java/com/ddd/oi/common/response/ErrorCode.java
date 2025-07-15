@@ -29,7 +29,6 @@ public enum ErrorCode {
     REFRESH_TOKEN_EXPIRED("Refresh 토큰이 만료되었습니다.", HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_INVALID_OR_EXPIRED("Refresh 토큰이 유효하지 않거나 만료되었습니다.", HttpStatus.NOT_FOUND),
     ACCESS_TOKEN_EXPIRED("Access 토큰이 만료되었습니다.", HttpStatus.REQUEST_TIMEOUT),
-    EMAIL_TOKEN_INVALID("이메일 토큰이 만료되거나 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     TOKEN_INVALID("유효하지 않은 토큰입니다.", HttpStatus.BAD_REQUEST),
     TOKEN_EXPIRED("만료된 토큰입니다.", HttpStatus.BAD_REQUEST),
     OAUTH_PROVIDER_MISMATCH("다른 플랫폼으로 가입된 계정입니다. 해당 플랫폼으로 로그인하세요.",HttpStatus.BAD_REQUEST),

@@ -17,30 +17,26 @@ public class SwaggerConfig {
 
 	@Bean
 	public OpenAPI openAPI() {
-		SecurityScheme refreshToken = new SecurityScheme()
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
-			.bearerFormat("JWT")
-			.in(SecurityScheme.In.HEADER)
-			.name("Authorization");
+		SecurityScheme accessToken = new SecurityScheme()
+				.type(SecurityScheme.Type.HTTP)
+				.scheme("bearer")
+				.bearerFormat("JWT")
+				.in(SecurityScheme.In.HEADER)
+				.name("Authorization");
 
 		SecurityRequirement securityRequirement = new SecurityRequirement()
-			.addList("refreshToken");
+				.addList("accessToken");
 
-		Server localServer = new Server();
-		Server devServer = new Server();
-		localServer.setUrl("http://localhost:8080");
-
-		devServer.setUrl("http://3.39.107.176:8080");
+		Server localServer = new Server().url("http://localhost:8080");
+		Server devServer = new Server().url("http://3.39.107.176:8080");
 
 		return new OpenAPI()
-			.components(new Components()
-				.addSecuritySchemes("refreshToken",refreshToken))
-			.security(List.of(securityRequirement))
-			.info(new Info()
-				.title("오이(Oi) API 명세서")
-				.description("오이(Oi) API 명세서입니다.")
-				.version("1.0.0"))
-			.servers(List.of(devServer,localServer));
+				.components(new Components().addSecuritySchemes("Authorization", accessToken))
+				.security(List.of(securityRequirement))
+				.info(new Info()
+						.title("오이(Oi) API 명세서")
+						.description("오이(Oi) API 명세서입니다.")
+						.version("1.0.0"))
+				.servers(List.of(devServer, localServer));
 	}
 }

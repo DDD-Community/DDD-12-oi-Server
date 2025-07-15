@@ -5,7 +5,6 @@ import com.ddd.oi.auth.dto.KakaoProfileAdapter;
 import com.ddd.oi.auth.dto.OAuthProfile;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
-import com.ddd.oi.common.utils.CookieUtil;
 import com.ddd.oi.common.utils.JWTUtil;
 import com.ddd.oi.common.utils.KakaoUtil;
 import com.ddd.oi.common.utils.RedisUtil;
@@ -49,7 +48,6 @@ public class AuthService {
         String refreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
 
         redisUtil.setDataExpire("RT:" + user.getEmail(), refreshToken, REFRESH_TOKEN_VALIDITY);
-        CookieUtil.addCookie(response, "accessToken", accessToken, (int) (ACCESS_TOKEN_VALIDITY / 1000));
 
         return new AuthResponseDTO(user, accessToken, refreshToken);
     }
@@ -81,28 +79,12 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-        String newAccessToken = jwtUtil.createJwt(
-                null,
-                user.getEmail(),
-                user.getRole().toString(),
-                ACCESS_TOKEN_VALIDITY
-        );
-
-        String newRefreshToken = jwtUtil.createJwt(
-                null,
-                user.getEmail(),
-                user.getRole().toString(),
-                REFRESH_TOKEN_VALIDITY
-        );
+        String newAccessToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), ACCESS_TOKEN_VALIDITY);
+        String newRefreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
 
         redisUtil.deleteData(redisKey);
         redisUtil.setDataExpire(redisKey, newRefreshToken, REFRESH_TOKEN_VALIDITY);
 
-        int maxAgeSeconds = (int) (ACCESS_TOKEN_VALIDITY / 1000);
-        CookieUtil.addCookie(response, "accessToken", newAccessToken, maxAgeSeconds);
-
         return new AuthResponseDTO(user, newAccessToken, newRefreshToken);
     }
-
-
 }
