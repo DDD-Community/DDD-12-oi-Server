@@ -1,7 +1,8 @@
 package com.ddd.oi.auth.service;
 
 import com.ddd.oi.auth.dto.AuthResponseDTO;
-import com.ddd.oi.auth.dto.KakaoDTO;
+import com.ddd.oi.auth.dto.KakaoProfileAdapter;
+import com.ddd.oi.auth.dto.OAuthProfile;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.common.utils.CookieUtil;
@@ -9,6 +10,7 @@ import com.ddd.oi.common.utils.JWTUtil;
 import com.ddd.oi.common.utils.KakaoUtil;
 import com.ddd.oi.common.utils.RedisUtil;
 import com.ddd.oi.user.domain.ProviderInfo;
+import com.ddd.oi.user.domain.RoleType;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,51 +29,45 @@ public class AuthService {
     private final Long ACCESS_TOKEN_VALIDITY = 1000L * 60 * 60;
     private final Long REFRESH_TOKEN_VALIDITY = 1000L * 60 * 60 * 24 * 14;
 
-    public AuthResponseDTO oAuthLogin(String accessCode, HttpServletResponse response) {
+    public AuthResponseDTO oAuthLogin(ProviderInfo provider, String accessCode, HttpServletResponse response) {
+        OAuthProfile profile;
 
-        KakaoDTO.OAuthToken oAuthToken = kakaoUtil.requestToken(accessCode);
+        switch (provider) {
+            case KAKAO -> {
+                var oAuthToken = kakaoUtil.requestToken(accessCode);
+                var kakaoProfile = kakaoUtil.requestProfile(oAuthToken);
+                profile = new KakaoProfileAdapter(kakaoProfile);
+            }
+            // TODO 네이버, 구글 추가 예정
+            default -> throw new OiException(ErrorCode.BAD_REQUEST);
+        }
 
-        KakaoDTO.KakaoProfile kakaoProfile = kakaoUtil.requestProfile(oAuthToken);
-        String email = kakaoProfile.getKakao_account().getEmail();
+        User user = userRepository.findByEmail(profile.getEmail())
+                .orElseGet(() -> createNewUser(profile));
 
-        User user = userRepository.findByEmail(email)
-                .orElseGet(() -> createNewUser(kakaoProfile));
+        String accessToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), ACCESS_TOKEN_VALIDITY);
+        String refreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
 
-        String accessToken = jwtUtil.createJwt(
-                null,
-                user.getEmail(),
-                user.getRole().toString(),
-                ACCESS_TOKEN_VALIDITY
-        );
-
-        String refreshToken = jwtUtil.createJwt(
-                null,
-                user.getEmail(),
-                user.getRole().toString(),
-                REFRESH_TOKEN_VALIDITY
-        );
-
-        redisUtil.setDataExpire(
-                "RT:" + user.getEmail(),
-                refreshToken,
-                REFRESH_TOKEN_VALIDITY
-        );
-        int maxAgeSeconds = (int) (ACCESS_TOKEN_VALIDITY / 1000);
-        CookieUtil.addCookie(response, "accessToken", accessToken, maxAgeSeconds);
+        redisUtil.setDataExpire("RT:" + user.getEmail(), refreshToken, REFRESH_TOKEN_VALIDITY);
+        CookieUtil.addCookie(response, "accessToken", accessToken, (int) (ACCESS_TOKEN_VALIDITY / 1000));
 
         return new AuthResponseDTO(user, accessToken, refreshToken);
     }
 
-    private User createNewUser(KakaoDTO.KakaoProfile profile) {
+
+    private User createNewUser(OAuthProfile profile) {
         return userRepository.save(
-                AuthConverter.toUser(
-                        profile.getKakao_account().getEmail(),
-                        profile.getKakao_account().getProfile().getNickname(),
-                        profile.getKakao_account().getProfile().getProfileImageUrl(),
-                        ProviderInfo.KAKAO //TODO 카카오 이외에 다른 소셜로그인 시 변경
-                )
+                User.builder()
+                        .email(profile.getEmail())
+                        .nickname(profile.getNickname())
+                        .profileImageUrl(profile.getProfileImageUrl())
+                        .providerInfo(profile.getProviderInfo())
+                        .role(RoleType.USER)
+                        .isDormant(false)
+                        .build()
         );
     }
+
     public AuthResponseDTO reissueAccessToken(String oldRefreshToken, HttpServletResponse response) {
         String email = jwtUtil.getEmail(oldRefreshToken);
 

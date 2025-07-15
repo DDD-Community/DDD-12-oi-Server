@@ -3,6 +3,7 @@ package com.ddd.oi.auth.controller;
 import com.ddd.oi.auth.dto.AuthResponseDTO;
 import com.ddd.oi.auth.service.AuthService;
 import com.ddd.oi.common.response.CustomApiResponse;
+import com.ddd.oi.user.domain.ProviderInfo;
 import com.ddd.oi.user.dto.UserConverter;
 import com.ddd.oi.user.dto.UserResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,19 +18,18 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("/login/kakao")
-    public CustomApiResponse<UserResponseDTO> kakaoLogin(
-            @RequestParam("code") String accessCode,
-            HttpServletResponse httpServletResponse
-    ) {
-        AuthResponseDTO responseDTO = authService.oAuthLogin(accessCode, httpServletResponse);
+    @GetMapping("/login/{provider}")
+    public CustomApiResponse<UserResponseDTO> login(@PathVariable("provider") String provider, @RequestParam("code") String accessCode, HttpServletResponse httpServletResponse) {
+        ProviderInfo providerInfo = ProviderInfo.of(provider);
+        AuthResponseDTO responseDTO = authService.oAuthLogin(providerInfo, accessCode, httpServletResponse);
+
         return CustomApiResponse.success(
-                UserConverter.toJoinResultDTO(responseDTO.user(), responseDTO.accessToken(),
-                        responseDTO.refreshToken()),
+                UserConverter.toJoinResultDTO(responseDTO.user(), responseDTO.accessToken(), responseDTO.refreshToken()),
                 200,
-                "로그인성공"
+                "로그인 성공"
         );
     }
+
     @PostMapping("/reissue")
     public CustomApiResponse<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         String bearerToken = request.getHeader("Authorization");

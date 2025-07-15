@@ -7,14 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ProviderInfo {
-    KAKAO("kakao_account", "id"),
-    NAVER("response", "id"),
-    GOOGLE(null, "sub");
+    KAKAO, NAVER, GOOGLE;
 
-    private final String attributeKey;
-    private final String providerCode;
-    // TODO 비즈앱 등록 후 email 추가할 예정
-//    private final String identifier;
 
     public static ProviderInfo of(String provider) {
         String upperCastedProvider = provider.toUpperCase();
