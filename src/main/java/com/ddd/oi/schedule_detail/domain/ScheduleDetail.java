@@ -19,9 +19,9 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "schedule_detail")
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@Builder
 public class ScheduleDetail extends BaseEntity {
 
 	@Id
@@ -48,17 +48,24 @@ public class ScheduleDetail extends BaseEntity {
 	@Column(name = "longitude", nullable = false)
 	private Double longitude;
 
+	@Column(name = "category", nullable = false)
+	private String category;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "schedule_id", nullable = false)
 	private Schedule schedule;
+
 	public void setSchedule(Schedule schedule) {
 		this.schedule = schedule;
 	}
-	public void update(LocalTime startTime, String memo, String spotName, Double latitude, Double longitude) {
+
+	public void update(LocalTime startTime,LocalDate targetDate,String memo, String spotName, Double latitude, Double longitude,String category) {
 		this.startTime = startTime;
+		this.targetDate = targetDate;
 		this.memo = memo;
 		this.spotName = spotName;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.category = category;
 	}
 }

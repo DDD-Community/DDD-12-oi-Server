@@ -10,24 +10,24 @@ import lombok.Builder;
 
 @Builder
 public record ScheduleDetailResponse(
-	Long id,
-	@JsonFormat(pattern = "HH:mm")
-	LocalTime startTime,
+		Long id,
+		@JsonFormat(pattern = "HH:mm") LocalTime startTime,
 
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	LocalDate targetDate,
-	String spotName,
-	Double latitude,
-	Double longitude,
-	String memo) {
+		@JsonFormat(pattern = "yyyy-MM-dd") LocalDate targetDate,
+		String spotName,
+		Double latitude,
+		Double longitude,
+		String memo,
+		String category) {
 	public static ScheduleDetailResponse from(ScheduleDetail entity) {
 		return new ScheduleDetailResponse(
-			entity.getId(),
-			entity.getStartTime(),
-			entity.getTargetDate(),
-			entity.getSpotName(),
-			entity.getLatitude(),
-			entity.getLongitude(),
-			entity.getMemo());
+				entity.getId(),
+				entity.getStartTime(),
+				entity.getTargetDate(),
+				entity.getSpotName(),
+				entity.getLatitude(),
+				entity.getLongitude(),
+				entity.getMemo(),
+				entity.getCategory());
 	}
 }
