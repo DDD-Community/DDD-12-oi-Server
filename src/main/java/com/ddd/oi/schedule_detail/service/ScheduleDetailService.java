@@ -70,6 +70,7 @@ public class ScheduleDetailService {
 						request.targetDate().isAfter(schedule.getEndDate()))) {
 			throw new OiException(ErrorCode.INVALID_TARGET_DATE);
 		}
+		String mappedCategory = categoryMapping.mapToMainCategory(request.spotName());
 
 		detail.update(
 				request.startTime() != null ? request.startTime() : detail.getStartTime(),
@@ -77,7 +78,8 @@ public class ScheduleDetailService {
 				request.memo(),
 				request.spotName(),
 				request.latitude(),
-				request.longitude());
+				request.longitude(),
+				mappedCategory);
 		return UpdateScheduleDetailResponse.of(detail);
 	}
 

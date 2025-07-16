@@ -59,12 +59,13 @@ public class ScheduleDetail extends BaseEntity {
 		this.schedule = schedule;
 	}
 
-	public void update(LocalTime startTime,LocalDate targetDate,String memo, String spotName, Double latitude, Double longitude) {
+	public void update(LocalTime startTime,LocalDate targetDate,String memo, String spotName, Double latitude, Double longitude,String category) {
 		this.startTime = startTime;
 		this.targetDate = targetDate;
 		this.memo = memo;
 		this.spotName = spotName;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.category = category;
 	}
 }
