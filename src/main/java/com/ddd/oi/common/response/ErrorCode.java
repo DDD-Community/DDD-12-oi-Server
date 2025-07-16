@@ -25,8 +25,7 @@ public enum ErrorCode {
     // 인증/인가 에러
     CREDENTIALS_INVALID("아이디 또는 비밀번호가 잘못되었습니다.", HttpStatus.UNAUTHORIZED),
     REQUEST_FORMAT_INVALID("입력 형식이 잘못되었습니다.", HttpStatus.BAD_REQUEST),
-
-    COOKIE_NOT_FOUND("쿠키가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    HEADER_REFRESH_TOKEN_NOT_EXISTS("헤더에 Refresh 토큰이 존재하지 않습니다.",HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_NOT_FOUND("Refresh 토큰이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_EXPIRED("Refresh 토큰이 만료되었습니다.", HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_INVALID_OR_EXPIRED("Refresh 토큰이 유효하지 않거나 만료되었습니다.", HttpStatus.NOT_FOUND),

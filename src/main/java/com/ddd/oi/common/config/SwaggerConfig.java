@@ -25,7 +25,7 @@ public class SwaggerConfig {
 				.name("Authorization");
 
 		SecurityRequirement securityRequirement = new SecurityRequirement()
-				.addList("accessToken");
+				.addList("Authorization");
 
 		Server localServer = new Server().url("http://localhost:8080");
 		Server devServer = new Server().url("http://3.39.107.176:8080");

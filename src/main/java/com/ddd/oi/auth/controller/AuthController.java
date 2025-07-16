@@ -2,7 +2,9 @@ package com.ddd.oi.auth.controller;
 
 import com.ddd.oi.auth.dto.AuthResponseDTO;
 import com.ddd.oi.auth.service.AuthService;
+import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.CustomApiResponse;
+import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.user.domain.ProviderInfo;
 import com.ddd.oi.user.dto.UserConverter;
 import com.ddd.oi.user.dto.UserResponseDTO;
@@ -34,8 +36,15 @@ public class AuthController {
     public CustomApiResponse<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         String bearerToken = request.getHeader("Authorization");
 
+        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+            throw new OiException(ErrorCode.HEADER_REFRESH_TOKEN_NOT_EXISTS);
+        }
+
         String refreshToken = bearerToken.substring(7);
-        AuthResponseDTO dto = authService.reissueAccessToken(refreshToken,response);
-        return CustomApiResponse.success(dto,200,"토큰 재발급 성공");
+
+        AuthResponseDTO dto = authService.reissueAccessToken(refreshToken, response);
+
+        return CustomApiResponse.success(dto, 200, "토큰 재발급 성공");
     }
+
 }

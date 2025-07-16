@@ -68,7 +68,6 @@ public class AuthService {
 
     public AuthResponseDTO reissueAccessToken(String oldRefreshToken, HttpServletResponse response) {
         String email = jwtUtil.getEmail(oldRefreshToken);
-
         String redisKey = "RT:" + email;
         String storedToken = redisUtil.getData(redisKey);
 
