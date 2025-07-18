@@ -32,7 +32,7 @@ public class KakaoDTO {
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static class Profile {
                 private String nickname;
-                private String profileImageUrl;
+                private String profile_image_url;
             }
         }
     }

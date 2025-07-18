@@ -16,7 +16,7 @@ public record KakaoProfileAdapter(KakaoDTO.KakaoProfile profile) implements OAut
 
     @Override
     public String getProfileImageUrl() {
-        return profile.getKakao_account().getProfile().getProfileImageUrl();
+        return profile.getKakao_account().getProfile().getProfile_image_url();
     }
 
     @Override

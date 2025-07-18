@@ -40,9 +40,15 @@ public class AuthService {
             // TODO 네이버, 구글 추가 예정
             default -> throw new OiException(ErrorCode.BAD_REQUEST);
         }
-
         User user = userRepository.findByEmail(profile.getEmail())
+                .map(existingUser -> {
+                    existingUser.updateNickname(profile.getNickname());
+                    existingUser.updateProfileUrl(profile.getProfileImageUrl());
+                    userRepository.save(existingUser);
+                    return existingUser;
+                })
                 .orElseGet(() -> createNewUser(profile));
+
 
         String accessToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), ACCESS_TOKEN_VALIDITY);
         String refreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
