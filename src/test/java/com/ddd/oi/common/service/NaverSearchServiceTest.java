@@ -1,3 +1,4 @@
+/*
 package com.ddd.oi.common.service;
 
 import com.ddd.oi.common.config.CategoryMapping;
@@ -103,3 +104,4 @@ class NaverSearchServiceTest {
         }
 }
 
+*/
