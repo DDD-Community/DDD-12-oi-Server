@@ -20,6 +20,8 @@ public class PlaceItem {
     private String roadAddress;
     private String mapx;
     private String mapy;
+    private Double latitude;
+    private Double longitude;
     private String mainCategory;
     private String categoryColor;
 

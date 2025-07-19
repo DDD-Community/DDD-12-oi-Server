@@ -3,6 +3,7 @@ package com.ddd.oi.common.service;
 import com.ddd.oi.common.config.CategoryMapping;
 import com.ddd.oi.common.config.NaverSearchConfig;
 import com.ddd.oi.common.config.CategoryColorMapping;
+import com.ddd.oi.common.config.NaverMapConfig;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.schedule_detail.dto.*;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NaverSearchService {
     private final NaverSearchConfig naverConfig;
+    private final NaverMapConfig naverMapConfig;
     private final CategoryMapping categoryMapping;
     private final CategoryColorMapping categoryColorMapping;
     private final RestTemplate restTemplate;
@@ -37,11 +39,26 @@ public class NaverSearchService {
             ResponseEntity<SearchResponse> response = restTemplate.exchange(
                     uri, HttpMethod.GET, entity, SearchResponse.class);
             SearchResponse searchResponse = response.getBody();
+
             if (searchResponse != null) {
                 for (PlaceItem item : searchResponse.getItems()) {
                     String mainCategory = mapToMainCategory(item.getCategory());
                     item.setMainCategory(mainCategory);
                     item.setCategoryColor(categoryColorMapping.getColor(mainCategory));
+
+                    String addr = item.getRoadAddress() != null ? item.getRoadAddress() : item.getAddress();
+
+                    if (addr != null && !addr.isBlank()) {
+                        try {
+                            double[] latLng = geocodeAddress(addr);
+                            item.setLongitude(latLng[0]);
+                            item.setLatitude(latLng[1]);
+                            item.setMapx(null);
+                            item.setMapy(null);
+                        } catch (Exception e) {
+                            log.warn("주소 좌표 변환 실패: address={}", addr, e);
+                        }
+                    }
                 }
                 searchResponse.setCategory(request.getCategory());
                 searchResponse.setHasMore(
@@ -130,5 +147,34 @@ public class NaverSearchService {
             }
         }
         return "기타";
+    }
+
+    // 주소 → 좌표 변환 (geocode API)
+    private double[] geocodeAddress(String address) {
+        String url = "https://maps.apigw.ntruss.com/map-geocode/v2/geocode";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-NCP-APIGW-API-KEY-ID", naverMapConfig.getApiKeyId());
+        headers.set("X-NCP-APIGW-API-KEY", naverMapConfig.getApiKey());
+        headers.set("Accept", "application/json");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("query", address);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(
+                builder.build().encode().toUri(),
+                HttpMethod.GET,
+                entity,
+                Map.class);
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            List addresses = (List) response.getBody().get("addresses");
+            if (addresses != null && !addresses.isEmpty()) {
+                Map addr = (Map) addresses.get(0);
+                double longitude = Double.parseDouble(addr.get("x").toString());
+                double latitude = Double.parseDouble(addr.get("y").toString());
+                return new double[] { longitude, latitude };
+            }
+        }
+        throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 }
