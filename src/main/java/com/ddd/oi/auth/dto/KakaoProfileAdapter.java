@@ -14,10 +14,10 @@ public record KakaoProfileAdapter(KakaoDTO.KakaoProfile profile) implements OAut
         return profile.getKakao_account().getProfile().getNickname();
     }
 
-    @Override
-    public String getProfileImageUrl() {
-        return profile.getKakao_account().getProfile().getProfile_image_url();
-    }
+//    @Override
+//    public String getProfileImageUrl() {
+//        return profile.getKakao_account().getProfile().getProfile_image_url();
+//    }
 
     @Override
     public ProviderInfo getProviderInfo() {

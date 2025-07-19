@@ -61,7 +61,7 @@ public class AuthService {
         User user = userRepository.findByEmail(profile.getEmail())
                 .map(existingUser -> {
                     existingUser.updateNickname(profile.getNickname());
-                    existingUser.updateProfileUrl(profile.getProfileImageUrl());
+//                    existingUser.updateProfileUrl(profile.getProfileImageUrl());
                     return existingUser;
                 })
                 .orElseGet(() -> createNewUser(profile));
@@ -81,7 +81,7 @@ public class AuthService {
                 User.builder()
                         .email(profile.getEmail())
                         .nickname(profile.getNickname())
-                        .profileImageUrl(profile.getProfileImageUrl())
+//                        .profileImageUrl(profile.getProfileImageUrl())
                         .providerInfo(profile.getProviderInfo())
                         .role(RoleType.USER)
                         .isDormant(false)

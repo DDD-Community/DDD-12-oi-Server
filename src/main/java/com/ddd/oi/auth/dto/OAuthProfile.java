@@ -5,7 +5,7 @@ import com.ddd.oi.user.domain.ProviderInfo;
 public interface OAuthProfile {
     String getEmail();
     String getNickname();
-    String getProfileImageUrl();
+//    String getProfileImageUrl();
     ProviderInfo getProviderInfo();
 }
 

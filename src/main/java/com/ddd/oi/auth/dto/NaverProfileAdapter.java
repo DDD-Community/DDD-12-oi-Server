@@ -12,10 +12,10 @@ public record NaverProfileAdapter(NaverDTO.NaverProfile profile) implements OAut
     public String getNickname() {
         return profile.getResponse().getNickname();
     }
-    @Override
-    public String getProfileImageUrl() {
-        return profile.getResponse().getProfile_image();
-    }
+//    @Override
+//    public String getProfileImageUrl() {
+//        return profile.getResponse().getProfile_image();
+//    }
     @Override
     public ProviderInfo getProviderInfo() {
         return ProviderInfo.NAVER;

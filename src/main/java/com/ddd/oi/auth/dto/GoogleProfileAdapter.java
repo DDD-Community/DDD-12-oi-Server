@@ -11,11 +11,10 @@ public record GoogleProfileAdapter(GoogleDTO.GoogleProfile profile) implements O
     public String getNickname() {
         return profile.getName();
     }
-    @Override
-    public String getProfileImageUrl() {
-
-        return profile.getPicture();
-    }
+//    @Override
+//    public String getProfileImageUrl() {
+//        return profile.getPicture();
+//    }
     @Override
     public ProviderInfo getProviderInfo() {
         return ProviderInfo.GOOGLE;

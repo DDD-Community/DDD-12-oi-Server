@@ -8,7 +8,7 @@ public class UserConverter {
                 user.getId(),
                 user.getNickname(),
                 user.getEmail(),
-                user.getProfileImageUrl(),
+//                user.getProfileImageUrl(),
                 user.getProviderInfo(),
                 user.getRole(),
                 accessToken,

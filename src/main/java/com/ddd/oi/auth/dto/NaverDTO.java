@@ -25,7 +25,7 @@ public class NaverDTO {
             private String email;
             private String name;
             private String nickname;
-            private String profile_image;
+//            private String profile_image;
         }
     }
 

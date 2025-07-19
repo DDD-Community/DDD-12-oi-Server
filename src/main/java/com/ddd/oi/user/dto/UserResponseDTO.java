@@ -7,7 +7,7 @@ public record UserResponseDTO(
         Long id,
         String nickname,
         String email,
-        String profileImageUrl,
+//        String profileImageUrl,
         ProviderInfo providerInfo,
         RoleType role,
         String accessToken,
