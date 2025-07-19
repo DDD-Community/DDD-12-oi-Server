@@ -9,7 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlaceItem {
     private String title;
     private String link;
@@ -18,8 +17,6 @@ public class PlaceItem {
     private String telephone;
     private String address;
     private String roadAddress;
-    private String mapx;
-    private String mapy;
     private Double latitude;
     private Double longitude;
     private String mainCategory;
