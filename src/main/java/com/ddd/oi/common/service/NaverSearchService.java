@@ -49,7 +49,6 @@ public class NaverSearchService {
 
 					String addr = item.getAddress() != null ? item.getAddress() : item.getRoadAddress();
 
-                    log.info(item.getRoadAddress());
                     if (item.getRoadAddress().isBlank()) {
 						item.setRoadAddress(item.getAddress());
 					}
