@@ -2,11 +2,13 @@ package com.ddd.oi.auth.service;
 
 import com.ddd.oi.auth.dto.AuthResponseDTO;
 import com.ddd.oi.auth.dto.KakaoProfileAdapter;
+import com.ddd.oi.auth.dto.NaverProfileAdapter;
 import com.ddd.oi.auth.dto.OAuthProfile;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.common.utils.JWTUtil;
 import com.ddd.oi.common.utils.KakaoUtil;
+import com.ddd.oi.common.utils.NaverUtil;
 import com.ddd.oi.common.utils.RedisUtil;
 import com.ddd.oi.user.domain.ProviderInfo;
 import com.ddd.oi.user.domain.RoleType;
@@ -14,13 +16,16 @@ import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final KakaoUtil kakaoUtil;
+    private final NaverUtil naverUtil;
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
     private final RedisUtil redisUtil;
@@ -37,14 +42,18 @@ public class AuthService {
                 var kakaoProfile = kakaoUtil.requestProfile(oAuthToken);
                 profile = new KakaoProfileAdapter(kakaoProfile);
             }
-            // TODO 네이버, 구글 추가 예정
+            case NAVER -> {
+                var oAuthToken = naverUtil.requestToken(accessCode);
+                var naverProfile = naverUtil.requestProfile(oAuthToken);
+                profile = new NaverProfileAdapter(naverProfile);
+            }
             default -> throw new OiException(ErrorCode.BAD_REQUEST);
         }
+
         User user = userRepository.findByEmail(profile.getEmail())
                 .map(existingUser -> {
                     existingUser.updateNickname(profile.getNickname());
                     existingUser.updateProfileUrl(profile.getProfileImageUrl());
-                    userRepository.save(existingUser);
                     return existingUser;
                 })
                 .orElseGet(() -> createNewUser(profile));
