@@ -1,11 +1,13 @@
 package com.ddd.oi.auth.service;
 
 import com.ddd.oi.auth.dto.AuthResponseDTO;
+import com.ddd.oi.auth.dto.GoogleProfileAdapter;
 import com.ddd.oi.auth.dto.KakaoProfileAdapter;
 import com.ddd.oi.auth.dto.NaverProfileAdapter;
 import com.ddd.oi.auth.dto.OAuthProfile;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
+import com.ddd.oi.common.utils.GoogleUtil;
 import com.ddd.oi.common.utils.JWTUtil;
 import com.ddd.oi.common.utils.KakaoUtil;
 import com.ddd.oi.common.utils.NaverUtil;
@@ -26,6 +28,7 @@ public class AuthService {
 
     private final KakaoUtil kakaoUtil;
     private final NaverUtil naverUtil;
+    private final GoogleUtil googleUtil;
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
     private final RedisUtil redisUtil;
@@ -46,6 +49,11 @@ public class AuthService {
                 var oAuthToken = naverUtil.requestToken(accessCode);
                 var naverProfile = naverUtil.requestProfile(oAuthToken);
                 profile = new NaverProfileAdapter(naverProfile);
+            }
+            case GOOGLE -> {
+                var oAuthToken = googleUtil.requestToken(accessCode);
+                var googleProfile = googleUtil.requestProfile(oAuthToken);
+                profile = new GoogleProfileAdapter(googleProfile);
             }
             default -> throw new OiException(ErrorCode.BAD_REQUEST);
         }
