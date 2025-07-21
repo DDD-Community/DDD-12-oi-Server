@@ -79,7 +79,7 @@ public class ScheduleServiceTest {
                 });
 
         //When
-        CreateScheduleResponse response = scheduleService.createSchedule(user.getId(), request);
+        CreateScheduleResponse response = scheduleService.createSchedule(user, request);
 
         //Then
         assertThat(response).isNotNull();
@@ -109,7 +109,7 @@ public class ScheduleServiceTest {
 
         // When & Then
         assertThrows(OiException.class, () ->
-                scheduleService.createSchedule(user.getId(), request));
+                scheduleService.createSchedule(user, request));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class ScheduleServiceTest {
 
         // When & Then
         assertThrows(OiException.class, () ->
-                scheduleService.createSchedule(user.getId(), request));
+                scheduleService.createSchedule(user, request));
     }
     @Test
     @DisplayName("유저는 스케줄 수정에 성공한다.")
@@ -158,7 +158,7 @@ public class ScheduleServiceTest {
                 List.of(GroupTag.FRIEND.name(), GroupTag.CHILDREN.name())
         );
         //When
-        UpdateScheduleResponse response = scheduleService.updateSchedule(user.getId(), schedule.getId(), request);
+        UpdateScheduleResponse response = scheduleService.updateSchedule(user, schedule.getId(), request);
 
         //Then
         assertThat(response).isNotNull();
@@ -197,7 +197,7 @@ public class ScheduleServiceTest {
         );
         //When & Then
         assertThrows(OiException.class, () ->
-                scheduleService.updateSchedule(user.getId(), schedule.getId(),request));
+                scheduleService.updateSchedule(user, schedule.getId(),request));
     }
     @Test
     @DisplayName("스케줄이 없을 시 스케줄 수정에 실패한다.")
@@ -218,7 +218,7 @@ public class ScheduleServiceTest {
 
         //When & Then
         assertThrows(OiException.class, () ->
-                scheduleService.updateSchedule(user.getId(),1L,request));
+                scheduleService.updateSchedule(user,1L,request));
     }
     @Test
     @DisplayName("스케줄 삭제에 성공한다.")
@@ -240,7 +240,7 @@ public class ScheduleServiceTest {
         when(scheduleRepository.findByUser_IdAndId(user.getId(), schedule.getId()))
                 .thenReturn(Optional.of(schedule));
         //When
-        boolean result = scheduleService.deleteSchedule(user.getId(), schedule.getId());
+        boolean result = scheduleService.deleteSchedule(user, schedule.getId());
         //Then
         verify(scheduleRepository).delete(schedule);
         assertThat(result).isTrue();
@@ -252,7 +252,7 @@ public class ScheduleServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
         //When&Then
         assertThrows(OiException.class, () ->
-                scheduleService.deleteSchedule(user.getId(), 1L));
+                scheduleService.deleteSchedule(user, 1L));
     }
     @Test
     @DisplayName("스케줄 없을 시 스케줄 삭제에 실패한다.")
@@ -274,7 +274,7 @@ public class ScheduleServiceTest {
                 .thenReturn(Optional.empty());
         //When&Then
         assertThrows(OiException.class, () ->
-                scheduleService.deleteSchedule(user.getId(),schedule.getId()));
+                scheduleService.deleteSchedule(user,schedule.getId()));
     }
     @Test
     @DisplayName("한달 스케줄 조회에 성공한다.")
@@ -312,7 +312,7 @@ public class ScheduleServiceTest {
                         .withDayOfMonth(LocalDate.of(year, month, 1).lengthOfMonth()))))
                 .thenReturn(List.of(schedule1, schedule2));
         //When
-        List<ScheduleListResponse> result = scheduleService.showMonthScheduleList(user.getId(),
+        List<ScheduleListResponse> result = scheduleService.showMonthScheduleList(user,
                 year, month);
         //Then
         assertThat(result).hasSize(2);
@@ -338,7 +338,7 @@ public class ScheduleServiceTest {
 
         // When&Then
         assertThrows(OiException.class, () ->
-                scheduleService.showMonthScheduleList(user.getId(), year, month));
+                scheduleService.showMonthScheduleList(user, year, month));
     }
     @Test
     @DisplayName("잘못된 월이 주어졌을 때 예외가 발생한다.")
@@ -351,7 +351,7 @@ public class ScheduleServiceTest {
 
         // When & Then
         assertThrows(DateTimeException.class, () ->
-                scheduleService.showMonthScheduleList(user.getId(), year, month));
+                scheduleService.showMonthScheduleList(user, year, month));
     }
     @Test
     @DisplayName("특정 날짜의 스케줄 조회에 성공한다.")
@@ -385,7 +385,7 @@ public class ScheduleServiceTest {
         when(scheduleRepository.findSchedulesByUserIdAndTargetDay(user.getId(),targetDay))
                 .thenReturn(List.of(schedule1,schedule2));
         // When
-        List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(user.getId(),targetDay);
+        List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(user,targetDay);
         // Then
         assertThat(result).hasSize(2);
         assertThat(result.get(0).title()).isEqualTo("test_schedule1");
@@ -413,7 +413,7 @@ public class ScheduleServiceTest {
                 .thenReturn(List.of());
 
         // When
-        List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(user.getId(),targetDay);
+        List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(user,targetDay);
 
         // Then
         assertThat(result).isEmpty();

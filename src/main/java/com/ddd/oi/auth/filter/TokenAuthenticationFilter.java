@@ -1,6 +1,10 @@
 package com.ddd.oi.auth.filter;
 
+import com.ddd.oi.common.exception.OiException;
+import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.common.utils.JWTUtil;
+import com.ddd.oi.user.domain.User;
+import com.ddd.oi.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +23,7 @@ import java.io.IOException;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -38,9 +43,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             String email = jwtUtil.getEmail(token);
             String role = jwtUtil.getRole(token);
 
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(
-                            email,
+                            user,
                             null,
                             Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
                     );

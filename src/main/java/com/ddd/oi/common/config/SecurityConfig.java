@@ -5,6 +5,7 @@ import com.ddd.oi.auth.filter.TokenAuthenticationFilter;
 import com.ddd.oi.auth.handler.TokenAccessDeniedHandler;
 import com.ddd.oi.auth.properties.CorsProperties;
 import com.ddd.oi.common.utils.JWTUtil;
+import com.ddd.oi.user.repository.UserRepository;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final CorsProperties corsProperties;
     private final JWTUtil jwtUtil;
     private final TokenAccessDeniedHandler tokenAccessDeniedHandler;
+    private final UserRepository userRepository;
 
     public static final String[] allowUrls = {
             "/swagger-ui/**",
@@ -59,7 +61,7 @@ public class SecurityConfig {
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(jwtUtil);
+        return new TokenAuthenticationFilter(jwtUtil,userRepository);
     }
 
 

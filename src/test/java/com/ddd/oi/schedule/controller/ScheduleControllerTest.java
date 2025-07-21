@@ -9,6 +9,7 @@ import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
 import com.ddd.oi.schedule.dto.response.ScheduleListResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.service.ScheduleService;
+import com.ddd.oi.user.domain.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -152,7 +153,7 @@ public class ScheduleControllerTest {
                 .groups(List.of(GroupTag.CHILDREN,GroupTag.FRIEND))
                 .build();
 
-        when(scheduleService.showMonthScheduleList(1L, year, month))
+        when(scheduleService.showMonthScheduleList(User.builder().build(), year, month))
                 .thenReturn(List.of(response1, response2));
 
         // When & Then
@@ -188,7 +189,7 @@ public class ScheduleControllerTest {
                 .mobility(Mobility.CAR)
                 .groups(List.of(GroupTag.CHILDREN,GroupTag.FRIEND))
                 .build();
-        when(scheduleService.showTargetDaySchedule(1L, targetDay))
+        when(scheduleService.showTargetDaySchedule(User.builder().build(), targetDay))
                 .thenReturn(List.of(response1,response2));
 
         // When & Then
