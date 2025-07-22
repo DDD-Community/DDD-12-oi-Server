@@ -104,11 +104,12 @@ public class ScheduleDetailService {
 
 
 	@Transactional
-	public void deleteDetail(Long scheduleId, Long detailId) {
+	public Boolean deleteDetail(Long scheduleId, Long detailId) {
 		findExistingSchedule(scheduleId);
 		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
 		scheduleDetailRepository.delete(detail);
+		return true;
 	}
 
 	private Schedule findExistingSchedule(Long scheduleId) {

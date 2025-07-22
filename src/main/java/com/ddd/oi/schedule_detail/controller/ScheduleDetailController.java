@@ -60,10 +60,10 @@ public class ScheduleDetailController {
 
 	@DeleteMapping("/{detailId}")
 	@Operation(summary = "세부일정 삭제", description = "세부일정 삭제 API")
-	public CustomApiResponse<Void> deleteDetail(
+	public CustomApiResponse<Boolean> deleteDetail(
 			@PathVariable("scheduleId") Long scheduleId,
 			@PathVariable("detailId") Long detailId) {
 		scheduleDetailService.deleteDetail(scheduleId, detailId);
-		return CustomApiResponse.success(null, 200, "세부 일정 삭제 성공");
+		return CustomApiResponse.success(true, 200, "세부 일정 삭제 성공");
 	}
 }
