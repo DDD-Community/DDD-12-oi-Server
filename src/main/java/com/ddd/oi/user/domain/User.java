@@ -8,11 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "user")
 @Getter
 @Builder
+@SQLDelete(sql = "UPDATE user SET is_dormant = true WHERE id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User extends BaseEntity {
@@ -48,6 +50,7 @@ public class User extends BaseEntity {
 	public void updateProfileUrl(String profileImageUrl) {
 		this.profileImageUrl = profileImageUrl;
 	}
+	public void updateIsDormant(boolean isDormant) { this.isDormant = isDormant;}
 
 }
 

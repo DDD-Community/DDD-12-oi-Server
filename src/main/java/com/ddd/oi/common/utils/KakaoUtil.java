@@ -6,6 +6,7 @@ import com.ddd.oi.common.response.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -19,10 +20,15 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class KakaoUtil {
-
+    private final RedisUtil redisUtil;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Value("${kakao.client-id}")
     private String client;
+    @Value("${kakao.admin-key}")
+    private String adminKey;
 
     @Value("${kakao.redirect-uri}")
     private String redirect;
@@ -86,5 +92,48 @@ public class KakaoUtil {
         }
 
         return kakaoProfile;
+    }
+    public String getKakaoUserId(String oauthAccessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(oauthAccessToken);
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://kapi.kakao.com/v1/user/access_token_info",
+                HttpMethod.GET,
+                request,
+                String.class
+        );
+
+        try {
+            return objectMapper.readTree(response.getBody()).get("id").asText();
+        } catch (Exception e) {
+            throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void unlink(String kakaoUserId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "KakaoAK " + adminKey);
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("target_id_type", "user_id");
+        body.add("target_id", kakaoUserId);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+        restTemplate.exchange(
+                "https://kapi.kakao.com/v1/user/unlink",
+                HttpMethod.POST,
+                request,
+                String.class
+        );
+
+        redisUtil.deleteData("RT:" + kakaoUserId);
+        redisUtil.deleteData("AT:" + kakaoUserId);
+
+        log.info("카카오 연결해제 완료 - userId: {}", kakaoUserId);
     }
 }

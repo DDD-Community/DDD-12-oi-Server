@@ -11,7 +11,8 @@ public record UserResponseDTO(
         ProviderInfo providerInfo,
         RoleType role,
         String accessToken,
-        String refreshToken
+        String refreshToken,
+        String oauthAccessToken
 ) {
 
 

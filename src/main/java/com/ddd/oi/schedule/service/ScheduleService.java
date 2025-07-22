@@ -26,8 +26,8 @@ public class ScheduleService {
 
         @Transactional
         public CreateScheduleResponse createSchedule(User user, CreateScheduleRequest request) {
-                User persistentUser = userRepository.findById(user.getId())
-                        .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+                User persistentUser = findExistingUser(user.getId());
 
                 LocalDate startDate = request.startDate();
                 LocalDate endDate = request.endDate();
@@ -47,8 +47,8 @@ public class ScheduleService {
 
         @Transactional
         public Boolean deleteSchedule(User user, Long scheduleId) {
-                User persistentUser = userRepository.findById(user.getId())
-                                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+                User persistentUser = findExistingUser(user.getId());
 
                 Schedule schedule = scheduleRepository.findByUser_IdAndId(user.getId(),
                                 scheduleId)
@@ -60,9 +60,8 @@ public class ScheduleService {
 
         @Transactional
         public UpdateScheduleResponse updateSchedule(User user, Long scheduleId, UpdateScheduleRequest request) {
-                User persistentUser = userRepository.findById(user.getId())
-                                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
+                User persistentUser = findExistingUser(user.getId());
                 Schedule schedule = scheduleRepository.findByUser_IdAndId(persistentUser.getId(),
                                 scheduleId)
                                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
@@ -80,8 +79,8 @@ public class ScheduleService {
 
         @Transactional(readOnly = true)
         public List<ScheduleListResponse> showTargetDaySchedule(User user, LocalDate targetDay) {
-                User persistentUser = userRepository.findById(user.getId())
-                                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+                User persistentUser = findExistingUser(user.getId());
 
                 List<Schedule> schedules = scheduleRepository.findSchedulesByUserIdAndTargetDay(persistentUser.getId(),
                                 targetDay);
@@ -92,8 +91,8 @@ public class ScheduleService {
 
         @Transactional(readOnly = true)
         public List<ScheduleListResponse> showMonthScheduleList(User user, int year, int month) {
-                User persistentUser = userRepository.findById(user.getId())
-                                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+                User persistentUser = findExistingUser(user.getId());
 
                 LocalDate startOfMonth = LocalDate.of(year, month, 1);
                 LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
@@ -105,5 +104,12 @@ public class ScheduleService {
                                 .map(ScheduleListResponse::of)
                                 .toList();
         }
+        private User findExistingUser(Long userId) {
+                return userRepository.findById(userId)
+                        .filter(user -> !user.getIsDormant())
+                        .orElseThrow(() -> new OiException(ErrorCode.ALREADY_DELETED_OR_NOT_FOUND_USER));
+        }
+
+
 
 }

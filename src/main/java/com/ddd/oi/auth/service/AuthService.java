@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,24 +37,29 @@ public class AuthService {
     private final Long ACCESS_TOKEN_VALIDITY = 1000L * 60 * 60;
     private final Long REFRESH_TOKEN_VALIDITY = 1000L * 60 * 60 * 24 * 14;
 
+    @Transactional
     public AuthResponseDTO oAuthLogin(ProviderInfo provider, String accessCode, HttpServletResponse response) {
         OAuthProfile profile;
+        String oauthAccessToken;
 
         switch (provider) {
             case KAKAO -> {
                 var oAuthToken = kakaoUtil.requestToken(accessCode);
                 var kakaoProfile = kakaoUtil.requestProfile(oAuthToken);
                 profile = new KakaoProfileAdapter(kakaoProfile);
+                oauthAccessToken = oAuthToken.getAccess_token();
             }
             case NAVER -> {
                 var oAuthToken = naverUtil.requestToken(accessCode);
                 var naverProfile = naverUtil.requestProfile(oAuthToken);
                 profile = new NaverProfileAdapter(naverProfile);
+                oauthAccessToken = oAuthToken.getAccess_token();
             }
             case GOOGLE -> {
                 var oAuthToken = googleUtil.requestToken(accessCode);
                 var googleProfile = googleUtil.requestProfile(oAuthToken);
                 profile = new GoogleProfileAdapter(googleProfile);
+                oauthAccessToken = oAuthToken.getAccess_token();
             }
             default -> throw new OiException(ErrorCode.BAD_REQUEST);
         }
@@ -61,6 +67,7 @@ public class AuthService {
         User user = userRepository.findByEmail(profile.getEmail())
                 .map(existingUser -> {
                     existingUser.updateNickname(profile.getNickname());
+                    existingUser.updateIsDormant(false);
 //                    existingUser.updateProfileUrl(profile.getProfileImageUrl());
                     return existingUser;
                 })
@@ -69,10 +76,9 @@ public class AuthService {
 
         String accessToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), ACCESS_TOKEN_VALIDITY);
         String refreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
-
         redisUtil.setDataExpire("RT:" + user.getEmail(), refreshToken, REFRESH_TOKEN_VALIDITY);
 
-        return new AuthResponseDTO(user, accessToken, refreshToken);
+        return new AuthResponseDTO(user, accessToken, refreshToken, oauthAccessToken);
     }
 
 
@@ -107,6 +113,6 @@ public class AuthService {
         redisUtil.deleteData(redisKey);
         redisUtil.setDataExpire(redisKey, newRefreshToken, REFRESH_TOKEN_VALIDITY);
 
-        return new AuthResponseDTO(user, newAccessToken, newRefreshToken);
+        return new AuthResponseDTO(user, newAccessToken, newRefreshToken,null);
     }
 }
