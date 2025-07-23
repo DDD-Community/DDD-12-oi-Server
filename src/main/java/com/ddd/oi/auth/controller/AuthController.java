@@ -6,6 +6,7 @@ import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.CustomApiResponse;
 import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.user.domain.ProviderInfo;
+import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.dto.UserConverter;
 import com.ddd.oi.user.dto.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -58,5 +60,14 @@ public class AuthController {
 
         return CustomApiResponse.success(dto, 200, "토큰 재발급 성공");
     }
-
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃 API")
+    public CustomApiResponse<?> logout(
+            @AuthenticationPrincipal User user,
+            @RequestParam("provider") ProviderInfo provider,
+            @RequestHeader("Oauth-Authorization") String oauthAccessToken
+    ) {
+        Boolean result = authService.logout(provider, oauthAccessToken, user.getEmail());
+        return CustomApiResponse.success(result,200,"로그아웃 성공");
+    }
 }

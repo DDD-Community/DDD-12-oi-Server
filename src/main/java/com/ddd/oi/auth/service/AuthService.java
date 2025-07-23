@@ -115,4 +115,23 @@ public class AuthService {
 
         return new AuthResponseDTO(user, newAccessToken, newRefreshToken,null);
     }
+    public Boolean logout(ProviderInfo provider, String oauthAccessToken,String userEmail) {
+        switch (provider) {
+            case KAKAO -> {
+                kakaoUtil.logoutKakao(oauthAccessToken);
+                redisUtil.deleteData("RT:" + userEmail);
+                return true;
+            }
+            case NAVER -> {
+                naverUtil.logoutNaver(userEmail);
+                return true;
+            }
+            case GOOGLE -> {
+                googleUtil.logoutGoogle(oauthAccessToken,userEmail);
+                return false;
+            }
+            default -> throw new OiException(ErrorCode.BAD_REQUEST);
+        }
+    }
+
 }

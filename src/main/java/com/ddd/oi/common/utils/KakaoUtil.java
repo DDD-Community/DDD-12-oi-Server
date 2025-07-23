@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -134,6 +136,25 @@ public class KakaoUtil {
         redisUtil.deleteData("RT:" + kakaoUserId);
         redisUtil.deleteData("AT:" + kakaoUserId);
 
-        log.info("카카오 연결해제 완료 - userId: {}", kakaoUserId);
     }
+    public void logoutKakao(String oauthAccessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + oauthAccessToken);
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        try {
+            restTemplate.exchange(
+                    "https://kapi.kakao.com/v1/user/logout",
+                    HttpMethod.POST,
+                    request,
+                    String.class
+            );
+        } catch (HttpClientErrorException e) {
+            log.error("카카오 로그아웃 실패: {}", e.getResponseBodyAsString());
+            throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -153,10 +155,25 @@ public class GoogleUtil {
                 request,
                 String.class
         );
-
-        log.info(" 구글 연결 해제 완료: {}", userEmail);
-
         redisUtil.deleteData("RT:" + userEmail);
+    }
+    public void logoutGoogle(String oauthAccessToken, String userEmail) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("token", oauthAccessToken);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        try {
+            restTemplate.postForEntity("https://oauth2.googleapis.com/revoke", request, String.class);
+
+            redisUtil.deleteData("RT:" + userEmail);
+        } catch (HttpClientErrorException e) {
+            log.error("구글 로그아웃 실패: {}", e.getResponseBodyAsString());
+            throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

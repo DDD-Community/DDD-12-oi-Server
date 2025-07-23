@@ -108,7 +108,9 @@ public class NaverUtil {
         redisUtil.deleteData("RT:" + userEmail);
         redisUtil.deleteData("AT:" + userEmail);
 
-        log.info("네이버 연결 해제 완료: {}", userEmail);
+    }
+    public void logoutNaver(String userEmail) {
+        redisUtil.deleteData("RT:" + userEmail);
     }
 
 
