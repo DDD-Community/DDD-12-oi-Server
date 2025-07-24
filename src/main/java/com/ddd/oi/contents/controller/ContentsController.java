@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 
 @RestController
-@RequestMapping("/api/contents")
+@RequestMapping("/api/v1/contents")
 @RequiredArgsConstructor
 public class ContentsController {
     private final ContentsService contentsService;

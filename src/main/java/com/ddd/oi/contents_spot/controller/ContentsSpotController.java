@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/contents/{contentsId}/spots")
+@RequestMapping("/api/v1/contents/{contentsId}/spots")
 @RequiredArgsConstructor
 public class ContentsSpotController {
     private final ContentsSpotService contentsSpotService;
