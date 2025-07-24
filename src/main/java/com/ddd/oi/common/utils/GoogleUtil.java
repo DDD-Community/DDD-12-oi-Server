@@ -34,35 +34,27 @@ public class GoogleUtil {
 
     @Value("${google.redirect-uri}")
     private String redirectUri;
-    public GoogleDTO.OAuthToken requestToken(String code) {
-        RestTemplate restTemplate = new RestTemplate();
+    public GoogleDTO.GoogleProfile requestProfileByAccessToken(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Authorization", "Bearer " + accessToken);
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", clientId);
-        params.add("client_secret", clientSecret);
-        params.add("code", code);
-        params.add("redirect_uri", redirectUri);
-        params.add("state", UUID.randomUUID().toString()); // csrf 방지 위해서 넣어놓음
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                "https://oauth2.googleapis.com/token",
-                HttpMethod.POST,
+                "https://www.googleapis.com/userinfo/v2/me",
+                HttpMethod.GET,
                 request,
-                String.class);
-
-        ObjectMapper objectMapper = new ObjectMapper();
+                String.class
+        );
 
         try {
-            return objectMapper.readValue(response.getBody(), GoogleDTO.OAuthToken.class);
+            return new ObjectMapper().readValue(response.getBody(), GoogleDTO.GoogleProfile.class);
         } catch (JsonProcessingException e) {
+            log.error("구글 사용자 정보 파싱 실패", e);
             throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public GoogleDTO.GoogleProfile requestProfile(GoogleDTO.OAuthToken token) {
         RestTemplate restTemplate = new RestTemplate();
@@ -85,61 +77,7 @@ public class GoogleUtil {
             throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
-    public void unlink(String providerId) {
 
-        String refreshToken = redisUtil.getData("RT:" + providerId);
-
-        if (refreshToken == null || refreshToken.isBlank()) {
-            throw new OiException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
-        }
-
-        String accessToken = reissueAccessToken(refreshToken);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/x-www-form-urlencoded");
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("token", accessToken);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-
-        restTemplate.exchange(
-                "https://oauth2.googleapis.com/revoke",
-                HttpMethod.POST,
-                request,
-                String.class
-        );
-
-        redisUtil.deleteData("RT:" + providerId);
-        redisUtil.deleteData("AT:" + providerId);
-    }
-
-    private String reissueAccessToken(String refreshToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/x-www-form-urlencoded");
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "refresh_token");
-        params.add("client_id", clientId);
-        params.add("client_secret", clientSecret);
-        params.add("refresh_token", refreshToken);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                "https://oauth2.googleapis.com/token",
-                HttpMethod.POST,
-                request,
-                String.class
-        );
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readTree(response.getBody()).get("access_token").asText();
-        } catch (Exception e) {
-            throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-    }
     public void unlink(String oauthAccessToken, String userEmail) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded");
@@ -175,6 +113,4 @@ public class GoogleUtil {
             throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 }

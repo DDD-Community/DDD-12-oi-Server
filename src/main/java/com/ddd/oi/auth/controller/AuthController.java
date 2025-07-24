@@ -1,6 +1,7 @@
 package com.ddd.oi.auth.controller;
 
 import com.ddd.oi.auth.dto.AuthResponseDTO;
+import com.ddd.oi.auth.dto.OAuthAccessTokenRequest;
 import com.ddd.oi.auth.service.AuthService;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.CustomApiResponse;
@@ -25,22 +26,25 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("/login/{provider}")
+    @PostMapping("/login/{provider}")
     @Operation(summary = "로그인", description = "로그인 API")
     public CustomApiResponse<UserResponseDTO> login(
             @PathVariable("provider") String provider,
-            @RequestParam("code") String accessCode,
-            HttpServletResponse httpServletResponse
+            @RequestBody OAuthAccessTokenRequest request,
+            HttpServletResponse response
     ) {
         ProviderInfo providerInfo = ProviderInfo.of(provider);
-        AuthResponseDTO responseDTO = authService.oAuthLogin(providerInfo, accessCode, httpServletResponse);
+        String oauthAccessToken = request.oauthAccessToken();
+        AuthResponseDTO authDTO = authService.oAuthLogin(providerInfo, oauthAccessToken, response);
 
         return CustomApiResponse.success(
-                UserConverter.toJoinResultDTO(responseDTO.user(), responseDTO.accessToken(), responseDTO.refreshToken(),responseDTO.oauthAccessToken()),
+                UserConverter.toJoinResultDTO(authDTO.user(), authDTO.accessToken(), authDTO.refreshToken(), authDTO.oauthAccessToken()
+                ),
                 200,
-                "로그인 성공"
+                "카카오 로그인 성공"
         );
     }
+
 
     @PostMapping("/reissue")
     @Operation(summary = "리프레시 토큰 재발급", description = "리프레시 토큰 재발급 API")
