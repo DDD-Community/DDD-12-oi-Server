@@ -2,11 +2,9 @@ package com.ddd.oi.schedule_detail.controller;
 
 import com.ddd.oi.schedule_detail.dto.response.CreateScheduleDetailResponse;
 import com.ddd.oi.schedule_detail.dto.response.UpdateScheduleDetailResponse;
-import com.ddd.oi.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,40 +34,36 @@ public class ScheduleDetailController {
 	@GetMapping
 	@Operation(summary = "세부일정 목록 조회", description = "세부일정 목록 조회 API")
 	public CustomApiResponse<List<ScheduleDetailGroupedResponse>> getDetails(
-			@AuthenticationPrincipal User user,
 			@PathVariable("scheduleId") Long scheduleId) {
-		List<ScheduleDetailGroupedResponse> result = scheduleDetailService.getGroupedDetails(user,scheduleId);
+		List<ScheduleDetailGroupedResponse> result = scheduleDetailService.getGroupedDetails(scheduleId);
 		return CustomApiResponse.success(result, 200, "세부 일정 목록 조회 성공");
 	}
 
 	@PostMapping
 	@Operation(summary = "세부일정 생성", description = "세부일정 생성 API")
 	public CustomApiResponse<List<CreateScheduleDetailResponse>> createDetails(
-			@AuthenticationPrincipal User user,
 			@PathVariable("scheduleId") Long scheduleId,
 			@RequestBody List<CreateDetailRequest> requests) {
-		List<CreateScheduleDetailResponse> result = scheduleDetailService.createDetails(user,scheduleId, requests);
+		List<CreateScheduleDetailResponse> result = scheduleDetailService.createDetails(scheduleId, requests);
 		return CustomApiResponse.success(result, 200, "세부 일정 생성 성공");
 	}
 
 	@PutMapping("/{detailId}")
 	@Operation(summary = "세부일정 수정", description = "세부일정 수정 API")
 	public CustomApiResponse<UpdateScheduleDetailResponse> updateDetail(
-			@AuthenticationPrincipal User user,
 			@PathVariable("scheduleId") Long scheduleId,
 			@PathVariable("detailId") Long detailId,
 			@RequestBody UpdateDetailRequest request) {
-		UpdateScheduleDetailResponse result = scheduleDetailService.updateDetail(user,scheduleId, detailId, request);
+		UpdateScheduleDetailResponse result = scheduleDetailService.updateDetail(scheduleId, detailId, request);
 		return CustomApiResponse.success(result, 200, "세부 일정 수정 성공");
 	}
 
 	@DeleteMapping("/{detailId}")
 	@Operation(summary = "세부일정 삭제", description = "세부일정 삭제 API")
 	public CustomApiResponse<Void> deleteDetail(
-			@AuthenticationPrincipal User user,
 			@PathVariable("scheduleId") Long scheduleId,
 			@PathVariable("detailId") Long detailId) {
-		scheduleDetailService.deleteDetail(user,scheduleId, detailId);
+		scheduleDetailService.deleteDetail(scheduleId, detailId);
 		return CustomApiResponse.success(null, 200, "세부 일정 삭제 성공");
 	}
 }
