@@ -1,6 +1,7 @@
 package com.ddd.oi.contents_spot.domain;
 
 import com.ddd.oi.common.domain.BaseEntity;
+import com.ddd.oi.contents.domain.Contents;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,7 +21,7 @@ public class ContentsSpot extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "contents_spot_id")
-	private Long contentsSpotId;
+	private Long id;
 
 	@Column(name = "spot_name", nullable = false)
 	private String spotName;
@@ -39,6 +40,10 @@ public class ContentsSpot extends BaseEntity {
 
 	@Column(name = "longitude")
 	private Double longitude;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "contents_id")
+	private Contents contents;
 
 	public void update(com.ddd.oi.contents_spot.dto.ContentsSpotRequest request) {
 		this.spotName = request.spotName();

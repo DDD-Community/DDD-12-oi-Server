@@ -3,6 +3,8 @@ package com.ddd.oi.contents.service;
 import com.ddd.oi.contents.domain.Contents;
 import com.ddd.oi.contents.dto.*;
 import com.ddd.oi.contents.repository.ContentsRepository;
+import com.ddd.oi.contents_image.domain.ContentsImage;
+import com.ddd.oi.contents_image.repository.ContentsImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +18,18 @@ import com.ddd.oi.common.response.ErrorCode;
 @RequiredArgsConstructor
 public class ContentsService {
     private final ContentsRepository contentsRepository;
+    private final ContentsImageRepository contentsImageRepository;
 
     @Transactional
     public ContentsResponse createContents(ContentsCreateRequest request) {
         Contents contents = request.toEntity();
+        if (request.imageIds() != null && !request.imageIds().isEmpty()) {
+            List<ContentsImage> images = contentsImageRepository.findAllById(request.imageIds());
+            for (ContentsImage image : images) {
+                image.setContents(contents);
+            }
+            contents.getImages().addAll(images);
+        }
         return ContentsResponse.from(contentsRepository.save(contents));
     }
 
