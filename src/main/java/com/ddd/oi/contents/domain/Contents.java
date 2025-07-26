@@ -54,11 +54,11 @@ public class Contents extends BaseEntity {
 	@Column(name = "short_description")
 	private String shortDescription;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "contents", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default
 	private List<ContentsImage> images = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "contents", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default
 	private List<ContentsSpot> spots = new ArrayList<>();
 

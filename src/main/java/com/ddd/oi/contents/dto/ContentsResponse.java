@@ -31,7 +31,7 @@ public record ContentsResponse(
                 contents.getContentsTag(),
                 contents.getShortTitle(),
                 contents.getShortDescription(),
-                contents.getImages().stream().map(img -> img.getContentsImageId()).toList(),
-                contents.getSpots().stream().map(spot -> spot.getContentsSpotId()).toList());
+                contents.getImages().stream().map(img -> img.getId()).toList(),
+                contents.getSpots().stream().map(spot -> spot.getId()).toList());
     }
 }
