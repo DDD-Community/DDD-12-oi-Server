@@ -12,7 +12,7 @@ public record ContentsSpotResponse(
         Double longitude) {
     public static ContentsSpotResponse from(ContentsSpot spot) {
         return new ContentsSpotResponse(
-                spot.getContentsSpotId(),
+                spot.getId(),
                 spot.getSpotName(),
                 spot.getAddress(),
                 spot.getSpotDescription(),

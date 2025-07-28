@@ -30,7 +30,9 @@ public class ContentsSpotService {
                 .spotImage(request.spotImage())
                 .latitude(request.latitude())
                 .longitude(request.longitude())
+                .contents(contents)
                 .build();
+        contents.getSpots().add(spot);
         contentsSpotRepository.save(spot);
         return ContentsSpotResponse.from(spot);
     }
