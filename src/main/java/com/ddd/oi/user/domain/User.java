@@ -8,11 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "user")
 @Getter
 @Builder
+@SQLDelete(sql = "UPDATE user SET is_dormant = true WHERE id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User extends BaseEntity {
@@ -22,11 +24,8 @@ public class User extends BaseEntity {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "login_type", nullable = false)
-	private LoginType loginType;
-
-	@Column(name = "provider", nullable = false)
-	private String provider;
+	@Column(name = "provider_info", nullable = false)
+	private ProviderInfo providerInfo;
 
 	@Column(name = "is_dormant", nullable = false)
 	@Builder.Default
@@ -35,13 +34,23 @@ public class User extends BaseEntity {
 	@Column(name = "nickname")
 	private String nickname;
 
-	@Column(name = "profile_url")
-	private String profileUrl;
+	@Column(name = "profile_image_url")
+	private String profileImageUrl;
 
 	@Column(name = "email")
 	private String email;
 
-	public enum LoginType {
-		KAKAO, GOOGLE, NAVER, APPLE
+	@Enumerated(EnumType.STRING)
+	private RoleType role;
+
+	public void updateNickname(String nickname) {
+		this.nickname = nickname;
 	}
+
+	public void updateProfileUrl(String profileImageUrl) {
+		this.profileImageUrl = profileImageUrl;
+	}
+	public void updateIsDormant(boolean isDormant) { this.isDormant = isDormant;}
+
 }
+
