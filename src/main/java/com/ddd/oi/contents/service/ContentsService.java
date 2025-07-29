@@ -41,6 +41,10 @@ public class ContentsService {
 	public ContentsResponse getContents(Long id) {
 		Contents contents = contentsRepository.findByIdWithImagesAndSpots(id)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+
+        // 조회수 증가
+        contents.incrementViewCount();
+
 		return ContentsResponse.from(contents);
 	}
 
