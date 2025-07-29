@@ -24,34 +24,46 @@ public class ContentsController {
     private final ContentsService contentsService;
 
     @PostMapping
-    @Operation(summary = "컨텐츠 생성", description = "컨텐츠를 생성합니다.", requestBody = @RequestBody(content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "ContentsCreateRequest 예시", value = "{\n  \"title\": \"여행지 추천\",\n  \"displayDescription\": \"이곳은 정말 멋진 여행지입니다.\",\n  \"cost\": 10000,\n  \"recommendedSchedule\": \"2박 3일\",\n  \"duration\": 120,\n  \"contentsTag\": \"TRAVEL\",\n  \"shortTitle\": \"여행지\",\n  \"shortDescription\": \"짧은 설명입니다.\",\n  \"imageIds\": [1,2,3]\n}"))))
+    @Operation(summary = "컨텐츠 생성", description = "컨텐츠를 생성합니다.", requestBody = @RequestBody(content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "ContentsCreateRequest 예시", value = "{\n  \"title\": \"여행지 추천\",\n  \"displayDescription\": \"이곳은 정말 멋진 여행지입니다.\",\n  \"cost\": 10000,\n  \"recommendedSchedule\": \"2박 3일\",\n  \"duration\": 120,\n  \"contentsTag\": \"TRAVEL\",\n  \"shortTitle\": \"여행지\",\n  \"shortDescription\": \"짧은 설명입니다.\",\n  \"imageIds\": [1,2,3]\n+ \"recommendationScore\": 9.5\n}"))))
     public CustomApiResponse<ContentsResponse> createContents(
             @org.springframework.web.bind.annotation.RequestBody ContentsCreateRequest request) {
         return CustomApiResponse.success(contentsService.createContents(request), 200, "컨텐츠 생성 성공");
     }
 
     @GetMapping("/{contentsId}")
+    @Operation(summary = "컨텐츠 조회", description = "컨텐츠 ID를 통해 컨텐츠를 조회합니다.",
+        parameters = @io.swagger.v3.oas.annotations.Parameter(name = "contentsId", description = "컨텐츠 ID", example = "1"))
     public CustomApiResponse<ContentsResponse> getContents(@PathVariable Long contentsId) {
         return CustomApiResponse.success(contentsService.getContents(contentsId), 200, "컨텐츠 조회 성공");
     }
 
     @PutMapping("/{contentsId}")
+    @Operation(summary = "컨텐츠 수정", description = "컨텐츠를 수정합니다.",
+        parameters = @io.swagger.v3.oas.annotations.Parameter(name = "contentsId", description = "컨텐츠 ID", example = "1"),
+        requestBody = @RequestBody(content = @Content(mediaType = "application/json",
+            examples = @ExampleObject(name = "ContentsUpdateRequest 예시", value = "{\"title\":\"수정된 제목\",\"displayDescription\":\"수정된 설명\",\"cost\":15000,\"recommendedSchedule\":\"3박 4일\",\"duration\":180,\"contentsTag\":\"TRAVEL\",\"shortTitle\":\"수정된 짧은 제목\",\"shortDescription\":\"수정된 짧은 설명\",\"recommendationScore\":8.5}"))))
     public CustomApiResponse<ContentsResponse> updateContents(@PathVariable Long contentsId,
-            @RequestBody ContentsUpdateRequest request) {
+        @RequestBody ContentsUpdateRequest request) {
         return CustomApiResponse.success(contentsService.updateContents(contentsId, request), 200, "컨텐츠 수정 성공");
     }
 
     @DeleteMapping("/{contentsId}")
+    @Operation(summary = "컨텐츠 삭제", description = "컨텐츠 ID를 통해 컨텐츠를 삭제합니다.",
+        parameters = @io.swagger.v3.oas.annotations.Parameter(name = "contentsId", description = "컨텐츠 ID", example = "1"))
     public CustomApiResponse<Void> deleteContents(@PathVariable Long contentsId) {
         contentsService.deleteContents(contentsId);
         return CustomApiResponse.success(null, 200, "컨텐츠 삭제 성공");
     }
 
     @GetMapping
-    @Operation(summary = "컨텐츠 리스트 조회", description = "태그와 정렬 기준에 따라 컨텐츠 리스트를 조회합니다.")
+    @Operation(summary = "컨텐츠 리스트 조회", description = "태그와 정렬 기준에 따라 컨텐츠 리스트를 조회합니다.",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "tag", description = "컨텐츠 태그", example = "TRAVEL"),
+            @io.swagger.v3.oas.annotations.Parameter(name = "sortBy", description = "정렬 기준 (latest, popular, recommended)", example = "latest")
+        })
     public CustomApiResponse<List<ContentsResponse>> getContentsList(
         @RequestParam(required = false) ContentsTag tag,
         @RequestParam(required = false, defaultValue = "latest") String sortBy) {
-        return CustomApiResponse.success(contentsService.getContentsListByTagAndSort(tag, sortBy), 200, "Contents list retrieved successfully");
+        return CustomApiResponse.success(contentsService.getContentsListByTagAndSort(tag, sortBy), 200, "컨텐츠 리스트 조회 성공");
     }
 }
