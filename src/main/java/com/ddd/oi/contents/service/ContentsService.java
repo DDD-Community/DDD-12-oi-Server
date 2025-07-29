@@ -93,8 +93,4 @@ public class ContentsService {
         }
     }
 
-	@Transactional(readOnly = true)
-	public Page<ContentsResponse> getContentsPage(Pageable pageable) {
-		return contentsRepository.findAll(pageable).map(ContentsResponse::from);
-	}
 }
