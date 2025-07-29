@@ -25,14 +25,14 @@ public enum ErrorCode {
     // 인증/인가 에러
     CREDENTIALS_INVALID("아이디 또는 비밀번호가 잘못되었습니다.", HttpStatus.UNAUTHORIZED),
     REQUEST_FORMAT_INVALID("입력 형식이 잘못되었습니다.", HttpStatus.BAD_REQUEST),
-    HEADER_REFRESH_TOKEN_NOT_EXISTS("헤더에 Refresh 토큰이 존재하지 않습니다.",HttpStatus.BAD_REQUEST),
+    HEADER_REFRESH_TOKEN_NOT_EXISTS("헤더에 Refresh 토큰이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_NOT_FOUND("Refresh 토큰이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_EXPIRED("Refresh 토큰이 만료되었습니다.", HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_INVALID_OR_EXPIRED("Refresh 토큰이 유효하지 않거나 만료되었습니다.", HttpStatus.NOT_FOUND),
     ACCESS_TOKEN_EXPIRED("Access 토큰이 만료되었습니다.", HttpStatus.REQUEST_TIMEOUT),
     TOKEN_INVALID("유효하지 않은 토큰입니다.", HttpStatus.BAD_REQUEST),
     TOKEN_EXPIRED("만료된 토큰입니다.", HttpStatus.BAD_REQUEST),
-    OAUTH_PROVIDER_MISMATCH("다른 플랫폼으로 가입된 계정입니다. 해당 플랫폼으로 로그인하세요.",HttpStatus.BAD_REQUEST),
+    OAUTH_PROVIDER_MISMATCH("다른 플랫폼으로 가입된 계정입니다. 해당 플랫폼으로 로그인하세요.", HttpStatus.BAD_REQUEST),
     ALREADY_DELETED_USER("이미 탈퇴한 사용자입니다.", HttpStatus.BAD_REQUEST),
     ALREADY_DELETED_OR_NOT_FOUND_USER("이미 탈퇴한 사용자이거나 존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND),
 
@@ -48,7 +48,11 @@ public enum ErrorCode {
 
     // 이미지 관련 에러
     IMAGE_NOT_FOUND("이미지를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    IMAGE_LOADING_ERROR("이미지 로딩에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    IMAGE_LOADING_ERROR("이미지 로딩에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    // Contents 관련 에러
+    INVALID_RECOMMENDATION_SCORE("추천 점수는 0.0에서 10.0 사이의 값을 입력해야 합니다.", HttpStatus.BAD_REQUEST);
+
 
     private final String message;
     private final HttpStatus httpStatus;
@@ -56,4 +60,4 @@ public enum ErrorCode {
     public int getStatusCode() {
         return httpStatus.value();
     }
-}
+    }
