@@ -1,5 +1,6 @@
 package com.ddd.oi.contents.controller;
 
+import com.ddd.oi.contents.domain.enumType.ContentsTag;
 import com.ddd.oi.contents.dto.*;
 import com.ddd.oi.contents.service.ContentsService;
 import com.ddd.oi.common.response.CustomApiResponse;
@@ -47,8 +48,10 @@ public class ContentsController {
     }
 
     @GetMapping
-    @Operation(summary = "컨텐츠 전체 리스트 조회", description = "모든 컨텐츠를 리스트로 조회합니다.")
-    public CustomApiResponse<List<ContentsResponse>> getContentsList() {
-        return CustomApiResponse.success(contentsService.list(), 200, "컨텐츠 리스트 조회 성공");
+    @Operation(summary = "컨텐츠 리스트 조회", description = "태그와 정렬 기준에 따라 컨텐츠 리스트를 조회합니다.")
+    public CustomApiResponse<List<ContentsResponse>> getContentsList(
+        @RequestParam(required = false) ContentsTag tag,
+        @RequestParam(required = false, defaultValue = "latest") String sortBy) {
+        return CustomApiResponse.success(contentsService.getContentsListByTagAndSort(tag, sortBy), 200, "Contents list retrieved successfully");
     }
 }

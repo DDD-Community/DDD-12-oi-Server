@@ -1,6 +1,7 @@
 package com.ddd.oi.contents.service;
 
 import com.ddd.oi.contents.domain.Contents;
+import com.ddd.oi.contents.domain.enumType.ContentsTag;
 import com.ddd.oi.contents.dto.*;
 import com.ddd.oi.contents.repository.ContentsRepository;
 import com.ddd.oi.contents_image.domain.ContentsImage;
@@ -50,7 +51,7 @@ public class ContentsService {
 
 	@Transactional
 	public ContentsResponse updateContents(Long id, ContentsUpdateRequest request) {
-		Contents contents = contentsRepository.findByIdWithImagesAndSpots(id)
+		Contents contents = contentsRepository.findById(id)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
 		if (request.recommendationScore() < 0.0 || request.recommendationScore() > 10.0){
@@ -68,10 +69,29 @@ public class ContentsService {
 		contentsRepository.deleteById(id);
 	}
 
-	@Transactional(readOnly = true)
-	public List<ContentsResponse> list() {
-		return contentsRepository.findAll().stream().map(ContentsResponse::from).toList();
-	}
+    @Transactional(readOnly = true)
+    public List<ContentsResponse> getContentsListByTagAndSort(ContentsTag tag, String sortBy) {
+        List<Contents> contentsList = getContentsBySort(tag, sortBy);
+        return contentsList.stream().map(ContentsResponse::from).toList();
+    }
+
+    private List<Contents> getContentsBySort(ContentsTag tag, String sortBy) {
+        if (tag != null) {
+            return switch (sortBy) {
+                case "popular" -> contentsRepository.findByContentsTagOrderByViewCountDesc(tag);
+                case "recommended" -> contentsRepository.findByContentsTagOrderByRecommendationScoreDesc(tag);
+                case "latest" -> contentsRepository.findByContentsTagOrderByCreatedAtDesc(tag);
+                default -> throw new OiException(ErrorCode.PARAMETER_INVALID);
+            };
+        } else {
+            return switch (sortBy) {
+                case "popular" -> contentsRepository.findAllByOrderByViewCountDesc();
+                case "recommended" -> contentsRepository.findAllByOrderByRecommendationScoreDesc();
+                case "latest" -> contentsRepository.findAllByOrderByCreatedAtDesc();
+                default -> throw new OiException(ErrorCode.PARAMETER_INVALID);
+            };
+        }
+    }
 
 	@Transactional(readOnly = true)
 	public Page<ContentsResponse> getContentsPage(Pageable pageable) {

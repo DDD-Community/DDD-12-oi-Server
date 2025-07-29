@@ -19,7 +19,8 @@ public record ContentsResponse(
         String shortTitle,
         String shortDescription,
         List<Long> imageIds,
-        List<Long> spotIds) {
+        List<Long> spotIds,
+        Long viewCount) {
     public static ContentsResponse from(Contents contents) {
         return new ContentsResponse(
                 contents.getId(),
@@ -32,6 +33,7 @@ public record ContentsResponse(
                 contents.getShortTitle(),
                 contents.getShortDescription(),
                 contents.getImages().stream().map(img -> img.getId()).toList(),
-                contents.getSpots().stream().map(spot -> spot.getId()).toList());
+                contents.getSpots().stream().map(spot -> spot.getId()).toList(),
+                contents.getViewCount());
     }
 }
