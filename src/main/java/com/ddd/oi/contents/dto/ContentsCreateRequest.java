@@ -16,7 +16,9 @@ public record ContentsCreateRequest(
         ContentsTag contentsTag,
         String shortTitle,
         String shortDescription,
-        List<Long> imageIds) {
+        List<Long> imageIds,
+        Double recommendationScore
+        ) {
 
     public ContentsCreateRequest {
         if (title == null || title.isBlank())

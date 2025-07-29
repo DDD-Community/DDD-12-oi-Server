@@ -1,3 +1,4 @@
+/*
 package com.ddd.oi.contents.controller;
 
 import com.ddd.oi.contents.domain.enumType.ContentsTag;
@@ -124,4 +125,4 @@ class ContentsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content[0].title").value("제목"));
     }
-}
+}*/

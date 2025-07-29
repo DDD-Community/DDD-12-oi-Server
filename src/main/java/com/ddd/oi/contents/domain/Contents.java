@@ -62,6 +62,17 @@ public class Contents extends BaseEntity {
 	@Builder.Default
 	private List<ContentsSpot> spots = new ArrayList<>();
 
+	@Column(name = "view_count", nullable = false)
+	@Builder.Default
+	private Long viewCount = 0L;
+
+	@Column(name = "recommendation_score", nullable = false)
+	private Double recommendationScore;
+
+	public void incrementViewCount() {
+		this.viewCount++;
+	}
+
 	public void update(ContentsUpdateRequest request) {
 		this.title = request.title();
 		this.displayDescription = request.displayDescription();
@@ -71,5 +82,6 @@ public class Contents extends BaseEntity {
 		this.contentsTag = request.contentsTag();
 		this.shortTitle = request.shortTitle();
 		this.shortDescription = request.shortDescription();
+		this.recommendationScore= request.recommendationScore();
 	}
 }
