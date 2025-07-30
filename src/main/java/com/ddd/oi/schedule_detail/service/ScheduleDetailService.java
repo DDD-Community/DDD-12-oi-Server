@@ -38,7 +38,7 @@ public class ScheduleDetailService {
 	private static final int MAX_CREATE_COUNT = 5;
 
 	@Transactional(readOnly = true)
-	public List<ScheduleDetailGroupedResponse> getGroupedDetails(User user,Long scheduleId) {
+	public List<ScheduleDetailGroupedResponse> getGroupedDetails(Long scheduleId) {
 		findExistingSchedule(scheduleId);
 
 		return scheduleDetailRepository.findByScheduleId(scheduleId)
@@ -51,7 +51,7 @@ public class ScheduleDetailService {
 	}
 
 	@Transactional
-	public List<CreateScheduleDetailResponse> createDetails(User user,Long scheduleId, List<CreateDetailRequest> requests) {
+	public List<CreateScheduleDetailResponse> createDetails(Long scheduleId, List<CreateDetailRequest> requests) {
 		if (requests.size() > MAX_CREATE_COUNT) {
 			throw new OiException(ErrorCode.SCHEDULE_DETAIL_CREATE_LIMIT_EXCEEDED);
 		}
@@ -67,7 +67,7 @@ public class ScheduleDetailService {
 	}
 
 	@Transactional
-	public UpdateScheduleDetailResponse updateDetail(User user,Long scheduleId, Long detailId, UpdateDetailRequest request) {
+	public UpdateScheduleDetailResponse updateDetail(Long scheduleId, Long detailId, UpdateDetailRequest request) {
 		Schedule schedule = findExistingSchedule(scheduleId);
 		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
@@ -105,7 +105,7 @@ public class ScheduleDetailService {
 
 
 	@Transactional
-	public Boolean deleteDetail(User user,Long scheduleId, Long detailId) {
+	public Boolean deleteDetail(Long scheduleId, Long detailId) {
 		findExistingSchedule(scheduleId);
 		ScheduleDetail detail = findExistingScheduleDetail(detailId, scheduleId);
 
