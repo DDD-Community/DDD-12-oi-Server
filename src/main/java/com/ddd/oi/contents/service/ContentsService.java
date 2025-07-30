@@ -39,8 +39,8 @@ public class ContentsService {
 	}
 
 	@Transactional(readOnly = true)
-	public ContentsResponse getContents(Long id) {
-		Contents contents = contentsRepository.findByIdWithImagesAndSpots(id)
+	public ContentsResponse getContents(Long contentsId) {
+		Contents contents = contentsRepository.findByIdWithImagesAndSpots(contentsId)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
         // 조회수 증가
@@ -50,8 +50,8 @@ public class ContentsService {
 	}
 
 	@Transactional
-	public ContentsResponse updateContents(Long id, ContentsUpdateRequest request) {
-		Contents contents = contentsRepository.findById(id)
+	public ContentsResponse updateContents(Long contentsId, ContentsUpdateRequest request) {
+		Contents contents = contentsRepository.findById(contentsId)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
 		if (request.recommendationScore() < 0.0 || request.recommendationScore() > 10.0){
@@ -62,11 +62,11 @@ public class ContentsService {
 	}
 
 	@Transactional
-	public void deleteContents(Long id) {
-		if (!contentsRepository.existsById(id)) {
+	public void deleteContents(Long contentsId) {
+		if (!contentsRepository.existsById(contentsId)) {
 			throw new OiException(ErrorCode.ENTITY_NOT_FOUND);
 		}
-		contentsRepository.deleteById(id);
+		contentsRepository.deleteById(contentsId);
 	}
 
     @Transactional(readOnly = true)
