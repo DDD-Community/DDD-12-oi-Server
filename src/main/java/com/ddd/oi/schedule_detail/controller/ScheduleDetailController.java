@@ -40,83 +40,83 @@ public class ScheduleDetailController {
 	@GetMapping
 	@Operation(summary = "세부일정 목록 조회", description = "세부일정 목록 조회 API")
 	public CustomApiResponse<List<ScheduleDetailGroupedResponse>> getDetails(
-			@AuthenticationPrincipal User user,
+//			@AuthenticationPrincipal User user,
 			@PathVariable("scheduleId") Long scheduleId) {
-		List<ScheduleDetailGroupedResponse> result = scheduleDetailService.getGroupedDetails(user,scheduleId);
+		List<ScheduleDetailGroupedResponse> result = scheduleDetailService.getGroupedDetails(scheduleId);
 		return CustomApiResponse.success(result, 200, "세부 일정 목록 조회 성공");
 	}
 
 	@PostMapping
 	@Operation(
-		summary = "세부일정 생성",
-		description = "세부일정 생성 API",
-		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-			content = @Content(
-				mediaType = "application/json",
-				examples = @ExampleObject(
-					name = "CreateDetailRequest Example",
-					value = "[{\"targetDate\": \"2025-07-27\", \"memo\": \"Meeting at Starbucks\", \"spotName\": \"스타벅스 한국프레스센터점\", \"latitude\": 37.5674232, \"longitude\": 126.9778908, \"category\": \"카페>디저트\"},"
-						+ "{\"targetDate\": \"2025-07-28\", \"memo\": \"Dinner at Italian Restaurant\", \"spotName\": \"이탈리안 레스토랑\", \"latitude\": 37.5651234, \"longitude\": 126.9785678, \"category\": \"음식점>양식\"}]"
-				)
-			)
-		),
-		responses = {
-			@ApiResponse(
-				responseCode = "200",
-				description = "세부 일정 생성 성공",
-				content = @Content(
-					mediaType = "application/json",
-					schema = @Schema(implementation = CreateScheduleDetailResponse.class)
-				)
-			)
-		}
+			summary = "세부일정 생성",
+			description = "세부일정 생성 API",
+			requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+					content = @Content(
+							mediaType = "application/json",
+							examples = @ExampleObject(
+									name = "CreateDetailRequest Example",
+									value = "[{\"targetDate\": \"2025-07-27\", \"memo\": \"Meeting at Starbucks\", \"spotName\": \"스타벅스 한국프레스센터점\", \"latitude\": 37.5674232, \"longitude\": 126.9778908, \"category\": \"카페>디저트\"},"
+											+ "{\"targetDate\": \"2025-07-28\", \"memo\": \"Dinner at Italian Restaurant\", \"spotName\": \"이탈리안 레스토랑\", \"latitude\": 37.5651234, \"longitude\": 126.9785678, \"category\": \"음식점>양식\"}]"
+							)
+					)
+			),
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "세부 일정 생성 성공",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(implementation = CreateScheduleDetailResponse.class)
+							)
+					)
+			}
 	)	public CustomApiResponse<List<CreateScheduleDetailResponse>> createDetails(
-			@AuthenticationPrincipal User user,
+//			@AuthenticationPrincipal User user,
 			@PathVariable("scheduleId") Long scheduleId,
 			@RequestBody List<CreateDetailRequest> requests) {
-		List<CreateScheduleDetailResponse> result = scheduleDetailService.createDetails(user,scheduleId, requests);
+		List<CreateScheduleDetailResponse> result = scheduleDetailService.createDetails(scheduleId, requests);
 		return CustomApiResponse.success(result, 200, "세부 일정 생성 성공");
 	}
 
 	@PutMapping("/{detailId}")
 	@Operation(
-		summary = "세부일정 수정",
-		description = "세부일정 수정 API",
-		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-			content = @Content(
-				mediaType = "application/json",
-				examples = @ExampleObject(
-					name = "UpdateDetailRequest Example",
-					value = "{\"startTime\": \"14:30\", \"targetDate\": \"2025-07-27\", \"memo\": \"Visit Starbucks\", \"spotName\": \"스타벅스 한국프레스센터점\", \"latitude\": 37.5674232, \"longitude\": 126.9778908}"
-				)
-			)
-		),
-		responses = {
-			@ApiResponse(
-				responseCode = "200",
-				description = "세부 일정 수정 성공",
-				content = @Content(
-					mediaType = "application/json",
-					schema = @Schema(implementation = UpdateScheduleDetailResponse.class)
-				)
-			)
-		}
+			summary = "세부일정 수정",
+			description = "세부일정 수정 API",
+			requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+					content = @Content(
+							mediaType = "application/json",
+							examples = @ExampleObject(
+									name = "UpdateDetailRequest Example",
+									value = "{\"startTime\": \"14:30\", \"targetDate\": \"2025-07-27\", \"memo\": \"Visit Starbucks\", \"spotName\": \"스타벅스 한국프레스센터점\", \"latitude\": 37.5674232, \"longitude\": 126.9778908}"
+							)
+					)
+			),
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "세부 일정 수정 성공",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(implementation = UpdateScheduleDetailResponse.class)
+							)
+					)
+			}
 	)	public CustomApiResponse<UpdateScheduleDetailResponse> updateDetail(
-			@AuthenticationPrincipal User user,
+//			@AuthenticationPrincipal User user,
 			@PathVariable("scheduleId") Long scheduleId,
 			@PathVariable("detailId") Long detailId,
 			@RequestBody UpdateDetailRequest request) {
-		UpdateScheduleDetailResponse result = scheduleDetailService.updateDetail(user,scheduleId, detailId, request);
+		UpdateScheduleDetailResponse result = scheduleDetailService.updateDetail(scheduleId, detailId, request);
 		return CustomApiResponse.success(result, 200, "세부 일정 수정 성공");
 	}
 
 	@DeleteMapping("/{detailId}")
 	@Operation(summary = "세부일정 삭제", description = "세부일정 삭제 API")
 	public CustomApiResponse<Void> deleteDetail(
-			@AuthenticationPrincipal User user,
+//			@AuthenticationPrincipal User user,
 			@PathVariable("scheduleId") Long scheduleId,
 			@PathVariable("detailId") Long detailId) {
-		scheduleDetailService.deleteDetail(user,scheduleId, detailId);
+		scheduleDetailService.deleteDetail(scheduleId, detailId);
 		return CustomApiResponse.success(null, 200, "세부 일정 삭제 성공");
 	}
 }
