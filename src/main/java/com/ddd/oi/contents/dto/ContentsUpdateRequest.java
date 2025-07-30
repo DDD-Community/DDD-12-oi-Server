@@ -14,7 +14,10 @@ public record ContentsUpdateRequest(
         ContentsTag contentsTag,
         String shortTitle,
         String shortDescription,
-        List<Long> imageIds) {
+        List<Long> imageIds,
+
+        Double recommendationScore
+) {
 
     public ContentsUpdateRequest {
         if (title == null || title.isBlank())

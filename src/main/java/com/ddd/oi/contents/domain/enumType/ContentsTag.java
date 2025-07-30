@@ -4,5 +4,5 @@ public enum ContentsTag {
     TRAVEL,
     DATE,
     FRIEND,
-    COUPLE
+    FAMILY
 }

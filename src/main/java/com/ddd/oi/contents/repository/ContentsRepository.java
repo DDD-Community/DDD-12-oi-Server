@@ -13,19 +13,12 @@ import com.ddd.oi.contents.domain.enumType.ContentsTag;
 
 @Repository
 public interface ContentsRepository extends JpaRepository<Contents, Long> {
-
-	List<Contents> findByContentsTag(ContentsTag contentsTag);
-
-	List<Contents> findByTitleContaining(String title);
-
-	@Query("SELECT c FROM Contents c WHERE c.cost BETWEEN :minCost AND :maxCost")
-	List<Contents> findByCostRange(@Param("minCost") Integer minCost, @Param("maxCost") Integer maxCost);
-
-	@Query("SELECT c FROM Contents c WHERE c.duration <= :maxDuration")
-	List<Contents> findByMaxDuration(@Param("maxDuration") Integer maxDuration);
-
-	List<Contents> findByRecommendedSchedule(String recommendedSchedule);
-
+	List<Contents> findByContentsTagOrderByViewCountDesc(ContentsTag contentsTag);
+	List<Contents> findByContentsTagOrderByRecommendationScoreDesc(ContentsTag contentsTag);
+	List<Contents> findByContentsTagOrderByCreatedAtDesc(ContentsTag contentsTag);
+	List<Contents> findAllByOrderByViewCountDesc();
+	List<Contents> findAllByOrderByRecommendationScoreDesc();
+	List<Contents> findAllByOrderByCreatedAtDesc();
 	@Query("SELECT c FROM Contents c LEFT JOIN FETCH c.images LEFT JOIN FETCH c.spots WHERE c.id = :id")
 	Optional<Contents> findByIdWithImagesAndSpots(@Param("id") Long id);
 }

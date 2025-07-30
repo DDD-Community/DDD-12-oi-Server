@@ -1,18 +1,17 @@
 package com.ddd.oi.contents.controller;
 
+import com.ddd.oi.contents.domain.enumType.ContentsTag;
 import com.ddd.oi.contents.dto.*;
 import com.ddd.oi.contents.service.ContentsService;
 import com.ddd.oi.common.response.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @RestController
@@ -23,32 +22,44 @@ public class ContentsController {
     private final ContentsService contentsService;
 
     @PostMapping
-    @Operation(summary = "컨텐츠 생성", description = "컨텐츠를 생성합니다.", requestBody = @RequestBody(content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "ContentsCreateRequest 예시", value = "{\n  \"title\": \"여행지 추천\",\n  \"displayDescription\": \"이곳은 정말 멋진 여행지입니다.\",\n  \"cost\": 10000,\n  \"recommendedSchedule\": \"2박 3일\",\n  \"duration\": 120,\n  \"contentsTag\": \"TRAVEL\",\n  \"shortTitle\": \"여행지\",\n  \"shortDescription\": \"짧은 설명입니다.\",\n  \"imageIds\": [1,2,3]\n}"))))
-    public CustomApiResponse<ContentsResponse> createContents(
-            @org.springframework.web.bind.annotation.RequestBody ContentsCreateRequest request) {
+    @Operation(summary = "컨텐츠 생성", description = "컨텐츠를 생성합니다.", requestBody = @RequestBody(content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "ContentsCreateRequest 예시", value = "{\"title\":\"여행지 추천\",\"displayDescription\":\"이곳은 정말 멋진 여행지입니다.\",\"cost\":10000,\"recommendedSchedule\":\"2박 3일\",\"duration\":120,\"contentsTag\":\"TRAVEL\",\"shortTitle\":\"여행지\",\"shortDescription\":\"짧은 설명입니다.\",\"imageIds\":[1,2,3],\"recommendationScore\":9.5}"))), responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "컨텐츠 생성 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ContentsResponse.class))))
+    public CustomApiResponse<ContentsResponse> createContents(@org.springframework.web.bind.annotation.RequestBody ContentsCreateRequest request) {
         return CustomApiResponse.success(contentsService.createContents(request), 200, "컨텐츠 생성 성공");
     }
 
     @GetMapping("/{contentsId}")
+    @Operation(
+        summary = "컨텐츠 조회",
+        description = "컨텐츠 ID를 통해 컨텐츠를 조회합니다.",
+        parameters = @io.swagger.v3.oas.annotations.Parameter(name = "contentsId", description = "컨텐츠 ID", example = "1"),
+        responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "컨텐츠 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = "{\n  \"status\": 200,\n  \"message\": \"컨텐츠 조회 성공\",\n  \"data\": {\n    \"id\": 1,\n    \"title\": \"여행지 추천\",\n    \"displayDescription\": \"이곳은 정말 멋진 여행지입니다.\",\n    \"cost\": 10000,\n    \"recommendedSchedule\": \"2박 3일\",\n    \"duration\": 120,\n    \"contentsTag\": \"TRAVEL\",\n    \"shortTitle\": \"여행지\",\n    \"shortDescription\": \"짧은 설명입니다.\",\n    \"imageIds\": [1, 2, 3],\n    \"spotIds\": [4, 5, 6],\n    \"viewCount\": 100\n  }\n}"), schema = @Schema(implementation = ContentsResponse.class))))
     public CustomApiResponse<ContentsResponse> getContents(@PathVariable Long contentsId) {
         return CustomApiResponse.success(contentsService.getContents(contentsId), 200, "컨텐츠 조회 성공");
     }
-
     @PutMapping("/{contentsId}")
+    @Operation(summary = "컨텐츠 수정", description = "컨텐츠를 수정합니다.",
+        parameters = @io.swagger.v3.oas.annotations.Parameter(name = "contentsId", description = "컨텐츠 ID", example = "1"),
+        requestBody = @RequestBody(content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "ContentsUpdateRequest 예시", value = "{\"title\":\"수정된 제목\",\"displayDescription\":\"수정된 설명\",\"cost\":15000,\"recommendedSchedule\":\"3박 4일\",\"duration\":180,\"contentsTag\":\"TRAVEL\",\"shortTitle\":\"수정된 짧은 제목\",\"shortDescription\":\"수정된 짧은 설명\",\"recommendationScore\":8.5}"))),
+        responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "컨텐츠 수정 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ContentsResponse.class))))
     public CustomApiResponse<ContentsResponse> updateContents(@PathVariable Long contentsId,
-            @RequestBody ContentsUpdateRequest request) {
+        @RequestBody ContentsUpdateRequest request) {
         return CustomApiResponse.success(contentsService.updateContents(contentsId, request), 200, "컨텐츠 수정 성공");
     }
 
     @DeleteMapping("/{contentsId}")
-    public CustomApiResponse<Void> deleteContents(@PathVariable Long contentsId) {
+    @Operation(summary = "컨텐츠 삭제", description = "컨텐츠 ID를 통해 컨텐츠를 삭제합니다.",
+        parameters = @io.swagger.v3.oas.annotations.Parameter(name = "contentsId", description = "컨텐츠 ID", example = "1"),
+        responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "컨텐츠 삭제 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Long.class))))
+    public CustomApiResponse<Long> deleteContents(@PathVariable Long contentsId) {
         contentsService.deleteContents(contentsId);
-        return CustomApiResponse.success(null, 200, "컨텐츠 삭제 성공");
+        return CustomApiResponse.success(contentsId, 200, "컨텐츠 삭제 성공");
     }
 
     @GetMapping
-    @Operation(summary = "컨텐츠 전체 리스트 조회", description = "모든 컨텐츠를 리스트로 조회합니다.")
-    public CustomApiResponse<List<ContentsResponse>> getContentsList() {
-        return CustomApiResponse.success(contentsService.list(), 200, "컨텐츠 리스트 조회 성공");
+    @Operation(summary = "컨텐츠 리스트 조회", description = "태그와 정렬 기준에 따라 컨텐츠 리스트를 조회합니다.",
+        parameters = {@io.swagger.v3.oas.annotations.Parameter(name = "tag", description = "컨텐츠 태그", example = "TRAVEL"), @io.swagger.v3.oas.annotations.Parameter(name = "sortBy", description = "정렬 기준 (latest, popular, recommended)", example = "latest")},
+        responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "컨텐츠 리스트 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ContentsResponse.class))))
+    public CustomApiResponse<List<ContentsResponse>> getContentsList(@RequestParam(required = false) ContentsTag tag, @RequestParam(required = false, defaultValue = "latest") String sortBy) {
+        return CustomApiResponse.success(contentsService.getContentsListByTagAndSort(tag, sortBy), 200, "컨텐츠 리스트 조회 성공");
     }
 }

@@ -25,13 +25,13 @@ public class NaverUtil {
     private final RedisUtil redisUtil;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${naver.client-id}")
+    @Value("${naver.auth.client-id}")
     private String clientId;
 
-    @Value("${naver.client-secret}")
+    @Value("${naver.auth.client-secret}")
     private String clientSecret;
 
-    @Value("${naver.redirect-uri}")
+    @Value("${naver.auth.redirect-uri}")
     private String redirectUri;
 
     public NaverDTO.NaverProfile requestProfileByAccessToken(String accessToken) {

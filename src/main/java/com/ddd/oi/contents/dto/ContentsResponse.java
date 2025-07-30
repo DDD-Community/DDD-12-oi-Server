@@ -19,19 +19,22 @@ public record ContentsResponse(
         String shortTitle,
         String shortDescription,
         List<Long> imageIds,
-        List<Long> spotIds) {
+        List<Long> spotIds,
+        Long viewCount) {
     public static ContentsResponse from(Contents contents) {
-        return new ContentsResponse(
-                contents.getId(),
-                contents.getTitle(),
-                contents.getDisplayDescription(),
-                contents.getCost(),
-                contents.getRecommendedSchedule(),
-                contents.getDuration(),
-                contents.getContentsTag(),
-                contents.getShortTitle(),
-                contents.getShortDescription(),
-                contents.getImages().stream().map(img -> img.getId()).toList(),
-                contents.getSpots().stream().map(spot -> spot.getId()).toList());
+        return ContentsResponse.builder()
+            .id(contents.getId())
+            .title(contents.getTitle())
+            .displayDescription(contents.getDisplayDescription())
+            .cost(contents.getCost())
+            .recommendedSchedule(contents.getRecommendedSchedule())
+            .duration(contents.getDuration())
+            .contentsTag(contents.getContentsTag())
+            .shortTitle(contents.getShortTitle())
+            .shortDescription(contents.getShortDescription())
+            .imageIds(contents.getImages().stream().map(img -> img.getId()).toList())
+            .spotIds(contents.getSpots().stream().map(spot -> spot.getId()).toList())
+            .viewCount(contents.getViewCount())
+            .build();
     }
 }
