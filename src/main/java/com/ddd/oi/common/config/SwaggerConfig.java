@@ -28,7 +28,7 @@ public class SwaggerConfig {
 				.addList("Authorization");
 
 		Server localServer = new Server().url("http://localhost:8080");
-		Server devServer = new Server().url("http://3.39.107.176:8080");
+		Server devServer = new Server().url("https://ddd-oi.store");
 
 		return new OpenAPI()
 				.components(new Components().addSecuritySchemes("Authorization", accessToken))
