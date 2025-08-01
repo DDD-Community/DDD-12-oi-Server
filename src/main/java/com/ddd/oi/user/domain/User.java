@@ -14,7 +14,6 @@ import org.hibernate.annotations.SQLDelete;
 @Table(name = "user")
 @Getter
 @Builder
-@SQLDelete(sql = "UPDATE user SET is_dormant = true WHERE id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User extends BaseEntity {
@@ -26,10 +25,6 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "provider_info", nullable = false)
 	private ProviderInfo providerInfo;
-
-	@Column(name = "is_dormant", nullable = false)
-	@Builder.Default
-	private Boolean isDormant = false;
 
 	@Column(name = "nickname")
 	private String nickname;
@@ -50,7 +45,6 @@ public class User extends BaseEntity {
 	public void updateProfileUrl(String profileImageUrl) {
 		this.profileImageUrl = profileImageUrl;
 	}
-	public void updateIsDormant(boolean isDormant) { this.isDormant = isDormant;}
 
 }
 

@@ -1,8 +1,10 @@
-package com.ddd.oi.auth.dto;
+package com.ddd.oi.auth.service.adapter;
 
+import com.ddd.oi.auth.dto.profile.OAuthProfile;
+import com.ddd.oi.auth.dto.profile.GoogleDTO;
 import com.ddd.oi.user.domain.ProviderInfo;
 
-public record GoogleProfileAdapter(GoogleDTO.GoogleProfile profile) implements OAuthProfile{
+public record GoogleProfileAdapter(GoogleDTO.GoogleProfile profile) implements OAuthProfile {
     @Override
     public String getEmail() {
         return profile.getEmail();

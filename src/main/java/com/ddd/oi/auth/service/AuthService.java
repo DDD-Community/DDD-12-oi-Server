@@ -1,10 +1,10 @@
 package com.ddd.oi.auth.service;
 
-import com.ddd.oi.auth.dto.AuthResponseDTO;
-import com.ddd.oi.auth.dto.GoogleProfileAdapter;
-import com.ddd.oi.auth.dto.KakaoProfileAdapter;
-import com.ddd.oi.auth.dto.NaverProfileAdapter;
-import com.ddd.oi.auth.dto.OAuthProfile;
+import com.ddd.oi.auth.dto.AuthResponse;
+import com.ddd.oi.auth.service.adapter.GoogleProfileAdapter;
+import com.ddd.oi.auth.service.adapter.KakaoProfileAdapter;
+import com.ddd.oi.auth.service.adapter.NaverProfileAdapter;
+import com.ddd.oi.auth.dto.profile.OAuthProfile;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.common.utils.GoogleUtil;
@@ -38,7 +38,7 @@ public class AuthService {
     private final Long REFRESH_TOKEN_VALIDITY = 1000L * 60 * 60 * 24 * 14;
 
     @Transactional
-    public AuthResponseDTO oAuthLogin(ProviderInfo provider, String oauthAccessToken, HttpServletResponse response) {
+    public AuthResponse oAuthLogin(ProviderInfo provider, String oauthAccessToken, HttpServletResponse response) {
         OAuthProfile profile;
 
         switch (provider) {
@@ -60,7 +60,6 @@ public class AuthService {
         User user = userRepository.findByEmail(profile.getEmail())
                 .map(existingUser -> {
                     existingUser.updateNickname(profile.getNickname());
-                    existingUser.updateIsDormant(false);
 //                    existingUser.updateProfileUrl(profile.getProfileImageUrl());
                     return existingUser;
                 })
@@ -70,7 +69,7 @@ public class AuthService {
         String refreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
         redisUtil.setDataExpire("RT:" + user.getEmail(), refreshToken, REFRESH_TOKEN_VALIDITY);
 
-        return new AuthResponseDTO(user, accessToken, refreshToken, oauthAccessToken);
+        return new AuthResponse(user, accessToken, refreshToken, oauthAccessToken);
     }
 
     private User createNewUser(OAuthProfile profile) {
@@ -81,12 +80,11 @@ public class AuthService {
 //                        .profileImageUrl(profile.getProfileImageUrl())
                         .providerInfo(profile.getProviderInfo())
                         .role(RoleType.USER)
-                        .isDormant(false)
                         .build()
         );
     }
 
-    public AuthResponseDTO reissueAccessToken(String oldRefreshToken, HttpServletResponse response) {
+    public AuthResponse reissueAccessToken(String oldRefreshToken, HttpServletResponse response) {
         String email = jwtUtil.getEmail(oldRefreshToken);
         String redisKey = "RT:" + email;
         String storedToken = redisUtil.getData(redisKey);
@@ -104,7 +102,7 @@ public class AuthService {
         redisUtil.deleteData(redisKey);
         redisUtil.setDataExpire(redisKey, newRefreshToken, REFRESH_TOKEN_VALIDITY);
 
-        return new AuthResponseDTO(user, newAccessToken, newRefreshToken,null);
+        return new AuthResponse(user, newAccessToken, newRefreshToken,null);
     }
     public Boolean logout(ProviderInfo provider, String oauthAccessToken,String userEmail) {
         switch (provider) {

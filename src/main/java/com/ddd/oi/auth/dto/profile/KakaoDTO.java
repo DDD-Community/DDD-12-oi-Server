@@ -1,4 +1,4 @@
-package com.ddd.oi.auth.dto;
+package com.ddd.oi.auth.dto.profile;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
