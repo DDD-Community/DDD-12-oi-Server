@@ -1,5 +1,7 @@
-package com.ddd.oi.auth.dto;
+package com.ddd.oi.auth.service.adapter;
 
+import com.ddd.oi.auth.dto.profile.OAuthProfile;
+import com.ddd.oi.auth.dto.profile.NaverDTO;
 import com.ddd.oi.user.domain.ProviderInfo;
 
 public record NaverProfileAdapter(NaverDTO.NaverProfile profile) implements OAuthProfile {

@@ -1,8 +1,10 @@
-package com.ddd.oi.auth.dto;
+package com.ddd.oi.auth.service.adapter;
 
+import com.ddd.oi.auth.dto.profile.OAuthProfile;
+import com.ddd.oi.auth.dto.profile.KakaoDTO.KakaoProfile;
 import com.ddd.oi.user.domain.ProviderInfo;
 
-public record KakaoProfileAdapter(KakaoDTO.KakaoProfile profile) implements OAuthProfile {
+public record KakaoProfileAdapter(KakaoProfile profile) implements OAuthProfile {
 
     @Override
     public String getEmail() {

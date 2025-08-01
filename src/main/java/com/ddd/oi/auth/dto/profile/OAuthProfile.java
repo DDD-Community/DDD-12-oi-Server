@@ -1,4 +1,4 @@
-package com.ddd.oi.auth.dto;
+package com.ddd.oi.auth.dto.profile;
 
 import com.ddd.oi.user.domain.ProviderInfo;
 

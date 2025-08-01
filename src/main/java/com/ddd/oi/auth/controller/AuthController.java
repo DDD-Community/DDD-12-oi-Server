@@ -1,6 +1,6 @@
 package com.ddd.oi.auth.controller;
 
-import com.ddd.oi.auth.dto.AuthResponseDTO;
+import com.ddd.oi.auth.dto.AuthResponse;
 import com.ddd.oi.auth.dto.OAuthAccessTokenRequest;
 import com.ddd.oi.auth.service.AuthService;
 import com.ddd.oi.common.exception.OiException;
@@ -35,7 +35,7 @@ public class AuthController {
     ) {
         ProviderInfo providerInfo = ProviderInfo.of(provider);
         String oauthAccessToken = request.oauthAccessToken();
-        AuthResponseDTO authDTO = authService.oAuthLogin(providerInfo, oauthAccessToken, response);
+        AuthResponse authDTO = authService.oAuthLogin(providerInfo, oauthAccessToken, response);
 
         return CustomApiResponse.success(
                 UserConverter.toJoinResultDTO(authDTO.user(), authDTO.accessToken(), authDTO.refreshToken(), authDTO.oauthAccessToken()
@@ -60,7 +60,7 @@ public class AuthController {
 
         String refreshToken = bearerToken.substring(7);
 
-        AuthResponseDTO dto = authService.reissueAccessToken(refreshToken, response);
+        AuthResponse dto = authService.reissueAccessToken(refreshToken, response);
 
         return CustomApiResponse.success(dto, 200, "토큰 재발급 성공");
     }
