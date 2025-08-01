@@ -45,7 +45,6 @@ public class User extends BaseEntity {
 	public void updateProfileUrl(String profileImageUrl) {
 		this.profileImageUrl = profileImageUrl;
 	}
-	public void updateIsDormant(boolean isDormant) { this.isDormant = isDormant;}
 
 }
 
