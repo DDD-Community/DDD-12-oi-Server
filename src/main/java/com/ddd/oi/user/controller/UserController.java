@@ -26,7 +26,7 @@ public class UserController {
             @AuthenticationPrincipal User user,
             @RequestHeader("Oauth-Authorization") String oauthAccessToken
     ) {
-        Boolean result = userService.markUserAsDormant(user, oauthAccessToken);
+        Boolean result = userService.deleteUser(user, oauthAccessToken);
         return CustomApiResponse.success(result, 200, "유저 탈퇴 성공");
     }
 

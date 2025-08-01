@@ -21,12 +21,12 @@ public class UserService {
     private final GoogleUtil googleUtil;
 
     @Transactional
-    public Boolean markUserAsDormant(User user, String oauthAccessToken) {
-        if (user.getIsDormant() == true) {
-            throw new OiException(ErrorCode.ALREADY_DELETED_USER);
-        }
-        userRepository.delete(user);
-        oauthUnlink(user, oauthAccessToken);
+    public Boolean deleteUser(User user, String oauthAccessToken) {
+
+        User persistedUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+        oauthUnlink(persistedUser, oauthAccessToken);
+        userRepository.delete(persistedUser);
         return true;
     }
 
