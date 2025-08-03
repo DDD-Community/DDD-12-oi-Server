@@ -1,5 +1,6 @@
 package com.ddd.oi.contents.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,12 +14,7 @@ import com.ddd.oi.contents.domain.enumType.ContentsTag;
 
 @Repository
 public interface ContentsRepository extends JpaRepository<Contents, Long> {
-	List<Contents> findByContentsTagOrderByViewCountDesc(ContentsTag contentsTag);
-	List<Contents> findByContentsTagOrderByRecommendationScoreDesc(ContentsTag contentsTag);
-	List<Contents> findByContentsTagOrderByCreatedAtDesc(ContentsTag contentsTag);
-	List<Contents> findAllByOrderByViewCountDesc();
-	List<Contents> findAllByOrderByRecommendationScoreDesc();
-	List<Contents> findAllByOrderByCreatedAtDesc();
-	@Query("SELECT c FROM Contents c LEFT JOIN FETCH c.images LEFT JOIN FETCH c.spots WHERE c.id = :id")
-	Optional<Contents> findByIdWithImagesAndSpots(@Param("id") Long id);
+	@EntityGraph(attributePaths = {"spots"})
+	Optional<Contents>  findById(Long id);
+
 }

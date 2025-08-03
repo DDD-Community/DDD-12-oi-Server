@@ -16,7 +16,6 @@ public record ContentsCreateRequest(
         ContentsTag contentsTag,
         String shortTitle,
         String shortDescription,
-        List<Long> imageIds,
         Double recommendationScore
         ) {
 
@@ -33,14 +32,15 @@ public record ContentsCreateRequest(
 
     public Contents toEntity() {
         return Contents.builder()
-                .title(title)
-                .displayDescription(displayDescription)
-                .cost(cost)
-                .recommendedSchedule(recommendedSchedule)
-                .duration(duration)
-                .contentsTag(contentsTag)
-                .shortTitle(shortTitle)
-                .shortDescription(shortDescription)
-                .build();
+            .title(this.title())
+            .displayDescription(this.displayDescription())
+            .cost(this.cost())
+            .recommendedSchedule(this.recommendedSchedule())
+            .duration(this.duration())
+            .contentsTag(this.contentsTag())
+            .shortTitle(this.shortTitle())
+            .shortDescription(this.shortDescription())
+            .recommendationScore(this.recommendationScore())
+            .build();
     }
 }
