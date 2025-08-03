@@ -2,7 +2,6 @@ package com.ddd.oi.contents.domain;
 
 import com.ddd.oi.common.domain.BaseEntity;
 import com.ddd.oi.contents.domain.enumType.ContentsTag;
-import com.ddd.oi.contents_image.domain.ContentsImage;
 import com.ddd.oi.contents_spot.domain.ContentsSpot;
 import com.ddd.oi.contents.dto.ContentsUpdateRequest;
 
@@ -54,9 +53,6 @@ public class Contents extends BaseEntity {
 	@Column(name = "short_description")
 	private String shortDescription;
 
-	@OneToMany(mappedBy = "contents", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Builder.Default
-	private List<ContentsImage> images = new ArrayList<>();
 
 	@OneToMany(mappedBy = "contents", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default

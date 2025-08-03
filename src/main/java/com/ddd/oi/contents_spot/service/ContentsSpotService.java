@@ -23,15 +23,8 @@ public class ContentsSpotService {
     public ContentsSpotResponse createSpot(Long contentsId, ContentsSpotRequest request) {
         Contents contents = contentsRepository.findById(contentsId)
                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
-        ContentsSpot spot = ContentsSpot.builder()
-                .spotName(request.spotName())
-                .address(request.address())
-                .spotDescription(request.spotDescription())
-                .spotImage(request.spotImage())
-                .latitude(request.latitude())
-                .longitude(request.longitude())
-                .contents(contents)
-                .build();
+        ContentsSpot spot = request.toEntity(contents);
+
         contents.getSpots().add(spot);
         contentsSpotRepository.save(spot);
         return ContentsSpotResponse.from(spot);

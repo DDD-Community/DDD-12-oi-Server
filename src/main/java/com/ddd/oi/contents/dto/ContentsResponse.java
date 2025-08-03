@@ -2,6 +2,7 @@ package com.ddd.oi.contents.dto;
 
 import com.ddd.oi.contents.domain.Contents;
 import com.ddd.oi.contents.domain.enumType.ContentsTag;
+import com.ddd.oi.contents_spot.dto.ContentsSpotResponse;
 
 import lombok.Builder;
 
@@ -18,8 +19,7 @@ public record ContentsResponse(
         ContentsTag contentsTag,
         String shortTitle,
         String shortDescription,
-        List<Long> imageIds,
-        List<Long> spotIds,
+        List<ContentsSpotResponse> spots,
         Long viewCount) {
     public static ContentsResponse from(Contents contents) {
         return ContentsResponse.builder()
@@ -32,8 +32,7 @@ public record ContentsResponse(
             .contentsTag(contents.getContentsTag())
             .shortTitle(contents.getShortTitle())
             .shortDescription(contents.getShortDescription())
-            .imageIds(contents.getImages().stream().map(img -> img.getId()).toList())
-            .spotIds(contents.getSpots().stream().map(spot -> spot.getId()).toList())
+			.spots(contents.getSpots().stream().map(ContentsSpotResponse::from).toList())
             .viewCount(contents.getViewCount())
             .build();
     }
