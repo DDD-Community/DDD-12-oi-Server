@@ -74,40 +74,7 @@ public class NaverSearchService {
 		}
 	}
 
-	public AutoCompleteResponse getAutoComplete(String query, String category) {
-		try {
-			SearchRequest searchRequest = SearchRequest.builder()
-				.query(query)
-				.category(category)
-				.display(5)
-				.build();
 
-			SearchResponse searchResponse = searchPlaces(searchRequest);
-
-			Set<String> suggestionSet = new HashSet<>();
-			for (PlaceItem item : searchResponse.getItems()) {
-				String title = item.getTitle();
-				if (title != null && title.toLowerCase().contains(query.toLowerCase())) {
-					suggestionSet.add(title);
-				}
-				String itemCategory = item.getCategory();
-				if (itemCategory != null) {
-					String[] categories = itemCategory.split(",");
-					for (String cat : categories) {
-						cat = cat.trim();
-						if (cat.toLowerCase().contains(query.toLowerCase())) {
-							suggestionSet.add(cat);
-						}
-					}
-				}
-			}
-			List<String> suggestions = suggestionSet.stream().limit(5).collect(Collectors.toList());
-			return new AutoCompleteResponse(suggestions, category);
-		} catch (Exception e) {
-			log.error("Error getting autocomplete for query: {}", query, e);
-			throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
-		}
-	}
 
 	private String buildSearchQuery(SearchRequest request) {
 		StringBuilder queryBuilder = new StringBuilder(request.getQuery());

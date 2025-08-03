@@ -37,23 +37,4 @@ public class SearchController {
         return CustomApiResponse.success(response, 200, "장소 검색 성공");
     }
 
-   /* @GetMapping("/autocomplete")
-    public CustomApiResponse<AutoCompleteResponse> getAutoComplete(
-            @RequestParam String query,
-            @RequestParam(required = false) String category) {
-        if (query.length() < 2) {
-            return CustomApiResponse.success(new AutoCompleteResponse(List.of(), category), 200, "자동완성 결과 없음");
-        }
-        AutoCompleteResponse response = naverSearchService.getAutoComplete(query, category);
-        return CustomApiResponse.success(response, 200, "자동완성 성공");
-    }
-*/
-    @GetMapping("/categories")
-    public CustomApiResponse<List<CategoryDto>> getCategories() {
-        List<String> categories = Arrays.asList("음식점", "카페", "관광명소", "숙박시설", "편의시설", "기타");
-        List<CategoryDto> result = categories.stream()
-                .map(cat -> new CategoryDto(cat, categoryColorMapping.getColor(cat)))
-                .collect(Collectors.toList());
-        return CustomApiResponse.success(result, 200, "카테고리 목록 조회 성공");
-    }
 }
