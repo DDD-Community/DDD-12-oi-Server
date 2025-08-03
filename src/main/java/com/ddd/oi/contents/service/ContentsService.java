@@ -4,8 +4,7 @@ import com.ddd.oi.contents.domain.Contents;
 import com.ddd.oi.contents.domain.enumType.ContentsTag;
 import com.ddd.oi.contents.dto.*;
 import com.ddd.oi.contents.repository.ContentsRepository;
-import com.ddd.oi.contents_image.domain.ContentsImage;
-import com.ddd.oi.contents_image.repository.ContentsImageRepository;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,24 +22,16 @@ import com.ddd.oi.common.response.ErrorCode;
 @RequiredArgsConstructor
 public class ContentsService {
 	private final ContentsRepository contentsRepository;
-	private final ContentsImageRepository contentsImageRepository;
 
 	@Transactional
 	public ContentsResponse createContents(ContentsCreateRequest request) {
 		Contents contents = request.toEntity();
-		if (request.imageIds() != null && !request.imageIds().isEmpty()) {
-			List<ContentsImage> images = contentsImageRepository.findAllById(request.imageIds());
-			for (ContentsImage image : images) {
-				image.setContents(contents);
-			}
-			contents.getImages().addAll(images);
-		}
 		return ContentsResponse.from(contentsRepository.save(contents));
 	}
 
 	@Transactional(readOnly = true)
 	public ContentsResponse getContents(Long contentsId) {
-		Contents contents = contentsRepository.findByIdWithImagesAndSpots(contentsId)
+		Contents contents = contentsRepository.findById(contentsId)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
         // 조회수 증가
@@ -69,28 +60,14 @@ public class ContentsService {
 		contentsRepository.deleteById(contentsId);
 	}
 
-    @Transactional(readOnly = true)
-    public List<ContentsResponse> getContentsListByTagAndSort(ContentsTag tag, String sortBy) {
-        List<Contents> contentsList = getContentsBySort(tag, sortBy);
-        return contentsList.stream().map(ContentsResponse::from).toList();
-    }
+	@Transactional(readOnly = true)
+	public List<ContentsResponse> getContentsWithImagesAndSpots() {
+		List<Contents> contentsList = contentsRepository.findAll();
+		return contentsList.stream()
+			.map(ContentsResponse::from)
+			.toList();
+	}
 
-    private List<Contents> getContentsBySort(ContentsTag tag, String sortBy) {
-        if (tag != null) {
-            return switch (sortBy) {
-                case "popular" -> contentsRepository.findByContentsTagOrderByViewCountDesc(tag);
-                case "recommended" -> contentsRepository.findByContentsTagOrderByRecommendationScoreDesc(tag);
-                case "latest" -> contentsRepository.findByContentsTagOrderByCreatedAtDesc(tag);
-                default -> throw new OiException(ErrorCode.PARAMETER_INVALID);
-            };
-        } else {
-            return switch (sortBy) {
-                case "popular" -> contentsRepository.findAllByOrderByViewCountDesc();
-                case "recommended" -> contentsRepository.findAllByOrderByRecommendationScoreDesc();
-                case "latest" -> contentsRepository.findAllByOrderByCreatedAtDesc();
-                default -> throw new OiException(ErrorCode.PARAMETER_INVALID);
-            };
-        }
-    }
+
 
 }
