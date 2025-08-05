@@ -53,6 +53,8 @@ public class Contents extends BaseEntity {
 	@Column(name = "short_description")
 	private String shortDescription;
 
+	@Column(name = "contents_image")
+	private String contentsImage;
 
 	@OneToMany(mappedBy = "contents", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default
@@ -79,5 +81,6 @@ public class Contents extends BaseEntity {
 		this.shortTitle = request.shortTitle();
 		this.shortDescription = request.shortDescription();
 		this.recommendationScore= request.recommendationScore();
+		this.contentsImage = request.contentsImage();
 	}
 }

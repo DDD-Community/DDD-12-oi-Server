@@ -16,9 +16,10 @@ public record ContentsCreateRequest(
         ContentsTag contentsTag,
         String shortTitle,
         String shortDescription,
+        String contentsImage,
         Double recommendationScore
         ) {
-
+    private static final String IMAGE_BASE_URL = "https://ddd-oi.store/api/v1/s3/images/";
     public ContentsCreateRequest {
         if (title == null || title.isBlank())
             throw new OiException(ErrorCode.PARAMETER_INVALID);
@@ -40,6 +41,7 @@ public record ContentsCreateRequest(
             .contentsTag(this.contentsTag())
             .shortTitle(this.shortTitle())
             .shortDescription(this.shortDescription())
+            .contentsImage(IMAGE_BASE_URL + this.contentsImage())
             .recommendationScore(this.recommendationScore())
             .build();
     }

@@ -19,21 +19,26 @@ public record ContentsResponse(
         ContentsTag contentsTag,
         String shortTitle,
         String shortDescription,
-        List<ContentsSpotResponse> spots,
-        Long viewCount) {
+		String contentsImage,
+		Double recommendationScore,
+		Long viewCount,
+        List<ContentsSpotResponse> spots
+        ) {
     public static ContentsResponse from(Contents contents) {
-        return ContentsResponse.builder()
-            .id(contents.getId())
-            .title(contents.getTitle())
-            .displayDescription(contents.getDisplayDescription())
-            .cost(contents.getCost())
-            .recommendedSchedule(contents.getRecommendedSchedule())
-            .duration(contents.getDuration())
-            .contentsTag(contents.getContentsTag())
-            .shortTitle(contents.getShortTitle())
-            .shortDescription(contents.getShortDescription())
+		return ContentsResponse.builder()
+			.id(contents.getId())
+			.title(contents.getTitle())
+			.displayDescription(contents.getDisplayDescription())
+			.cost(contents.getCost())
+			.recommendedSchedule(contents.getRecommendedSchedule())
+			.duration(contents.getDuration())
+			.contentsTag(contents.getContentsTag())
+			.shortTitle(contents.getShortTitle())
+			.shortDescription(contents.getShortDescription())
+			.contentsImage(contents.getContentsImage())
+			.recommendationScore(contents.getRecommendationScore())
 			.spots(contents.getSpots().stream().map(ContentsSpotResponse::from).toList())
-            .viewCount(contents.getViewCount())
-            .build();
+			.viewCount(contents.getViewCount())
+			.build();
     }
 }
