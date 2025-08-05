@@ -5,7 +5,6 @@ import com.ddd.oi.contents.domain.enumType.ContentsTag;
 import com.ddd.oi.contents.dto.*;
 import com.ddd.oi.contents.repository.ContentsRepository;
 
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -29,13 +28,13 @@ public class ContentsService {
 		return ContentsResponse.from(contentsRepository.save(contents));
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public ContentsResponse getContents(Long contentsId) {
 		Contents contents = contentsRepository.findById(contentsId)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-        // 조회수 증가
-        contents.incrementViewCount();
+		// 조회수 증가
+		contents.incrementViewCount();
 
 		return ContentsResponse.from(contents);
 	}
@@ -45,10 +44,10 @@ public class ContentsService {
 		Contents contents = contentsRepository.findById(contentsId)
 			.orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
 
-		if (request.recommendationScore() < 0.0 || request.recommendationScore() > 10.0){
-            throw new OiException(ErrorCode.INVALID_RECOMMENDATION_SCORE);
-        }
-			contents.update(request);
+		if (request.recommendationScore() < 0.0 || request.recommendationScore() > 10.0) {
+			throw new OiException(ErrorCode.INVALID_RECOMMENDATION_SCORE);
+		}
+		contents.update(request);
 		return ContentsResponse.from(contents);
 	}
 
@@ -67,7 +66,5 @@ public class ContentsService {
 			.map(ContentsResponse::from)
 			.toList();
 	}
-
-
 
 }
