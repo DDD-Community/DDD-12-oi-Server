@@ -7,24 +7,24 @@ import com.ddd.oi.contents_spot.dto.ContentsSpotResponse;
 import lombok.Builder;
 
 import java.util.List;
-
 @Builder
 public record ContentsResponse(
-        Long id,
-        String title,
-        String displayDescription,
-        Integer cost,
-        String recommendedSchedule,
-        Integer duration,
-        ContentsTag contentsTag,
-        String shortTitle,
-        String shortDescription,
-		String contentsImage,
-		Double recommendationScore,
-		Long viewCount,
-        List<ContentsSpotResponse> spots
-        ) {
-    public static ContentsResponse from(Contents contents) {
+	Long id,
+	String title,
+	String displayDescription,
+	Integer cost,
+	String recommendedSchedule,
+	Integer duration,
+	ContentsTag contentsTag,
+	String shortTitle,
+	String shortDescription,
+	String contentsImage,
+	Double recommendationScore,
+	Long viewCount,
+	String createdAt,
+	List<ContentsSpotResponse> spots
+) {
+	public static ContentsResponse from(Contents contents) {
 		return ContentsResponse.builder()
 			.id(contents.getId())
 			.title(contents.getTitle())
@@ -37,8 +37,9 @@ public record ContentsResponse(
 			.shortDescription(contents.getShortDescription())
 			.contentsImage(contents.getContentsImage())
 			.recommendationScore(contents.getRecommendationScore())
-			.spots(contents.getSpots().stream().map(ContentsSpotResponse::from).toList())
 			.viewCount(contents.getViewCount())
+			.createdAt(contents.getCreatedAt().toString()) // Map createdAt
+			.spots(contents.getSpots().stream().map(ContentsSpotResponse::from).toList())
 			.build();
-    }
+	}
 }
