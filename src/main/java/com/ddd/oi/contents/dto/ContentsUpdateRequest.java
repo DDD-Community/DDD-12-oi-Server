@@ -15,8 +15,10 @@ public record ContentsUpdateRequest(
 	ContentsTag contentsTag,
 	String shortTitle,
 	String shortDescription,
+	String contentsImage,
 	Double recommendationScore
 ) {
+	private static final String IMAGE_BASE_URL = "https://ddd-oi.store/api/v1/s3/images/";
 
 	public ContentsUpdateRequest {
 		if (title == null || title.isBlank())
@@ -27,5 +29,8 @@ public record ContentsUpdateRequest(
 			throw new OiException(ErrorCode.PARAMETER_INVALID);
 		if (duration != null && duration < 0)
 			throw new OiException(ErrorCode.PARAMETER_INVALID);
+	}
+	public String contentsImage() {
+		return contentsImage != null ? IMAGE_BASE_URL + contentsImage : null;
 	}
 }
