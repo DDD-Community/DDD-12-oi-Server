@@ -6,6 +6,8 @@ import com.ddd.oi.common.utils.GoogleUtil;
 import com.ddd.oi.common.utils.KakaoUtil;
 import com.ddd.oi.common.utils.NaverUtil;
 import com.ddd.oi.user.domain.User;
+import com.ddd.oi.user.dto.request.UpdateNicknameRequest;
+import com.ddd.oi.user.dto.response.UpdateNicknameResponse;
 import com.ddd.oi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,15 @@ public class UserService {
         userRepository.delete(persistedUser);
         return true;
     }
+
+    @Transactional
+    public UpdateNicknameResponse updateNickname(User user, UpdateNicknameRequest request) {
+        User persistedUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
+        persistedUser.updateNickname(request.nickname());
+        return UpdateNicknameResponse.of(persistedUser.getNickname());
+    }
+
 
     private void oauthUnlink(User user, String oauthAccessToken) {
         switch (user.getProviderInfo()) {
