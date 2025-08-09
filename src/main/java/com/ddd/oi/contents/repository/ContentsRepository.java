@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +18,6 @@ import com.ddd.oi.contents.domain.enumType.ContentsTag;
 public interface ContentsRepository extends JpaRepository<Contents, Long> {
 	@EntityGraph(attributePaths = {"spots"})
 	Optional<Contents>  findById(Long id);
+	@EntityGraph(attributePaths = {"spots"})
 
-}
+	List<Contents> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);}
