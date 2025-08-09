@@ -2,6 +2,7 @@ package com.ddd.oi.contents.dto;
 
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
+import com.ddd.oi.contents.domain.enumType.BadgeType;
 import com.ddd.oi.contents.domain.enumType.ContentsTag;
 
 import java.util.List;
@@ -16,7 +17,8 @@ public record ContentsUpdateRequest(
 	String shortTitle,
 	String shortDescription,
 	String contentsImage,
-	Double recommendationScore
+	Double recommendationScore,
+	BadgeType badge
 ) {
 	private static final String IMAGE_BASE_URL = "https://ddd-oi.store/api/v1/s3/images/";
 

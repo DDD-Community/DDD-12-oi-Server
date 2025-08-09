@@ -1,6 +1,7 @@
 package com.ddd.oi.contents.domain;
 
 import com.ddd.oi.common.domain.BaseEntity;
+import com.ddd.oi.contents.domain.enumType.BadgeType;
 import com.ddd.oi.contents.domain.enumType.ContentsTag;
 import com.ddd.oi.contents_spot.domain.ContentsSpot;
 import com.ddd.oi.contents.dto.ContentsUpdateRequest;
@@ -67,6 +68,10 @@ public class Contents extends BaseEntity {
 	@Column(name = "recommendation_score", nullable = false)
 	private Double recommendationScore;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "badge", nullable = true)
+	@Builder.Default
+	private BadgeType badge = BadgeType.NONE;
 	public void incrementViewCount() {
 		this.viewCount++;
 	}
@@ -82,5 +87,6 @@ public class Contents extends BaseEntity {
 		this.shortDescription = request.shortDescription();
 		this.recommendationScore= request.recommendationScore();
 		this.contentsImage = request.contentsImage();
+		this.badge = request.badge();
 	}
 }

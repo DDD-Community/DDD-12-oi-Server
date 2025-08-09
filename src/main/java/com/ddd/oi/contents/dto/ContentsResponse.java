@@ -1,6 +1,7 @@
 package com.ddd.oi.contents.dto;
 
 import com.ddd.oi.contents.domain.Contents;
+import com.ddd.oi.contents.domain.enumType.BadgeType;
 import com.ddd.oi.contents.domain.enumType.ContentsTag;
 import com.ddd.oi.contents_spot.dto.ContentsSpotResponse;
 
@@ -22,6 +23,8 @@ public record ContentsResponse(
 	Double recommendationScore,
 	Long viewCount,
 	String createdAt,
+	BadgeType badge,
+
 	List<ContentsSpotResponse> spots
 ) {
 	public static ContentsResponse from(Contents contents) {
@@ -38,7 +41,8 @@ public record ContentsResponse(
 			.contentsImage(contents.getContentsImage())
 			.recommendationScore(contents.getRecommendationScore())
 			.viewCount(contents.getViewCount())
-			.createdAt(contents.getCreatedAt().toString()) // Map createdAt
+			.createdAt(contents.getCreatedAt().toString())
+			.badge(contents.getBadge())
 			.spots(contents.getSpots().stream().map(ContentsSpotResponse::from).toList())
 			.build();
 	}
