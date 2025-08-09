@@ -1,5 +1,6 @@
 package com.ddd.oi.contents.controller.docs;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ddd.oi.common.response.CustomApiResponse;
 import com.ddd.oi.contents.dto.ContentsCreateRequest;
@@ -37,6 +39,9 @@ public interface ContentsControllerDocs {
 	@Operation(summary = "컨텐츠 삭제", description = "컨텐츠 ID를 통해 컨텐츠를 삭제합니다.", parameters = @Parameter(name = "contentsId", description = "컨텐츠 ID", example = "1"), responses = @ApiResponse(responseCode = "200", description = "컨텐츠 삭제 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = "{\n  \"statusCode\": 200,\n  \"resultType\": \"SUCCESS\",\n  \"data\": 1,\n  \"message\": \"컨텐츠 삭제 성공\"\n}"))))
 	CustomApiResponse<Long> deleteContents(@PathVariable Long contentsId);
 
-	@Operation(summary = "컨텐츠 리스트 조회", description = "컨텐츠 리스트를 조회합니다.", responses = @ApiResponse(responseCode = "200", description = "컨텐츠 리스트 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = "{\n  \"statusCode\": 200,\n  \"resultType\": \"SUCCESS\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"title\": \"경복궁 철쭉 스팟 총정리\",\n      \"displayDescription\": \"종로구·10만원대\",\n      \"cost\": 150000,\n      \"recommendedSchedule\": \"여름휴가에요\",\n      \"duration\": 360,\n      \"contentsTag\": \"DATE\",\n      \"shortTitle\": \"경복궁 철쭉 스팟 총정리\",\n      \"shortDescription\": \"햇살 좋은 날, 고궁 속 산책 어때요?\",\n      \"contentsImage\": \"https://ddd-oi.store/api/v1/s3/images/sample-image.jpg\",\n      \"createdAt\": \"2023-10-01T12:00:00\",\n      \"spots\": [\n        {\n          \"id\": 3,\n          \"spotName\": \"경복궁\",\n          \"address\": \"서울특별시 종로구 사직로 161 경복궁\",\n          \"spotDescription\": \"서울의 대표적인 관광 명소입니다.\",\n          \"spotImage\": \"https://ddd-oi.store/api/v1/s3/images/경복궁.jpeg\",\n          \"latitude\": 37.5808473,\n          \"longitude\": 126.9768441\n        }\n      ],\n      \"viewCount\": 1\n    }\n  ],\n  \"message\": \"컨텐츠 리스트 조회 성공\"\n}"))))
-	CustomApiResponse<List<ContentsResponse>> getContentsList();
+	@Operation(summary = "컨텐츠 날짜별 조회", description = "fromDate와 toDate를 기준으로 컨텐츠를 조회합니다.", parameters = {
+		@Parameter(name = "fromDate", description = "조회 시작 날짜", example = "2023-10-01"),
+		@Parameter(name = "toDate", description = "조회 종료 날짜", example = "2023-10-31")
+	}, responses = @ApiResponse(responseCode = "200", description = "컨텐츠 날짜별 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = "{\n  \"statusCode\": 200,\n  \"resultType\": \"SUCCESS\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"title\": \"경복궁 철쭉 스팟 총정리\",\n      \"displayDescription\": \"종로구·10만원대\",\n      \"cost\": 150000,\n      \"recommendedSchedule\": \"여름휴가에요\",\n      \"duration\": 360,\n      \"contentsTag\": \"DATE\",\n      \"shortTitle\": \"경복궁 철쭉 스팟 총정리\",\n      \"shortDescription\": \"햇살 좋은 날, 고궁 속 산책 어때요?\",\n      \"contentsImage\": \"https://ddd-oi.store/api/v1/s3/images/sample-image.jpg\",\n      \"createdAt\": \"2023-10-01T12:00:00\",\n      \"spots\": [\n        {\n          \"id\": 3,\n          \"spotName\": \"경복궁\",\n          \"address\": \"서울특별시 종로구 사직로 161 경복궁\",\n          \"spotDescription\": \"서울의 대표적인 관광 명소입니다.\",\n          \"spotImage\": \"https://ddd-oi.store/api/v1/s3/images/경복궁.jpeg\",\n          \"latitude\": 37.5808473,\n          \"longitude\": 126.9768441\n        }\n      ],\n      \"viewCount\": 1\n    }\n  ],\n  \"message\": \"컨텐츠 날짜별 조회 성공\"\n}"))))
+	CustomApiResponse<List<ContentsResponse>> getContentsByDateRange(@Parameter(description = "조회 시작 날짜", example = "2025-07-01") @RequestParam LocalDate fromDate, @Parameter(description = "조회 종료 날짜", example = "2025-08-31") @RequestParam LocalDate toDate);
 }

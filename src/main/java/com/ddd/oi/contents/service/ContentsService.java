@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ddd.oi.common.exception.OiException;
@@ -63,6 +65,14 @@ public class ContentsService {
 	public List<ContentsResponse> getContentsWithImagesAndSpots() {
 		List<Contents> contentsList = contentsRepository.findAll();
 		return contentsList.stream()
+			.map(ContentsResponse::from)
+			.toList();
+	}
+	@Transactional(readOnly = true)
+	public List<ContentsResponse> getContentsByDateRange(LocalDate fromDate, LocalDate toDate) {
+		LocalDateTime startDateTime = fromDate.atStartOfDay(); // Start of the day
+		LocalDateTime endDateTime = toDate.atTime(23, 59, 59); // End of the day
+		return contentsRepository.findByCreatedAtBetween(startDateTime, endDateTime).stream()
 			.map(ContentsResponse::from)
 			.toList();
 	}
