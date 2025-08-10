@@ -44,16 +44,9 @@ public class ContentsController implements ContentsControllerDocs {
 		return CustomApiResponse.success(contentsId, 200, "컨텐츠 삭제 성공");
 	}
 
-/*	@GetMapping
+	@GetMapping
 	@Override
 	public CustomApiResponse<List<ContentsResponse>> getContentsList() {
 		return CustomApiResponse.success(contentsService.getContentsWithImagesAndSpots(), 200, "컨텐츠 리스트 조회 성공");
-	}*/
-	@GetMapping
-	@Override
-	public CustomApiResponse<List<ContentsResponse>> getContentsByDateRange(
-		@RequestParam LocalDate fromDate,
-		@RequestParam LocalDate toDate) {
-		return CustomApiResponse.success(contentsService.getContentsByDateRange(fromDate, toDate), 200, "컨텐츠 날짜별 조회 성공");
 	}
 }
