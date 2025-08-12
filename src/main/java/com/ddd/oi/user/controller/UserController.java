@@ -3,6 +3,7 @@ package com.ddd.oi.user.controller;
 import com.ddd.oi.common.response.CustomApiResponse;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.dto.request.UpdateNicknameRequest;
+import com.ddd.oi.user.dto.response.ShowUserResponse;
 import com.ddd.oi.user.dto.response.UpdateNicknameResponse;
 import com.ddd.oi.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,8 +47,14 @@ public class UserController {
     }
 
 
-//    @GetMapping
-//    @Operation(summary = "유저 정보 조회/시스템 정보 조회",description = "유저 정보 조회/시스템 정보 조회 API")
+    @GetMapping
+    @Operation(summary = "유저 정보 조회/시스템 정보 조회",description = "유저 정보 조회/시스템 정보 조회 API")
+    public CustomApiResponse<ShowUserResponse> showUserAndSystemInfo(
+            @RequestHeader("user-no") Long userId
+    ) {
+        ShowUserResponse result = userService.showUserAndSystemInfo(userId);
+        return CustomApiResponse.success(result,200,"유저 정보 조회/시스템 정보 조회 성공");
+    }
 
 
 }
