@@ -41,7 +41,7 @@ public class AuthController {
                 UserConverter.toJoinResultDTO(authDTO.user(), authDTO.accessToken(), authDTO.refreshToken(), authDTO.oauthAccessToken()
                 ),
                 200,
-                "카카오 로그인 성공"
+                "로그인 성공"
         );
     }
 

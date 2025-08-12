@@ -50,6 +50,7 @@ public class UserController {
     @GetMapping
     @Operation(summary = "유저 정보 조회/시스템 정보 조회",description = "유저 정보 조회/시스템 정보 조회 API")
     public CustomApiResponse<ShowUserResponse> showUserAndSystemInfo(
+            //TODO 변경예정 @AuthenticationPrincipal User user,
             @RequestHeader("user-no") Long userId
     ) {
         ShowUserResponse result = userService.showUserAndSystemInfo(userId);
