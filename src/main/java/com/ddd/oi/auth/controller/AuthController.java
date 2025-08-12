@@ -27,7 +27,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login/{provider}")
-    @Operation(summary = "로그인", description = "로그인 API")
+    @Operation(summary = "로그인", description = "로그인 API [provider : kakao,naver,google]")
     public CustomApiResponse<UserResponseDTO> login(
             @PathVariable("provider") String provider,
             @RequestBody OAuthAccessTokenRequest request,
