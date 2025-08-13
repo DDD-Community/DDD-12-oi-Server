@@ -8,17 +8,17 @@ public record KakaoProfileAdapter(KakaoProfile profile) implements OAuthProfile 
 
     @Override
     public String getEmail() {
-        return profile.getKakao_account().getEmail();
+        return profile.getEmail();
     }
 
     @Override
     public String getNickname() {
-        return profile.getKakao_account().getProfile().getNickname();
+        return profile.getNickname();
     }
 
 //    @Override
 //    public String getProfileImageUrl() {
-//        return profile.getKakao_account().getProfile().getProfile_image_url();
+//        return profile.getProfileImage();
 //    }
 
     @Override
