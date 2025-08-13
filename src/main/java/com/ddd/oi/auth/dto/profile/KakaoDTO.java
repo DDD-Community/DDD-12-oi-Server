@@ -1,7 +1,10 @@
 package com.ddd.oi.auth.dto.profile;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class KakaoDTO {
 
@@ -16,23 +19,26 @@ public class KakaoDTO {
     }
 
     @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class KakaoProfile {
-        private Long id;
-        private KakaoAccount kakao_account;
+        private String id;
+        private String email;
+        private String nickname;
+//        private String profileImage;
 
-        @Getter
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public static class KakaoAccount {
-            private String email;
-            private Profile profile;
+        public static KakaoProfile fromJson(com.fasterxml.jackson.databind.JsonNode root) {
+            var kakaoAccount = root.path("kakao_account");
+            var profileNode = kakaoAccount.path("profile");
 
-            @Getter
-            @JsonIgnoreProperties(ignoreUnknown = true)
-            public static class Profile {
-                private String nickname;
-//                private String profile_image_url;
-            }
+            return KakaoProfile.builder()
+                    .id(root.path("id").asText())
+                    .email(kakaoAccount.path("email").asText(null))
+                    .nickname(profileNode.path("nickname").asText(null))
+//                    .profileImage(profileNode.path("profile_image_url").asText(null))
+                    .build();
         }
     }
 }

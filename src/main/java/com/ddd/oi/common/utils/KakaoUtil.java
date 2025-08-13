@@ -3,7 +3,7 @@ package com.ddd.oi.common.utils;
 import com.ddd.oi.auth.dto.profile.KakaoDTO;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,25 +33,31 @@ public class KakaoUtil {
     @Value("${kakao.redirect-uri}")
     private String redirect;
     public KakaoDTO.KakaoProfile requestProfileByAccessToken(String oauthAccessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + oauthAccessToken);
-
-        HttpEntity<Void> request = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.GET,
-                request,
-                String.class
-        );
-
         try {
-            return objectMapper.readValue(response.getBody(), KakaoDTO.KakaoProfile.class);
-        } catch (JsonProcessingException e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(oauthAccessToken);
+
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "https://kapi.kakao.com/v2/user/me",
+                    HttpMethod.GET,
+                    request,
+                    String.class
+            );
+
+            JsonNode root = objectMapper.readTree(response.getBody());
+            return KakaoDTO.KakaoProfile.fromJson(root);
+        } catch (HttpClientErrorException e) {
+            log.error("카카오 API 호출 실패: {}", e.getResponseBodyAsString());
+            throw new OiException(ErrorCode.TOKEN_INVALID);
+        } catch (Exception e) {
             log.error("카카오 사용자 정보 파싱 실패", e);
             throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
     public String getKakaoUserId(String oauthAccessToken) {
         HttpHeaders headers = new HttpHeaders();
