@@ -1,4 +1,3 @@
-/*
 package com.ddd.oi.schedule_detail.controller;
 
 import com.ddd.oi.common.response.CustomApiResponse;
@@ -13,6 +12,7 @@ import com.ddd.oi.schedule_detail.service.ScheduleDetailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -24,6 +24,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+@AutoConfigureMockMvc(addFilters = false)
 
 class ScheduleDetailControllerTest {
 
@@ -106,9 +107,7 @@ class ScheduleDetailControllerTest {
 				.latitude(10.0)
 				.longitude(20.0)
 				.build();
-
-		when(scheduleDetailService.createDetail(eq(1L), any()))
-				.thenReturn(mockResponse);
+		when(scheduleDetailService.createDetails(eq(1L), anyList())).thenReturn(List.of(mockResponse));
 
 		// When & Then
 		mockMvc.perform(post("/api/v1/schedules/1/details")
@@ -183,4 +182,3 @@ class ScheduleDetailControllerTest {
 			.andExpect(status().isOk());
 	}
 }
-*/

@@ -1,4 +1,3 @@
-/*
 package com.ddd.oi.schedule_detail.dto;
 
 import com.ddd.oi.common.exception.OiException;
@@ -26,7 +25,8 @@ class ScheduleDetailRequestTest {
 						"메모",
 						"장소",
 						100.0,
-						127.0
+						127.0,
+					"카페"
 				)
 		);
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_LATITUDE);
@@ -41,7 +41,8 @@ class ScheduleDetailRequestTest {
 						"메모",
 						"장소",
 						37.5,
-						200.0
+						200.0,
+					"카페"
 				)
 		);
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_LONGITUDE);
@@ -56,7 +57,8 @@ class ScheduleDetailRequestTest {
 						"메모",
 						"장소",
 						37.5,
-						127.0
+						127.0,
+					"카페"
 				)
 		);
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_TARGET_DATE);
@@ -94,4 +96,3 @@ class ScheduleDetailRequestTest {
 		assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.INVALID_LONGITUDE);
 	}
 }
-*/
