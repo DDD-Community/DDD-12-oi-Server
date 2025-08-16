@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -70,5 +71,15 @@ public class ScheduleController {
     ) {
         List<ScheduleListResponse> result = scheduleService.showMonthScheduleList(userId, year, month);
         return CustomApiResponse.success(result, 200, "해당 월의 일정들 조회 성공");
+    }
+    @GetMapping("/week")
+    @Operation(summary = "주간 일정 조회", description = "주간 일정 조회 API")
+    public CustomApiResponse<List<ScheduleListResponse>> showWeeklySchedule(
+        @RequestHeader("user-no") Long userId,
+        @RequestParam("from") LocalDate from,
+        @RequestParam("to") LocalDate to
+    ) {
+        List<ScheduleListResponse> result = scheduleService.showWeeklySchedule(userId, from, to);
+        return CustomApiResponse.success(result, 200, "주간 일정 조회 성공");
     }
 }
