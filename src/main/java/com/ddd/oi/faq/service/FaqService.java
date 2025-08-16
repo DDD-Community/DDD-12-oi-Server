@@ -2,6 +2,7 @@ package com.ddd.oi.faq.service;
 
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
+import com.ddd.oi.common.response.PageResponse;
 import com.ddd.oi.faq.domain.Faq;
 import com.ddd.oi.faq.dto.FaqCreateRequest;
 import com.ddd.oi.faq.dto.FaqResponse;
@@ -52,7 +53,9 @@ public class FaqService {
     }
 
     @Transactional(readOnly = true)
-    public Page<FaqResponse> getFaqs(Pageable pageable) {
-        return faqRepository.findAll(pageable).map(FaqResponse::from);
+    public PageResponse<FaqResponse> getFaqs(Pageable pageable) {
+        Page<FaqResponse> page = faqRepository.findAll(pageable).map(FaqResponse::from);
+
+        return new PageResponse<>(page);
     }
 }

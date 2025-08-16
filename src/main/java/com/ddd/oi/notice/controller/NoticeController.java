@@ -1,11 +1,13 @@
 package com.ddd.oi.notice.controller;
 
+import com.ddd.oi.common.response.PageResponse;
 import com.ddd.oi.notice.controller.docs.NoticeControllerDocs;
 import com.ddd.oi.notice.dto.*;
 import com.ddd.oi.notice.service.NoticeService;
 import com.ddd.oi.common.response.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +31,11 @@ public class NoticeController implements NoticeControllerDocs {
     }
 
     @GetMapping
-    public CustomApiResponse<Page<NoticeResponse>> getNotices(Pageable pageable) {
+    public CustomApiResponse<PageResponse<NoticeResponse>> getNotices(
+        @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
+        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize
+    ) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return CustomApiResponse.success(noticeService.getNotices(pageable), 200, "공지사항 목록 조회 성공");
     }
 
