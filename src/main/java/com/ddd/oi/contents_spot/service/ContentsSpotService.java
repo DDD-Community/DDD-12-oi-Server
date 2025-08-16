@@ -1,5 +1,6 @@
 package com.ddd.oi.contents_spot.service;
 
+import com.ddd.oi.common.config.CategoryMapping;
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
 import com.ddd.oi.contents.domain.Contents;
@@ -8,6 +9,8 @@ import com.ddd.oi.contents_spot.domain.ContentsSpot;
 import com.ddd.oi.contents_spot.dto.ContentsSpotRequest;
 import com.ddd.oi.contents_spot.dto.ContentsSpotResponse;
 import com.ddd.oi.contents_spot.repository.ContentsSpotRepository;
+import com.ddd.oi.schedule_detail.domain.ScheduleDetail;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ import java.util.List;
 public class ContentsSpotService {
     private final ContentsSpotRepository contentsSpotRepository;
     private final ContentsRepository contentsRepository;
+    private final CategoryMapping categoryMapping;
 
     @Transactional
     public ContentsSpotResponse createSpot(Long contentsId, ContentsSpotRequest request) {
@@ -25,6 +29,8 @@ public class ContentsSpotService {
                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
         ContentsSpot spot = request.toEntity(contents);
 
+        String mainCategory = categoryMapping.mapToMainCategory(request.category());
+        spot.setCategory(mainCategory);
         contents.getSpots().add(spot);
         contentsSpotRepository.save(spot);
         return ContentsSpotResponse.from(spot);
@@ -41,7 +47,8 @@ public class ContentsSpotService {
     public ContentsSpotResponse updateSpot(Long spotId, ContentsSpotRequest request) {
         ContentsSpot spot = contentsSpotRepository.findById(spotId)
                 .orElseThrow(() -> new OiException(ErrorCode.ENTITY_NOT_FOUND));
-        spot.update(request);
+        String mainCategory = categoryMapping.mapToMainCategory(request.category());
+        spot.update(request,mainCategory);
         return ContentsSpotResponse.from(spot);
     }
 
