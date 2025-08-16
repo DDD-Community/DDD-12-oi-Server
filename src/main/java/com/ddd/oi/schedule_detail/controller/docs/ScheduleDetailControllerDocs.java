@@ -79,7 +79,7 @@ public interface ScheduleDetailControllerDocs {
         @RequestBody UpdateDetailRequest request);
 
     @Operation(summary = "세부일정 삭제", description = "세부일정 삭제 API")
-    CustomApiResponse<Void> deleteDetail(
+    CustomApiResponse<Boolean> deleteDetail(
         @PathVariable("scheduleId") Long scheduleId,
         @PathVariable("detailId") Long detailId);
 }
