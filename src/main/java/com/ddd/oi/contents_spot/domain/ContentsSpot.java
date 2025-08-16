@@ -2,6 +2,7 @@ package com.ddd.oi.contents_spot.domain;
 
 import com.ddd.oi.common.domain.BaseEntity;
 import com.ddd.oi.contents.domain.Contents;
+import com.ddd.oi.contents_spot.dto.ContentsSpotRequest;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -41,16 +42,23 @@ public class ContentsSpot extends BaseEntity {
 	@Column(name = "longitude")
 	private Double longitude;
 
+	@Column(name = "category", nullable = false)
+	private String category;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "contents_id")
 	private Contents contents;
 
-	public void update(com.ddd.oi.contents_spot.dto.ContentsSpotRequest request) {
+	public void update(ContentsSpotRequest request,String category) {
 		this.spotName = request.spotName();
 		this.address = request.address();
 		this.spotDescription = request.spotDescription();
 		this.spotImage = request.spotImage();
 		this.latitude = request.latitude();
 		this.longitude = request.longitude();
+		this.category = category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }
