@@ -1,6 +1,7 @@
 package com.ddd.oi.faq.controller.docs;
 
 import com.ddd.oi.common.response.CustomApiResponse;
+import com.ddd.oi.common.response.PageResponse;
 import com.ddd.oi.faq.dto.FaqCreateRequest;
 import com.ddd.oi.faq.dto.FaqResponse;
 import com.ddd.oi.faq.dto.FaqUpdateRequest;
@@ -31,17 +32,29 @@ public interface FaqControllerDocs {
 	@Operation(summary = "FAQ 삭제", description = "FAQ ID를 통해 FAQ를 삭제합니다.", parameters = @Parameter(name = "id", description = "FAQ ID", example = "1"), responses = @ApiResponse(responseCode = "200", description = "FAQ 삭제 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = "{\n  \"statusCode\": 200,\n  \"resultType\": \"SUCCESS\",\n  \"data\": 1,\n  \"message\": \"FAQ 삭제 성공\"\n}"))))
 	CustomApiResponse<Long> deleteFaq(@PathVariable Long id);
 
-	@Operation(summary = "FAQ 목록 조회", description = "FAQ 목록을 페이지네이션으로 조회합니다.", responses = @ApiResponse(responseCode = "200", description = "FAQ 목록 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value =
-		"{\n" + "  \"statusCode\": 200,\n" + "  \"resultType\": \"SUCCESS\",\n" + "  \"data\": {\n"
-			+ "    \"content\": [\n" + "      {\n" + "        \"title\": \"FAQ 제목\",\n"
-			+ "        \"content\": \"FAQ 내용\"\n" + "      }\n" + "    ],\n" + "    \"pageable\": {\n"
-			+ "      \"pageNumber\": 0,\n" + "      \"pageSize\": 1,\n" + "      \"sort\": {\n"
-			+ "        \"empty\": true,\n" + "        \"sorted\": false,\n" + "        \"unsorted\": true\n"
-			+ "      },\n" + "      \"offset\": 0,\n" + "      \"paged\": true,\n" + "      \"unpaged\": false\n"
-			+ "    },\n" + "    \"last\": true,\n" + "    \"totalPages\": 1,\n" + "    \"totalElements\": 1,\n"
-			+ "    \"size\": 1,\n" + "    \"sort\": {\n" + "      \"empty\": true,\n" + "      \"sorted\": false,\n"
-			+ "      \"unsorted\": true\n" + "    },\n" + "    \"number\": 0,\n" + "    \"first\": true,\n"
-			+ "    \"numberOfElements\": 1,\n" + "    \"empty\": false\n" + "  },\n"
-			+ "  \"message\": \"FAQ 목록 조회 성공\"\n" + "}"))))
-	CustomApiResponse<Page<FaqResponse>> getFaqs(Pageable pageable);
+	@Operation(summary = "FAQ 목록 조회", description = "FAQ 목록을 페이지네이션으로 조회합니다.", parameters = {
+		@Parameter(name = "pageNumber", description = "페이지 번호 (0부터 시작)", example = "0"),
+		@Parameter(name = "pageSize", description = "페이지 크기 (기본값: 10)", example = "10")}, responses = @ApiResponse(responseCode = "200", description = "FAQ 목록 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = """
+		{
+		  "statusCode": 200,
+		  "resultType": "SUCCESS",
+		  "data": {
+		    "content": [
+		      {
+		        "title": "FAQ 제목",
+		        "content": "FAQ 내용"
+		      }
+		    ],
+		    "pageNumber": 0,
+		    "pageSize": 10,
+		    "totalElements": 1,
+		    "totalPages": 1,
+		    "hasNext": false
+		  },
+		  "message": "FAQ 목록 조회 성공"
+		}
+		"""))))
+	CustomApiResponse<PageResponse<FaqResponse>> getFaqs(
+		@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
+		@RequestParam(value = "pageSize", defaultValue = "10") int pageSize);
 }
