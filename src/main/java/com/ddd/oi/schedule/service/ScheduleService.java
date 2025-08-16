@@ -12,7 +12,10 @@ import com.ddd.oi.schedule.repository.ScheduleRepository;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,6 +107,16 @@ public class ScheduleService {
                 return schedules.stream()
                         .map(ScheduleListResponse::of)
                         .toList();
+        }
+
+        @Transactional(readOnly = true)
+        public List<ScheduleListResponse> showWeeklySchedule(Long userId, LocalDate from, LocalDate to) {
+                LocalDateTime startDateTime = from.atStartOfDay();
+                LocalDateTime endDateTime = to.atTime(23, 59, 59);
+                return scheduleRepository.findByUser_IdAndCreatedAtBetween(userId, startDateTime, endDateTime)
+                    .stream()
+                    .map(ScheduleListResponse::of)
+                    .collect(Collectors.toList());
         }
 
 }
