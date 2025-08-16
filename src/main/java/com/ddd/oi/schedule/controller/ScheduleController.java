@@ -1,18 +1,13 @@
 package com.ddd.oi.schedule.controller;
 
 import com.ddd.oi.common.response.CustomApiResponse;
+import com.ddd.oi.schedule.controller.docs.ScheduleControllerDocs;
 import com.ddd.oi.schedule.dto.request.CreateScheduleRequest;
 import com.ddd.oi.schedule.dto.request.UpdateScheduleRequest;
 import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
 import com.ddd.oi.schedule.dto.response.ScheduleListResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.service.ScheduleService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.time.LocalDate;
@@ -35,11 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")
 @Tag(name = "스케줄 컨트롤러", description = "스케줄 관련 API입니다.")
-public class ScheduleController {
+public class ScheduleController implements ScheduleControllerDocs {
 	private final ScheduleService scheduleService;
 
 	@PostMapping
-	@Operation(summary = "일정 추가", description = "일정 추가 API")
+	@Override
 	public CustomApiResponse<CreateScheduleResponse> createSchedule(@RequestHeader("user-no") Long userId,
 		@RequestBody CreateScheduleRequest request) {
 		CreateScheduleResponse result = scheduleService.createSchedule(userId, request);
@@ -47,7 +42,7 @@ public class ScheduleController {
 	}
 
 	@DeleteMapping("/{scheduleId}")
-	@Operation(summary = "일정 삭제", description = "일정 삭제 API")
+	@Override
 	public CustomApiResponse<Boolean> deleteSchedule(@RequestHeader("user-no") Long userId,
 		@PathVariable("scheduleId") Long scheduleId) {
 		Boolean result = scheduleService.deleteSchedule(userId, scheduleId);
@@ -55,7 +50,7 @@ public class ScheduleController {
 	}
 
 	@PutMapping("/{scheduleId}")
-	@Operation(summary = "일정 수정", description = "일정 수정 API")
+	@Override
 	public CustomApiResponse<UpdateScheduleResponse> updateSchedule(@RequestHeader("user-no") Long userId,
 		@PathVariable("scheduleId") Long scheduleId, @RequestBody UpdateScheduleRequest request) {
 		UpdateScheduleResponse result = scheduleService.updateSchedule(userId, scheduleId, request);
@@ -63,7 +58,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping("/{target-day}")
-	@Operation(summary = "특정 날짜 일정 조회", description = "특정 날짜 일정 조회 API")
+	@Override
 	public CustomApiResponse<List<ScheduleListResponse>> showTargetDaySchedule(@RequestHeader("user-no") Long userId,
 		@PathVariable("target-day") LocalDate targetDay) {
 		List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(userId, targetDay);
@@ -71,7 +66,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping("/{year}/{month}")
-	@Operation(summary = "한달 일정 조회", description = "한달 일정 조회 API")
+	@Override
 	public CustomApiResponse<List<ScheduleListResponse>> showMonthSchedule(@RequestHeader("user-no") Long userId,
 		@PathVariable("year") int year, @PathVariable("month") int month) {
 		List<ScheduleListResponse> result = scheduleService.showMonthScheduleList(userId, year, month);
@@ -79,7 +74,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping("/week")
-	@Operation(summary = "주간 일정 조회", description = "주간 일정 조회 API", parameters = {@Parameter(name = "user-no", description = "사용자 번호", required = true, example = "1"), @Parameter(name = "from", description = "조회 시작일 (yyyy-MM-dd)", required = true, example = "2025-08-09"), @Parameter(name = "to", description = "조회 종료일 (yyyy-MM-dd)", required = true, example = "2025-08-16")}, responses = @ApiResponse(responseCode = "200", description = "주간 일정 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = "{\n  \"statusCode\": 200,\n  \"resultType\": \"SUCCESS\",\n  \"data\": [\n    {\n      \"scheduleId\": 36,\n      \"scheduleTag\": \"DATE\",\n      \"title\": \"일정상세 테스트_근\",\n      \"startDate\": \"2025-09-08\",\n      \"endDate\": \"2025-09-08\",\n      \"mobility\": \"CAR\",\n      \"groups\": [\"SOLO\", \"FRIEND\", \"PARENTS\", \"SIBLINGS\", \"COUPLE\"]\n    },\n    {\n      \"scheduleId\": 37,\n      \"scheduleTag\": \"DAILY\",\n      \"title\": \"연속 일정 테스트_근\",\n      \"startDate\": \"2025-09-15\",\n      \"endDate\": \"2025-09-17\",\n      \"mobility\": \"CAR\",\n      \"groups\": [\"SOLO\"]\n    }\n  ],\n  \"message\": \"주간 일정 조회 성공\"\n}"))))
+	@Override
 	public CustomApiResponse<List<ScheduleListResponse>> showWeeklySchedule(@RequestHeader("user-no") Long userId,
 		@RequestParam("from") LocalDate from, @RequestParam("to") LocalDate to) {
 		List<ScheduleListResponse> result = scheduleService.showWeeklySchedule(userId, from, to);

@@ -1,5 +1,6 @@
 package com.ddd.oi.auth.controller;
 
+import com.ddd.oi.auth.controller.docs.AuthControllerDocs;
 import com.ddd.oi.auth.dto.AuthResponse;
 import com.ddd.oi.auth.dto.OAuthAccessTokenRequest;
 import com.ddd.oi.auth.service.AuthService;
@@ -10,8 +11,6 @@ import com.ddd.oi.user.domain.ProviderInfo;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.dto.UserConverter;
 import com.ddd.oi.user.dto.UserResponseDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@Tag(name = "소셜 로그인 컨트롤러", description = "소셜 로그인 관련 API입니다.")
-public class AuthController {
+public class AuthController implements AuthControllerDocs {
 
     private final AuthService authService;
 
     @PostMapping("/login/{provider}")
-    @Operation(summary = "로그인", description = "로그인 API [provider : kakao,naver,google]")
+    @Override
     public CustomApiResponse<UserResponseDTO> login(
             @PathVariable("provider") String provider,
             @RequestBody OAuthAccessTokenRequest request,
@@ -47,7 +45,7 @@ public class AuthController {
 
 
     @PostMapping("/reissue")
-    @Operation(summary = "리프레시 토큰 재발급", description = "리프레시 토큰 재발급 API")
+    @Override
     public CustomApiResponse<?> reissue(
             HttpServletRequest request,
             HttpServletResponse response
@@ -65,7 +63,7 @@ public class AuthController {
         return CustomApiResponse.success(dto, 200, "토큰 재발급 성공");
     }
     @PostMapping("/logout")
-    @Operation(summary = "로그아웃", description = "로그아웃 API")
+    @Override
     public CustomApiResponse<?> logout(
             @AuthenticationPrincipal User user,
             @RequestParam("provider") ProviderInfo provider,
