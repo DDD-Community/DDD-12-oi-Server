@@ -20,7 +20,6 @@ public record ShowUserResponse(
     @Builder
     public record SystemInfo(
             LocalDateTime updateAt,
-            LocalDateTime lastReadAt,
             String version
     ) {}
 
