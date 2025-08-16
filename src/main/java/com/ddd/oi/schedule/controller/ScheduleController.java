@@ -7,11 +7,19 @@ import com.ddd.oi.schedule.dto.response.CreateScheduleResponse;
 import com.ddd.oi.schedule.dto.response.ScheduleListResponse;
 import com.ddd.oi.schedule.dto.response.UpdateScheduleResponse;
 import com.ddd.oi.schedule.service.ScheduleService;
+
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.time.LocalDate;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,58 +36,53 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/schedules")
 @Tag(name = "스케줄 컨트롤러", description = "스케줄 관련 API입니다.")
 public class ScheduleController {
-    private final ScheduleService scheduleService;
+	private final ScheduleService scheduleService;
 
-    @PostMapping
-    @Operation(summary = "일정 추가", description = "일정 추가 API")
-    public CustomApiResponse<CreateScheduleResponse> createSchedule(
-            @RequestHeader("user-no") Long userId, @RequestBody CreateScheduleRequest request
-    ) {
-        CreateScheduleResponse result = scheduleService.createSchedule(userId, request);
-        return CustomApiResponse.success(result, 200, "스케줄 생성 성공");
-    }
+	@PostMapping
+	@Operation(summary = "일정 추가", description = "일정 추가 API")
+	public CustomApiResponse<CreateScheduleResponse> createSchedule(@RequestHeader("user-no") Long userId,
+		@RequestBody CreateScheduleRequest request) {
+		CreateScheduleResponse result = scheduleService.createSchedule(userId, request);
+		return CustomApiResponse.success(result, 200, "스케줄 생성 성공");
+	}
 
-    @DeleteMapping("/{scheduleId}")
-    @Operation(summary = "일정 삭제", description = "일정 삭제 API")
-    public CustomApiResponse<Boolean> deleteSchedule(
-            @RequestHeader("user-no") Long userId, @PathVariable("scheduleId") Long scheduleId
-    ) {
-        Boolean result = scheduleService.deleteSchedule(userId,scheduleId);
-        return CustomApiResponse.success(result,200,"일정 삭제 성공");
-    }
-    @PutMapping("/{scheduleId}")
-    @Operation(summary = "일정 수정", description = "일정 수정 API")
-    public CustomApiResponse<UpdateScheduleResponse> updateSchedule(
-            @RequestHeader("user-no") Long userId, @PathVariable("scheduleId") Long scheduleId, @RequestBody UpdateScheduleRequest request
-    ) {
-        UpdateScheduleResponse result = scheduleService.updateSchedule(userId, scheduleId,request);
-        return CustomApiResponse.success(result,200,"스케줄 수정 성공");
-    }
+	@DeleteMapping("/{scheduleId}")
+	@Operation(summary = "일정 삭제", description = "일정 삭제 API")
+	public CustomApiResponse<Boolean> deleteSchedule(@RequestHeader("user-no") Long userId,
+		@PathVariable("scheduleId") Long scheduleId) {
+		Boolean result = scheduleService.deleteSchedule(userId, scheduleId);
+		return CustomApiResponse.success(result, 200, "일정 삭제 성공");
+	}
 
-    @GetMapping("/{target-day}")
-    @Operation(summary = "특정 날짜 일정 조회", description = "특정 날짜 일정 조회 API")
-    public CustomApiResponse<List<ScheduleListResponse>> showTargetDaySchedule(
-            @RequestHeader("user-no") Long userId, @PathVariable("target-day") LocalDate targetDay
-    ) {
-        List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(userId,targetDay);
-        return CustomApiResponse.success(result, 200, "해당 날짜의 일정들 조회 성공");
-    }
-    @GetMapping("/{year}/{month}")
-    @Operation(summary = "한달 일정 조회", description = "한달 일정 조회 API")
-    public CustomApiResponse<List<ScheduleListResponse>> showMonthSchedule(
-            @RequestHeader("user-no") Long userId,@PathVariable("year") int year, @PathVariable("month") int month
-    ) {
-        List<ScheduleListResponse> result = scheduleService.showMonthScheduleList(userId, year, month);
-        return CustomApiResponse.success(result, 200, "해당 월의 일정들 조회 성공");
-    }
-    @GetMapping("/week")
-    @Operation(summary = "주간 일정 조회", description = "주간 일정 조회 API")
-    public CustomApiResponse<List<ScheduleListResponse>> showWeeklySchedule(
-        @RequestHeader("user-no") Long userId,
-        @RequestParam("from") LocalDate from,
-        @RequestParam("to") LocalDate to
-    ) {
-        List<ScheduleListResponse> result = scheduleService.showWeeklySchedule(userId, from, to);
-        return CustomApiResponse.success(result, 200, "주간 일정 조회 성공");
-    }
+	@PutMapping("/{scheduleId}")
+	@Operation(summary = "일정 수정", description = "일정 수정 API")
+	public CustomApiResponse<UpdateScheduleResponse> updateSchedule(@RequestHeader("user-no") Long userId,
+		@PathVariable("scheduleId") Long scheduleId, @RequestBody UpdateScheduleRequest request) {
+		UpdateScheduleResponse result = scheduleService.updateSchedule(userId, scheduleId, request);
+		return CustomApiResponse.success(result, 200, "스케줄 수정 성공");
+	}
+
+	@GetMapping("/{target-day}")
+	@Operation(summary = "특정 날짜 일정 조회", description = "특정 날짜 일정 조회 API")
+	public CustomApiResponse<List<ScheduleListResponse>> showTargetDaySchedule(@RequestHeader("user-no") Long userId,
+		@PathVariable("target-day") LocalDate targetDay) {
+		List<ScheduleListResponse> result = scheduleService.showTargetDaySchedule(userId, targetDay);
+		return CustomApiResponse.success(result, 200, "해당 날짜의 일정들 조회 성공");
+	}
+
+	@GetMapping("/{year}/{month}")
+	@Operation(summary = "한달 일정 조회", description = "한달 일정 조회 API")
+	public CustomApiResponse<List<ScheduleListResponse>> showMonthSchedule(@RequestHeader("user-no") Long userId,
+		@PathVariable("year") int year, @PathVariable("month") int month) {
+		List<ScheduleListResponse> result = scheduleService.showMonthScheduleList(userId, year, month);
+		return CustomApiResponse.success(result, 200, "해당 월의 일정들 조회 성공");
+	}
+
+	@GetMapping("/week")
+	@Operation(summary = "주간 일정 조회", description = "주간 일정 조회 API", parameters = {@Parameter(name = "user-no", description = "사용자 번호", required = true, example = "1"), @Parameter(name = "from", description = "조회 시작일 (yyyy-MM-dd)", required = true, example = "2025-08-09"), @Parameter(name = "to", description = "조회 종료일 (yyyy-MM-dd)", required = true, example = "2025-08-16")}, responses = @ApiResponse(responseCode = "200", description = "주간 일정 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = "{\n  \"statusCode\": 200,\n  \"resultType\": \"SUCCESS\",\n  \"data\": [\n    {\n      \"scheduleId\": 36,\n      \"scheduleTag\": \"DATE\",\n      \"title\": \"일정상세 테스트_근\",\n      \"startDate\": \"2025-09-08\",\n      \"endDate\": \"2025-09-08\",\n      \"mobility\": \"CAR\",\n      \"groups\": [\"SOLO\", \"FRIEND\", \"PARENTS\", \"SIBLINGS\", \"COUPLE\"]\n    },\n    {\n      \"scheduleId\": 37,\n      \"scheduleTag\": \"DAILY\",\n      \"title\": \"연속 일정 테스트_근\",\n      \"startDate\": \"2025-09-15\",\n      \"endDate\": \"2025-09-17\",\n      \"mobility\": \"CAR\",\n      \"groups\": [\"SOLO\"]\n    }\n  ],\n  \"message\": \"주간 일정 조회 성공\"\n}"))))
+	public CustomApiResponse<List<ScheduleListResponse>> showWeeklySchedule(@RequestHeader("user-no") Long userId,
+		@RequestParam("from") LocalDate from, @RequestParam("to") LocalDate to) {
+		List<ScheduleListResponse> result = scheduleService.showWeeklySchedule(userId, from, to);
+		return CustomApiResponse.success(result, 200, "주간 일정 조회 성공");
+	}
 }
