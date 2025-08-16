@@ -5,6 +5,12 @@ import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,26 +39,36 @@ public class GoogleUtil {
 
     @Value("${google.redirect-uri}")
     private String redirectUri;
-    public GoogleDTO.GoogleProfile requestProfileByAccessToken(String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
-
-        HttpEntity<Void> request = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                "https://www.googleapis.com/userinfo/v2/me",
-                HttpMethod.GET,
-                request,
-                String.class
-        );
-
+    public GoogleDTO.GoogleProfile requestProfileByAccessToken(String idTokenString) {
         try {
-            return new ObjectMapper().readValue(response.getBody(), GoogleDTO.GoogleProfile.class);
-        } catch (JsonProcessingException e) {
-            log.error("구글 사용자 정보 파싱 실패", e);
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(),
+                    GsonFactory.getDefaultInstance()
+            )
+                    .setAudience(Collections.singletonList(clientId))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+
+            if (idToken != null) {
+                Payload payload = idToken.getPayload();
+
+                return GoogleDTO.GoogleProfile.builder()
+                        .id(payload.getSubject())
+                        .email(payload.getEmail())
+                        .name((String) payload.get("name"))
+//                        .picture((String) payload.get("picture"))
+                        .build();
+            } else {
+                log.error("구글 ID 토큰 검증 실패");
+                throw new OiException(ErrorCode.TOKEN_INVALID);
+            }
+        } catch (Exception e) {
+            log.error("구글 ID 토큰 검증 중 예외 발생", e);
             throw new OiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
     public GoogleDTO.GoogleProfile requestProfile(GoogleDTO.OAuthToken token) {
