@@ -60,6 +60,7 @@ public class AuthService {
         User user = userRepository.findByEmail(profile.getEmail())
                 .map(existingUser -> {
                     existingUser.updateNickname(profile.getNickname());
+                    existingUser.updateEmail(profile.getEmail());
 //                    existingUser.updateProfileUrl(profile.getProfileImageUrl());
                     return existingUser;
                 })
