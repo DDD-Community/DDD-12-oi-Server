@@ -1,6 +1,5 @@
 package com.ddd.oi.user.dto;
 
-import java.time.LocalDateTime;
 
 import com.ddd.oi.user.domain.User;
 
@@ -11,13 +10,12 @@ public class UserConverter {
 			user.getId(),
 			user.getNickname(),
 			user.getEmail(),
-			//                user.getProfileImageUrl(),
+			//user.getProfileImageUrl(),
 			user.getProviderInfo(),
 			user.getRole(),
 			accessToken,
 			refreshToken,
-			oauthAccessToken,
-			user.getLastReadAt()
+			oauthAccessToken
 		);
 	}
 }

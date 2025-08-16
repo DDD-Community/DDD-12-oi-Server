@@ -71,7 +71,6 @@ public class UserService {
 
             ShowUserResponse.SystemInfo systemInfo = ShowUserResponse.SystemInfo.builder()
                     .updateAt(latestNoticeUpdateAt)
-                    .lastReadAt(persistedUser.getLastReadAt())
                     .version(version)
                     .build();
 

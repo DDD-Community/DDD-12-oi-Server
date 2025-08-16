@@ -47,7 +47,7 @@ public class RedisUtil {
         try {
             Boolean result = redisTemplate.delete(key);
             if (Boolean.FALSE.equals(result)) {
-                log.warn("Redis key 삭제되지 않음 (이미 삭제되었거나 없음): {}", key);
+                log.warn("Redis key 삭제되지 않음 : {}", key);
             }
         } catch (DataAccessException e) {
             throw new OiException(ErrorCode.REDIS_SERVER_ERROR);

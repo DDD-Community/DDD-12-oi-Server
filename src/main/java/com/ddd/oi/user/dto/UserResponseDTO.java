@@ -14,8 +14,7 @@ public record UserResponseDTO(
         RoleType role,
         String accessToken,
         String refreshToken,
-        String oauthAccessToken,
-		LocalDateTime lastReadAt
+        String oauthAccessToken
 ) {
 
 
