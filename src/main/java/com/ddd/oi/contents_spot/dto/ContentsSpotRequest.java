@@ -11,7 +11,8 @@ public record ContentsSpotRequest(
         String spotDescription,
         String spotImage,
         Double latitude,
-        Double longitude) {
+        Double longitude,
+        String category) {
     private static final String IMAGE_BASE_URL = "https://ddd-oi.store/api/v1/s3/images/";
 
     public ContentsSpotRequest {
@@ -30,6 +31,7 @@ public record ContentsSpotRequest(
             .spotImage(IMAGE_BASE_URL + this.spotImage())
             .latitude(this.latitude())
             .longitude(this.longitude())
+            .category(this.category())
             .contents(contents)
             .build();
     }
