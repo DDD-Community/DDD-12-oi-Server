@@ -1,5 +1,6 @@
 package com.ddd.oi.notice.controller.docs;
 
+import com.ddd.oi.common.response.PageResponse;
 import com.ddd.oi.notice.dto.NoticeCreateRequest;
 import com.ddd.oi.notice.dto.NoticeResponse;
 import com.ddd.oi.notice.dto.NoticeUpdateRequest;
@@ -40,7 +41,7 @@ public interface NoticeControllerDocs {
 			+ "      \"sorted\": false,\n" + "      \"unsorted\": true\n" + "    },\n" + "    \"number\": 0,\n"
 			+ "    \"first\": true,\n" + "    \"numberOfElements\": 1,\n" + "    \"empty\": false\n" + "  },\n"
 			+ "  \"message\": \"공지사항 목록 조회 성공\"\n" + "}"))))
-	CustomApiResponse<Page<NoticeResponse>> getNotices(Pageable pageable);
+	CustomApiResponse<PageResponse<NoticeResponse>> getNotices(Pageable pageable);
 
 	@Operation(summary = "공지사항 조회", description = "공지사항 ID를 통해 공지사항을 조회합니다.", parameters = @Parameter(name = "id", description = "공지사항 ID", example = "1"), responses = @ApiResponse(responseCode = "200", description = "공지사항 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = "{\n  \"statusCode\": 200,\n  \"resultType\": \"SUCCESS\",\n  \"data\": {\n    \"id\": 1,\n    \"title\": \"공지사항 제목\",\n    \"content\": \"공지사항 내용\",\n    \"updatedAt\": \"2023-10-01T12:00:00\"\n  },\n  \"message\": \"공지사항 조회 성공\"\n}"))))
 	CustomApiResponse<NoticeResponse> getNotice(@PathVariable Long id);

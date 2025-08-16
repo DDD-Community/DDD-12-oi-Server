@@ -2,6 +2,7 @@ package com.ddd.oi.notice.service;
 
 import com.ddd.oi.common.exception.OiException;
 import com.ddd.oi.common.response.ErrorCode;
+import com.ddd.oi.common.response.PageResponse;
 import com.ddd.oi.notice.domain.Notice;
 import com.ddd.oi.notice.dto.*;
 import com.ddd.oi.notice.repository.NoticeRepository;
@@ -35,9 +36,10 @@ public class NoticeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<NoticeResponse> getNotices(Pageable pageable) {
-        return noticeRepository.findAll(pageable)
+    public PageResponse<NoticeResponse> getNotices(Pageable pageable) {
+        Page<NoticeResponse> page = noticeRepository.findAll(pageable)
             .map(NoticeResponse::from);
+        return new PageResponse<>(page);
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.ddd.oi.notice.controller;
 
+import com.ddd.oi.common.response.PageResponse;
 import com.ddd.oi.notice.controller.docs.NoticeControllerDocs;
 import com.ddd.oi.notice.dto.*;
 import com.ddd.oi.notice.service.NoticeService;
@@ -29,7 +30,7 @@ public class NoticeController implements NoticeControllerDocs {
     }
 
     @GetMapping
-    public CustomApiResponse<Page<NoticeResponse>> getNotices(Pageable pageable) {
+    public CustomApiResponse<PageResponse<NoticeResponse>> getNotices(Pageable pageable) {
         return CustomApiResponse.success(noticeService.getNotices(pageable), 200, "공지사항 목록 조회 성공");
     }
 
