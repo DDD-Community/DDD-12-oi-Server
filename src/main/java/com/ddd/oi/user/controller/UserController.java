@@ -1,13 +1,12 @@
 package com.ddd.oi.user.controller;
 
 import com.ddd.oi.common.response.CustomApiResponse;
+import com.ddd.oi.user.controller.docs.UserControllerDocs;
 import com.ddd.oi.user.domain.User;
 import com.ddd.oi.user.dto.request.UpdateNicknameRequest;
 import com.ddd.oi.user.dto.response.ShowUserResponse;
 import com.ddd.oi.user.dto.response.UpdateNicknameResponse;
 import com.ddd.oi.user.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,13 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-@Tag(name = "유저 컨트롤러", description = "유저 관련 API입니다.")
-public class UserController {
+public class UserController implements UserControllerDocs {
 
     private final UserService userService;
 
     @DeleteMapping
-    @Operation(summary = "유저 탈퇴", description = "유저 탈퇴 API")
+    @Override
     public CustomApiResponse<?> deleteUser(
             @AuthenticationPrincipal User user,
             @RequestHeader("Oauth-Authorization") String oauthAccessToken
@@ -37,7 +35,7 @@ public class UserController {
     }
 
     @PatchMapping
-    @Operation(summary = "유저 닉네임 수정", description = "유저 닉네임 수정 API")
+    @Override
     public CustomApiResponse<UpdateNicknameResponse> updateUserNickname(
             @AuthenticationPrincipal User user,
             @Valid UpdateNicknameRequest request
@@ -48,7 +46,7 @@ public class UserController {
 
 
     @GetMapping
-    @Operation(summary = "유저 정보 조회/시스템 정보 조회",description = "유저 정보 조회/시스템 정보 조회 API")
+    @Override
     public CustomApiResponse<ShowUserResponse> showUserAndSystemInfo(
             @RequestHeader("user-no") Long userId
     ) {
