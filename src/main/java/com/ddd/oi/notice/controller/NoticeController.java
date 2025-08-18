@@ -33,7 +33,7 @@ public class NoticeController implements NoticeControllerDocs {
     @GetMapping
     public CustomApiResponse<PageResponse<NoticeResponse>> getNotices(
         @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize
+        @RequestParam(value = "pageSize", defaultValue = "150") int pageSize
     ) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return CustomApiResponse.success(noticeService.getNotices(pageable), 200, "공지사항 목록 조회 성공");
