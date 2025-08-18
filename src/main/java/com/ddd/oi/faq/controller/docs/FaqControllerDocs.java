@@ -34,7 +34,7 @@ public interface FaqControllerDocs {
 
 	@Operation(summary = "FAQ 목록 조회", description = "FAQ 목록을 페이지네이션으로 조회합니다.", parameters = {
 		@Parameter(name = "pageNumber", description = "페이지 번호 (0부터 시작)", example = "0"),
-		@Parameter(name = "pageSize", description = "페이지 크기 (기본값: 10)", example = "10")}, responses = @ApiResponse(responseCode = "200", description = "FAQ 목록 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = """
+		@Parameter(name = "pageSize", description = "페이지 크기 (기본값: 150)", example = "150")}, responses = @ApiResponse(responseCode = "200", description = "FAQ 목록 조회 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "성공 응답 예시", value = """
 		{
 		  "statusCode": 200,
 		  "resultType": "SUCCESS",

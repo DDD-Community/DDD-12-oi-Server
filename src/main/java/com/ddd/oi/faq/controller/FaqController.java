@@ -46,7 +46,7 @@ public class FaqController implements FaqControllerDocs {
 	@GetMapping
 	public CustomApiResponse<PageResponse<FaqResponse>> getFaqs(
 		@RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-		@RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+		@RequestParam(value = "pageSize", defaultValue = "150") int pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 		return CustomApiResponse.success(faqService.getFaqs(pageable), 200, "FAQ 목록 조회 성공");
 	}
