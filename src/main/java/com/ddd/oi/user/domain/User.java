@@ -26,6 +26,9 @@ public class User extends BaseEntity {
 	@Column(name = "provider_info", nullable = false)
 	private ProviderInfo providerInfo;
 
+	@Column(name = "provider_id")
+	private String providerId;
+
 	@Column(name = "nickname")
 	private String nickname;
 
