@@ -65,14 +65,23 @@ public class JWTUtil {
         return null;
     }
 
+    // 네이버/구글
     public String createJwt(String category, String email, String role, Long expiredMs) {
+        return createJwt(category, email, null, role, expiredMs);
+    }
+
+    // 카카오
+    public String createJwt(String category, String email, String providerId, String role, Long expiredMs) {
         return Jwts.builder()
                 .claim("category", category)
                 .claim("email", email)
+                .claim("providerId", providerId)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
     }
+
+
 }
