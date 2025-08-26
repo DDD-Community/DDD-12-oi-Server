@@ -65,6 +65,10 @@ public class JWTUtil {
         return null;
     }
 
+    public String getProviderId(String token) {
+        return parseClaims(token).get("providerId", String.class);
+    }
+
     // 네이버/구글
     public String createJwt(String category, String email, String role, Long expiredMs) {
         return createJwt(category, email, null, role, expiredMs);
