@@ -46,7 +46,7 @@ public class AuthService {
                 var kakaoProfile = kakaoUtil.requestProfileByAccessToken(oauthAccessToken);
                 profile = new KakaoProfileAdapter(kakaoProfile);
 
-                User user = userRepository.findByProviderInfoAndProviderId(ProviderInfo.KAKAO, String.valueOf(kakaoProfile.getId()))
+                User user = userRepository.findByProviderInfoAndProviderId(ProviderInfo.KAKAO, kakaoProfile.getId())
                         .map(existingUser -> {
                             existingUser.updateNickname(profile.getNickname());
                             existingUser.updateEmail(profile.getEmail());
@@ -54,9 +54,11 @@ public class AuthService {
                         })
                         .orElseGet(() -> createNewUserWithProviderId(profile, kakaoProfile.getId()));
 
-                String accessToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), ACCESS_TOKEN_VALIDITY);
-                String refreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
-                redisUtil.setDataExpire("RT:" + user.getEmail(), refreshToken, REFRESH_TOKEN_VALIDITY);
+                String subject = (provider == ProviderInfo.KAKAO) ? user.getProviderId() : user.getEmail();
+
+                String accessToken = jwtUtil.createJwt(null, user.getEmail(), user.getProviderId(), user.getRole().toString(), ACCESS_TOKEN_VALIDITY);
+                String refreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getProviderId(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
+                redisUtil.setDataExpire("RT:" + subject, refreshToken, REFRESH_TOKEN_VALIDITY);
 
                 return new AuthResponse(user, accessToken, refreshToken, oauthAccessToken);
             }
