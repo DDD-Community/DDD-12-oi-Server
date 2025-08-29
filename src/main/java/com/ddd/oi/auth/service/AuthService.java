@@ -45,6 +45,22 @@ public class AuthService {
             case KAKAO -> {
                 var kakaoProfile = kakaoUtil.requestProfileByAccessToken(oauthAccessToken);
                 profile = new KakaoProfileAdapter(kakaoProfile);
+
+                User user = userRepository.findByProviderInfoAndProviderId(ProviderInfo.KAKAO, kakaoProfile.getId())
+                        .map(existingUser -> {
+                            existingUser.updateNickname(profile.getNickname());
+                            existingUser.updateEmail(profile.getEmail());
+                            return existingUser;
+                        })
+                        .orElseGet(() -> createNewUserWithProviderId(profile, kakaoProfile.getId()));
+
+                String subject = (provider == ProviderInfo.KAKAO) ? user.getProviderId() : user.getEmail();
+
+                String accessToken = jwtUtil.createJwt(null, user.getEmail(), user.getProviderId(), user.getRole().toString(), ACCESS_TOKEN_VALIDITY);
+                String refreshToken = jwtUtil.createJwt(null, user.getEmail(), user.getProviderId(), user.getRole().toString(), REFRESH_TOKEN_VALIDITY);
+                redisUtil.setDataExpire("RT:" + subject, refreshToken, REFRESH_TOKEN_VALIDITY);
+
+                return new AuthResponse(user, accessToken, refreshToken, oauthAccessToken);
             }
             case NAVER -> {
                 var naverProfile = naverUtil.requestProfileByAccessToken(oauthAccessToken);
@@ -61,7 +77,6 @@ public class AuthService {
                 .map(existingUser -> {
                     existingUser.updateNickname(profile.getNickname());
                     existingUser.updateEmail(profile.getEmail());
-//                    existingUser.updateProfileUrl(profile.getProfileImageUrl());
                     return existingUser;
                 })
                 .orElseGet(() -> createNewUser(profile));
@@ -71,6 +86,18 @@ public class AuthService {
         redisUtil.setDataExpire("RT:" + user.getEmail(), refreshToken, REFRESH_TOKEN_VALIDITY);
 
         return new AuthResponse(user, accessToken, refreshToken, oauthAccessToken);
+    }
+
+    private User createNewUserWithProviderId(OAuthProfile profile, String kakaoId) {
+        return userRepository.save(
+                User.builder()
+                        .providerInfo(profile.getProviderInfo())
+                        .providerId(kakaoId)
+                        .email(profile.getEmail())
+                        .nickname(profile.getNickname())
+                        .role(RoleType.USER)
+                        .build()
+        );
     }
 
     private User createNewUser(OAuthProfile profile) {
