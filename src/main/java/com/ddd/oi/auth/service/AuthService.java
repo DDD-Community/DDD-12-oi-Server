@@ -34,7 +34,7 @@ public class AuthService {
     private final JWTUtil jwtUtil;
     private final RedisUtil redisUtil;
 
-    private final Long ACCESS_TOKEN_VALIDITY = 1000L * 60 * 60;
+    private final Long ACCESS_TOKEN_VALIDITY = 1000L * 60 * 1;
     private final Long REFRESH_TOKEN_VALIDITY = 1000L * 60 * 60 * 24 * 14;
 
     @Transactional
