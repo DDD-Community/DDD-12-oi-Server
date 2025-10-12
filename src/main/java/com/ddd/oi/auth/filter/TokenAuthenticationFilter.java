@@ -24,7 +24,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    @Value("${test-token}")
+    @Value("${app.test-token}")
     private String testToken;
 
     private final JWTUtil jwtUtil;
