@@ -9,24 +9,26 @@ import lombok.Builder;
 
 @Builder
 public record CreateScheduleResponse(
-        Long scheduleId,
-        String title,
-        LocalDate startDate,
-        LocalDate endDate,
-        Mobility mobility,
-        List<String> groups,
-        ScheduleTag scheduleTag
+    Long scheduleId,
+    Long userId,
+    String title,
+    LocalDate startDate,
+    LocalDate endDate,
+    Mobility mobility,
+    List<String> groups,
+    ScheduleTag scheduleTag
 ) {
 
     public static CreateScheduleResponse of(Schedule schedule) {
         return CreateScheduleResponse.builder()
-                .scheduleId(schedule.getId())
-                .title(schedule.getScheduleTitle())
-                .startDate(schedule.getStartDate())
-                .endDate(schedule.getEndDate())
-                .mobility(schedule.getMobility())
-                .groups(schedule.getGroups().stream().map(Enum::name).toList())
-                .scheduleTag(schedule.getScheduleTag())
-                .build();
+            .scheduleId(schedule.getId())
+            .userId(schedule.getUser().getId())
+            .title(schedule.getScheduleTitle())
+            .startDate(schedule.getStartDate())
+            .endDate(schedule.getEndDate())
+            .mobility(schedule.getMobility())
+            .groups(schedule.getGroups().stream().map(Enum::name).toList())
+            .scheduleTag(schedule.getScheduleTag())
+            .build();
     }
 }

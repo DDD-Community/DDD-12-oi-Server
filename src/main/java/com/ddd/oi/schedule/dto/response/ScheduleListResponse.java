@@ -11,22 +11,24 @@ import lombok.Builder;
 
 @Builder
 public record ScheduleListResponse(
-        Long scheduleId,
-        ScheduleTag scheduleTag,
-        String title,
-        LocalDate startDate,
-        LocalDate endDate,
-        Mobility mobility,
-        List<GroupTag> groups) {
+    Long scheduleId,
+    Long userId,
+    ScheduleTag scheduleTag,
+    String title,
+    LocalDate startDate,
+    LocalDate endDate,
+    Mobility mobility,
+    List<GroupTag> groups) {
     public static ScheduleListResponse of(Schedule schedule) {
         return ScheduleListResponse.builder()
-                .scheduleId(schedule.getId())
-                .scheduleTag(schedule.getScheduleTag())
-                .title(schedule.getScheduleTitle())
-                .startDate(schedule.getStartDate())
-                .endDate(schedule.getEndDate())
-                .mobility(schedule.getMobility())
-                .groups(schedule.getGroups())
-                .build();
+            .scheduleId(schedule.getId())
+            .userId(schedule.getUser().getId())
+            .scheduleTag(schedule.getScheduleTag())
+            .title(schedule.getScheduleTitle())
+            .startDate(schedule.getStartDate())
+            .endDate(schedule.getEndDate())
+            .mobility(schedule.getMobility())
+            .groups(schedule.getGroups())
+            .build();
     }
 }
