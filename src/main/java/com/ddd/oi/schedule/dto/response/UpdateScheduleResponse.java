@@ -11,22 +11,24 @@ import lombok.Builder;
 
 @Builder
 public record UpdateScheduleResponse(
-        Long scheduleId,
-        String title,
-        LocalDate startDate,
-        LocalDate endDate,
-        Mobility mobility,
-        List<String> groups,
-        ScheduleTag scheduleTag) {
+    Long scheduleId,
+    Long userId,
+    String title,
+    LocalDate startDate,
+    LocalDate endDate,
+    Mobility mobility,
+    List<String> groups,
+    ScheduleTag scheduleTag) {
     public static UpdateScheduleResponse of(Schedule schedule) {
         return UpdateScheduleResponse.builder()
-                .scheduleId(schedule.getId())
-                .title(schedule.getScheduleTitle())
-                .startDate(schedule.getStartDate())
-                .endDate(schedule.getEndDate())
-                .mobility(schedule.getMobility())
-                .groups(schedule.getGroups().stream().map(Enum::name).collect(Collectors.toList()))
-                .scheduleTag(schedule.getScheduleTag())
-                .build();
+            .scheduleId(schedule.getId())
+            .userId(schedule.getUser().getId())
+            .title(schedule.getScheduleTitle())
+            .startDate(schedule.getStartDate())
+            .endDate(schedule.getEndDate())
+            .mobility(schedule.getMobility())
+            .groups(schedule.getGroups().stream().map(Enum::name).collect(Collectors.toList()))
+            .scheduleTag(schedule.getScheduleTag())
+            .build();
     }
 }
